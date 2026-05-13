@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  # 1. Banco de Dados MySQL
+  db:
+    image: mysql:9.7  # Usando a versão que bate com o seu driver
+    container_name: babelup-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: Babelup
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  # 2. Backend Spring Boot
+  backend:
+    build: ./backend
+    container_name: babelup-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      # A MÁGICA: O Spring agora aponta para "db" (o nome do serviço acima) em vez de "localhost"
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/Babelup?createDatabaseIfNotExist=true
+      - SPRING_DATASOURCE_USERNAME=root
+      - SPRING_DATASOURCE_PASSWORD=admin
+    depends_on:
+      - db
+
+  # 3. Frontend React/Vite
+  frontend:
+    build: ./frontend
+    container_name: babelup-frontend
+    restart: always
+    ports:
+      - "5173:80" # Mapeia a porta 5173 do seu PC para a 80 do Nginx
+    depends_on:
+      - backend
+
+# Salva os dados do banco para não perder quando o container reiniciar
+volumes:
+  mysql_data:

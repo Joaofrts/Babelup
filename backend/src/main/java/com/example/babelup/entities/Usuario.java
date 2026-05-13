@@ -26,14 +26,24 @@ public class Usuario {
     @Column(nullable = false)
     private Perfil perfil;
 
-    @Column(name = "data_cadastro")
-    private LocalDateTime dataCadastro = LocalDateTime.now();
+    @Column(name = "data_cadastro", nullable = false, updatable = false)
+    private LocalDateTime dataCadastro;
 
-
-
-
-    public Usuario() {
+    @PrePersist
+    protected void onCreate() {
+        this.dataCadastro = LocalDateTime.now();
     }
+
+    public Usuario() {}
+
+    public Usuario(UsuarioDto dto) {
+        this.id = dto.getId(); // Usando getters do DTO
+        this.nome = dto.getNome();
+        this.email = dto.getEmail();
+        this.senha = dto.getSenha();
+        this.perfil = dto.getPerfil();
+    }
+
 
     public Usuario(Long id, String nome, String email, String senha, Perfil perfil) {
         this.id = id;
@@ -42,14 +52,6 @@ public class Usuario {
         this.senha = senha;
         this.perfil = perfil;
     }
-    public Usuario(UsuarioDto dto){
-        this.id = dto.id;
-        this.nome = dto.nome;
-        this.email = dto.email;
-        this.senha = dto.senha;
-        this.perfil = dto.perfil;
-    }
-
     public Long getId() {
         return id;
     }

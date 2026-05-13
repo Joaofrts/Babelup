@@ -2,15 +2,17 @@ package com.example.babelup.dto;
 
 import com.example.babelup.entities.Perfil;
 import com.example.babelup.entities.Usuario;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.lang.reflect.Field;
 
 public class UsuarioDto {
-    public Long id;
-    public String nome;
-    public String email;
-    public Perfil perfil;
-    public String senha;
+    private Long id;
+    private String nome;
+    private String email;
+    private Perfil perfil;
+    @JsonIgnore
+    private String senha;
 
     public UsuarioDto() {
     }
@@ -21,5 +23,25 @@ public class UsuarioDto {
         this.nome = usuario.getNome();
         this.perfil = usuario.getPerfil();
         this.senha = usuario.getSenha();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public Perfil getPerfil() {
+        return perfil;
+    }
+
+    public String getSenha() {
+        return senha;
     }
 }

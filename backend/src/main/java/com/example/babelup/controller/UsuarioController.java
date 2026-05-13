@@ -20,7 +20,7 @@ public class UsuarioController {
     @PostMapping("/add")
     public ResponseEntity<Object> addUsuario(@RequestBody UsuarioDto dto){
         try{
-            service.addUsuario(dto);
+            service.cadastrarAluno(dto);
             return ResponseEntity.ok().body("Item adicionado com sucesso!");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Houve um erro inesperado");
@@ -30,7 +30,7 @@ public class UsuarioController {
     @GetMapping("/findAll")
     public ResponseEntity<Object> findAll(){
         try {
-            List<Usuario> dtos = service.findAll();
+            List<UsuarioDto> dtos = service.findAll();
             return ResponseEntity.ok().body(dtos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Houve um erro inesperado");

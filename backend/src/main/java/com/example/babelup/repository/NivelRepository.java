@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 @Repository
 public interface NivelRepository extends JpaRepository<Nivel,Long> {
-    Optional<Nivel> findByNome();
+    Optional<Nivel> findByNome(String nome);
 
 }

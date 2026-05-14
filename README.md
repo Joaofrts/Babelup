@@ -194,12 +194,7 @@ mvn clean install
 3. **Configure o banco de dados**
    - Certifique-se de que MySQL está rodando
    - Crie um banco de dados chamado `Babelup`
-   - Atualize `application.properties` (se necessário):
-```properties
-spring.datasource.url=jdbc:mysql://localhost:3306/Babelup
-spring.datasource.username=root
-spring.datasource.password=admin
-```
+   - Configure as credenciais do banco de dados em `application.properties`
 
 4. **Inicie o backend**
 ```bash
@@ -278,10 +273,6 @@ mysql -u root -p
 - **Frontend**: [http://localhost:5173](http://localhost:5173)
 - **Backend**: [http://localhost:8080](http://localhost:8080)
 - **Banco de Dados**: `localhost:3307` (quando usando Docker)
-
-### Credenciais Padrão (Docker)
-- **MySQL Root Password**: `admin`
-- **Database**: `Babelup`
 
 ---
 
@@ -450,7 +441,7 @@ docker-compose ps
 # Acessar o shell de um container
 docker-compose exec backend bash
 docker-compose exec frontend sh
-docker-compose exec db mysql -u root -padmin
+docker-compose exec db mysql -u root -p
 
 # Ver logs de um serviço específico
 docker-compose logs backend

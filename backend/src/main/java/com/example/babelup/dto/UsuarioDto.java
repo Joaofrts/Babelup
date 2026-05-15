@@ -3,15 +3,18 @@ package com.example.babelup.dto;
 import com.example.babelup.entities.Perfil;
 import com.example.babelup.entities.Usuario;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 
 import java.lang.reflect.Field;
 
 public class UsuarioDto {
+
     private Long id;
     private String nome;
     private String email;
     private Perfil perfil;
-    @JsonIgnore
     private String senha;
 
     public UsuarioDto() {
@@ -23,6 +26,14 @@ public class UsuarioDto {
         this.nome = usuario.getNome();
         this.perfil = usuario.getPerfil();
         this.senha = usuario.getSenha();
+    }
+
+    public UsuarioDto(Long id, String nome, String email, String senha, Perfil perfil) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.senha = senha;
+        this.perfil = perfil;
     }
 
     public Long getId() {

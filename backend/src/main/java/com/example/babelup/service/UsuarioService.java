@@ -4,7 +4,9 @@ import com.example.babelup.dto.UsuarioDto;
 import com.example.babelup.entities.Perfil;
 import com.example.babelup.entities.Usuario;
 import com.example.babelup.repository.UsuarioRepository;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +21,7 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
 
-    private PasswordEncoder passwordEncoder; // Ferramenta do Spring Security para criptografia
+    private final PasswordEncoder passwordEncoder= PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
 
     public Usuario cadastrarAluno(UsuarioDto novoAlunoDto) {
@@ -27,7 +29,6 @@ public class UsuarioService {
             throw new IllegalArgumentException("Este e-mail já está em uso na BabelUp.");
         }
         Usuario novoAluno = new Usuario(novoAlunoDto);
-
 
         novoAluno.setPerfil(Perfil.ALUNO);
 
@@ -46,16 +47,16 @@ public class UsuarioService {
 
 
     public void startDb(){
-        List<Usuario> usuariosIniciais = Arrays.asList(
-                new Usuario(null, "João Marcelo", "joao@gmail.com", "Joao123", Perfil.ADMINISTRADOR),
-                new Usuario(null, "Ludmila", "ludmila@gmail.com", "Ludmila123", Perfil.PROFESSOR),
-                new Usuario(null, "Rodrigo Santos", "rodrigo@gmail.com", "Rodrigo123", Perfil.ALUNO)
+        List<UsuarioDto> usuariosIniciais = Arrays.asList(
+                new UsuarioDto(null, "João Marcelo", "joao@gmail.com", "Joao123", Perfil.ADMINISTRADOR),
+                new UsuarioDto(null, "Ludmila", "ludmila@gmail.com", "Ludmila123", Perfil.PROFESSOR),
+                new UsuarioDto(null, "Rodrigo Santos", "rodrigo@gmail.com", "Rodrigo123", Perfil.ALUNO)
         );
 
-        for (Usuario u : usuariosIniciais) {
+        for (UsuarioDto u : usuariosIniciais) {
 
             if (!usuarioRepository.existsByEmail(u.getEmail())) {
-                usuarioRepository.save(u);
+                cadastrarAluno(u);
                 System.out.println("Usuário criado na inicialização: " + u.getNome());
             }
         }

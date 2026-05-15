@@ -1,5 +1,6 @@
 package com.example.babelup.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 @Entity
@@ -18,7 +19,7 @@ public class Modulo {
 
     @Column(name = "url_pdf")
     private String urlPdf;
-
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "nivel_id", nullable = false)
     private Nivel nivel;

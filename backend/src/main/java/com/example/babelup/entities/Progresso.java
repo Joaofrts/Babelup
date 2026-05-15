@@ -1,5 +1,6 @@
 package com.example.babelup.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ public class Progresso {
 
     @ManyToOne
     @JoinColumn(name = "aluno_id", nullable = false)
+    @JsonIgnore
     private Usuario aluno;
 
     @ManyToOne

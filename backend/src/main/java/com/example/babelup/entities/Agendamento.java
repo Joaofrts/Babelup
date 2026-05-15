@@ -1,5 +1,6 @@
 package com.example.babelup.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,6 +30,7 @@ public class Agendamento {
             joinColumns = @JoinColumn(name = "agendamento_id"),
             inverseJoinColumns = @JoinColumn(name = "aluno_id")
     )
+    @JsonIgnore
     private List<Usuario> alunos;
 
     public Long getId() {

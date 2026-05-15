@@ -22,7 +22,8 @@ public class UsuarioService {
     private UsuarioRepository usuarioRepository;
 
 
-    private final PasswordEncoder passwordEncoder= PasswordEncoderFactories.createDelegatingPasswordEncoder();
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
     public Usuario cadastrarAluno(UsuarioDto novoAlunoDto) {
@@ -30,8 +31,6 @@ public class UsuarioService {
             throw new IllegalArgumentException("Este e-mail já está em uso na BabelUp.");
         }
         Usuario novoAluno = new Usuario(novoAlunoDto);
-
-        novoAluno.setPerfil(Perfil.ALUNO);
 
         String senhaCriptografada = passwordEncoder.encode(novoAluno.getSenha());
         novoAluno.setSenha(senhaCriptografada);

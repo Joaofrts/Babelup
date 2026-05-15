@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/Usuarios")
+@RequestMapping("/api/usuarios")
 public class UsuarioController {
 
     @Autowired
     private UsuarioService service;
 
-    @PostMapping("/cadastrarAluno")
+    @PostMapping("/cadastro")
     public ResponseEntity<Object> addUsuario(@RequestBody UsuarioDto dto){
         try{
             UsuarioDto resposta = new UsuarioDto(service.cadastrarAluno(dto));
@@ -34,6 +34,11 @@ public class UsuarioController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Houve um erro inesperado");
         }
+    }
+
+    @GetMapping("/teste")
+    public ResponseEntity<String> testeRotaProtegida() {
+        return ResponseEntity.ok("Você conseguiu acessar uma área VIP da BabelUp!");
     }
 
 }

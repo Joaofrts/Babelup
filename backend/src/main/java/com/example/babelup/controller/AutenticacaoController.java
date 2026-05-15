@@ -37,6 +37,8 @@ public class AutenticacaoController {
         try{
             UsernamePasswordAuthenticationToken credenciais =
                     new UsernamePasswordAuthenticationToken(loginDto.getEmail(),loginDto.getSenha());
+
+
             Authentication autenticacao = authenticationManager.authenticate(credenciais);
 
             Optional<Usuario> usuarioLogado = usuarioService.buscarUsuarioPorEmail(loginDto.getEmail());

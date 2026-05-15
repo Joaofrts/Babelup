@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UsuarioService {
@@ -36,6 +37,10 @@ public class UsuarioService {
         novoAluno.setSenha(senhaCriptografada);
 
         return usuarioRepository.save(novoAluno);
+    }
+
+    public Optional<Usuario> buscarUsuarioPorEmail(String email){
+        return usuarioRepository.findByEmail(email);
     }
 
 

@@ -3,6 +3,7 @@ package com.example.babelup.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -31,7 +32,7 @@ public class Agendamento {
             inverseJoinColumns = @JoinColumn(name = "aluno_id")
     )
     @JsonIgnore
-    private List<Usuario> alunos;
+    private List<Usuario> alunos = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -73,3 +74,4 @@ public class Agendamento {
         this.alunos = alunos;
     }
 }
+

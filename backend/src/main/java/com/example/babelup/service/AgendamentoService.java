@@ -8,6 +8,10 @@ import com.example.babelup.repository.ProgressoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class AgendamentoService {
     @Autowired
@@ -35,9 +39,44 @@ public class AgendamentoService {
 
         Agendamento novaSessao = new Agendamento();
         novaSessao.setModulo(modulo);
+        novaSessao.setAlunos(new ArrayList<>());
         novaSessao.getAlunos().add(aluno);
 
         return agendamentoRepository.save(novaSessao);
+    }
+
+    public List<Agendamento> listarTodos() {
+        return agendamentoRepository.findAll();
+    }
+
+    public Optional<Agendamento> buscarPorId(Long id) {
+        return agendamentoRepository.findById(id);
+    }
+
+    public List<Agendamento> listarPorModulo(Long moduloId) {
+        return agendamentoRepository.findByModuloId(moduloId);
+    }
+
+    public Agendamento removerAluno(Long agendamentoId, Long alunoId) {
+        Agendamento agendamento = agendamentoRepository.findById(agendamentoId)
+                .orElseThrow(() -> new IllegalStateException("Agendamento não encontrado"));
+
+        agendamento.getAlunos().removeIf(u -> u.getId().equals(alunoId));
+        return agendamentoRepository.save(agendamento);
+    }
+
+    public Agendamento atualizar(Agendamento agendamento) {
+        if (!agendamentoRepository.existsById(agendamento.getId())) {
+            throw new IllegalStateException("Agendamento não encontrado");
+        }
+        return agendamentoRepository.save(agendamento);
+    }
+
+    public void deletar(Long id) {
+        if (!agendamentoRepository.existsById(id)) {
+            throw new IllegalStateException("Agendamento não encontrado");
+        }
+        agendamentoRepository.deleteById(id);
     }
 
 }

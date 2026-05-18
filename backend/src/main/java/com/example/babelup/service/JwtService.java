@@ -17,7 +17,6 @@ public class JwtService {
 
     private final long EXPIRACAO_MILISSEGUNDOS = 7200000; // 2 horas
 
-    // Única fonte da verdade para a chave de criptografia
     private Key getChaveAssinatura() {
         return Keys.hmacShaKeyFor(CHAVE_SECRETA.getBytes(StandardCharsets.UTF_8));
     }
@@ -29,14 +28,12 @@ public class JwtService {
                 .claim("nome", usuario.getNome())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRACAO_MILISSEGUNDOS))
-                // ASSINANDO com a chave nova
                 .signWith(getChaveAssinatura(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public boolean isTokenValido(String token) {
         try {
-            // VERIFICANDO com a chave nova
             Jwts.parserBuilder().setSigningKey(getChaveAssinatura()).build().parseClaimsJws(token);
             return true;
         } catch (Exception e) {
@@ -46,7 +43,6 @@ public class JwtService {
     }
 
     public String extrairEmailUsuario(String token) {
-        // EXTRAINDO com a chave nova
         return Jwts.parserBuilder()
                 .setSigningKey(getChaveAssinatura())
                 .build()

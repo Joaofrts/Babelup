@@ -54,7 +54,7 @@ public class AutenticacaoController {
         }catch (BadCredentialsException e){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email ou senha incorretos.");
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Houve um erro inesperado.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Houve um erro inesperado.");
         }
     }
 }

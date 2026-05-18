@@ -19,17 +19,13 @@ public class AutenticacaoService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        // 1. Vai ao banco procurar o e-mail
+        
         Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
-
-        // 2. Se não encontrar, lança um erro que o Controller vai apanhar
         if (usuario.isEmpty()) {
             throw new UsernameNotFoundException("Utilizador não encontrado com o e-mail: " + email);
         }
 
         Usuario u = usuario.get();
-
-        // 3. Converte o seu "Usuario" num "User" que o Spring Security consegue entender
         return User.builder()
                 .username(u.getEmail())
                 .password(u.getSenha())

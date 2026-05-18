@@ -15,8 +15,6 @@ public class JwtService {
     @Value("${api.security.token.secret}")
     private String CHAVE_SECRETA;
 
-    private final long EXPIRACAO_MILISSEGUNDOS = 7200000; // 2 horas
-
     private Key getChaveAssinatura() {
         return Keys.hmacShaKeyFor(CHAVE_SECRETA.getBytes(StandardCharsets.UTF_8));
     }
@@ -27,7 +25,16 @@ public class JwtService {
                 .claim("perfil", usuario.getPerfil().name())
                 .claim("nome", usuario.getNome())
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRACAO_MILISSEGUNDOS))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 15))
+                .signWith(getChaveAssinatura(), SignatureAlgorithm.HS256)
+                .compact();
+    }
+
+    public String gerarRefreshToken(Usuario usuario) {
+        return Jwts.builder()
+                .setSubject(usuario.getNome())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60)) // 1 hora
                 .signWith(getChaveAssinatura(), SignatureAlgorithm.HS256)
                 .compact();
     }

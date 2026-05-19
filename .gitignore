@@ -196,3 +196,4 @@ fabric.properties
 # SonarLint working directories, configuration files (including credentials)
 .sonarlint/
 
+REQUISICOES_API.md

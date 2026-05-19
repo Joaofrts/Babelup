@@ -4,11 +4,15 @@ import com.example.babelup.entities.Modulo;
 import com.example.babelup.entities.Progresso;
 import com.example.babelup.entities.Usuario;
 import com.example.babelup.repository.ProgressoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 
+@Service
 public class ProgressoService {
 
+    @Autowired
     private ProgressoRepository progressoRepository;
 
     public Progresso registrarConclusaoModulo(Usuario aluno, Modulo modulo, boolean exercicioFeito, Double nota) {
@@ -29,5 +33,9 @@ public class ProgressoService {
             return true;
         }
         return progressoRepository.existsByAlunoIdAndModuloIdAndExercicioConcluidoTrue(alunoId, moduloAnteriorId);
+    }
+
+    public Progresso obterProgresso(Long alunoId, Long moduloId) {
+        return progressoRepository.findByAlunoIdAndModuloId(alunoId, moduloId).orElse(null);
     }
 }

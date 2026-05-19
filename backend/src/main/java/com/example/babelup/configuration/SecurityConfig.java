@@ -40,6 +40,7 @@ public class SecurityConfig {
                         // Rotas públicas (Qualquer um pode acessar sem Token)
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/cadastro").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/autenticacao/login").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/autenticacao/refresh").permitAll()
 
                         // 2. Rotas restritas ao Administrador (Garante a Regra RB-008)
                         .requestMatchers(HttpMethod.POST, "/api/modulos").hasRole("ADMINISTRADOR")

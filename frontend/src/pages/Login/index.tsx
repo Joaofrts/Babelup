@@ -16,6 +16,7 @@ export async function loginAction({ request }: { request: Request }) {
     
     // Sucesso: Salva o token e redireciona (o React Router gerencia isso) [13]
     localStorage.setItem('token', response.data.token);
+    localStorage.setItem('refreshToken', response.data.refreshToken);
     return redirect('/dashboard');  
 
   }catch (error: unknown) {

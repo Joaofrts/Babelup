@@ -46,7 +46,8 @@ If the workflow fails, check:
 
 ### Change Screenshot Size
 
-Edit the Playwright script in the workflow:
+Edit the Playwright script in the workflow. Add this code to the screenshot capture section:
+
 ```javascript
 await page.screenshot({ 
   path: filename, 

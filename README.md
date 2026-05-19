@@ -7,6 +7,7 @@
 ## 📋 Índice
 
 - [Visão Geral](#-visão-geral)
+- [Snapshot do Projeto](#-snapshot-do-projeto)
 - [Características Principais](#-características-principais)
 - [Stack Tecnológico](#-stack-tecnológico)
 - [Estrutura do Projeto](#-estrutura-do-projeto)
@@ -31,6 +32,16 @@
 - **Gerenciamento de Usuários** com controle de perfil baseado em funções
 
 O projeto foi idealizado como uma plataforma escalável, segura e intuitiva que democratiza o acesso à educação de qualidade.
+
+---
+
+## 📸 Snapshot do Projeto
+
+Aqui você pode visualizar a interface da aplicação Babelup:
+
+![Babelup Screenshot](./snapshots/screenshot.png)
+
+*Nota: Este screenshot é atualizado automaticamente via CI/CD em cada atualização no branch principal.*
 
 ---
 

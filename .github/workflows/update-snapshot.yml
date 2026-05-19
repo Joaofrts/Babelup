@@ -115,7 +115,7 @@ jobs:
               }
               
               console.log('Page loaded. Waiting for rendering...');
-              await page.waitForTimeout(3000);
+              await page.waitForLoadState('networkidle');
               
               // Create screenshots directory
               const screenshotDir = './screenshots';
@@ -137,16 +137,14 @@ jobs:
               const stats = fs.statSync(filename);
               console.log(`   File size: ${(stats.size / 1024).toFixed(2)} KB`);
               
+              await browser.close();
               process.exit(0);
             } catch (error) {
               console.error('✗ Error taking screenshot:', error.message);
               if (browser) {
-                process.exit(1);
-              }
-            } finally {
-              if (browser) {
                 await browser.close();
               }
+              process.exit(1);
             }
           })();
           SCRIPT_EOF
@@ -179,7 +177,7 @@ jobs:
             git add screenshots/project-snapshot.png
             git commit -m "chore: update project snapshot from latest merge [skip ci]" \
               -m "Automatic snapshot update on: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
-            git push origin HEAD:${{ github.ref }}
+            git push origin HEAD:refs/heads/${{ github.ref_name }}
             echo "✓ Changes pushed successfully"
           fi
 

@@ -102,7 +102,6 @@ jobs:
               
               const page = await browser.newPage();
               page.setDefaultTimeout(30000);
-              page.setDefaultNavigationTimeout(30000);
               
               console.log('Navigating to http://localhost:5173...');
               const response = await page.goto('http://localhost:5173', { 
@@ -177,7 +176,7 @@ jobs:
             git add screenshots/project-snapshot.png
             git commit -m "chore: update project snapshot from latest merge [skip ci]" \
               -m "Automatic snapshot update on: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
-            git push origin HEAD:refs/heads/${{ github.ref_name }}
+            git push
             echo "✓ Changes pushed successfully"
           fi
 

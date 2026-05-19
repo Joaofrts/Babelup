@@ -1,20 +1,28 @@
 import React from 'react';
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import Login, { loginAction } from './pages/Login';
-import ErroGlobal from './pages/ErroGlobal'; // Importamos a nossa tela de erro
-// Toda a inteligência de qual tela carrega qual dado ou ação fica aqui [1, 21]
+import ErroGlobal from './pages/ErroGlobal'; 
+import DashboardAluno, { dashboardAlunoLoader } from './pages/DashboardAluno';
+import LayoutGeral from './components/LayoutGeral';
+
 const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Login />,
-    action: loginAction,
-    errorElement: <ErroGlobal />, // Atrela o formulário da tela com a lógica de requisição [15]
-  },
-  {
-    path: '/dashboard',
-    element: <h2>Bem-vindo ao Dashboard! (Tela protegida no futuro)</h2>,
-    errorElement: <ErroGlobal />,
-  }
+    { element: <LayoutGeral />,
+        errorElement: <ErroGlobal />, 
+        children: [
+          {
+            path: '/',
+              element: <Login />,
+            action: loginAction,
+            errorElement: <ErroGlobal />, 
+          },
+          {
+            path: '/dashboard',
+            element: <DashboardAluno />,
+            loader: dashboardAlunoLoader,
+            errorElement: <ErroGlobal />,
+          }
+        ]
+    }
 ]);
 
 export default function App() {

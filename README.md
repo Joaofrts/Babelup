@@ -19,15 +19,13 @@
 - [Contribuindo](#-contribuindo)
 - [Licença](#-licença)
 
----
-
 ## 📸 Snapshot do Projeto
 
 Este snapshot é atualizado automaticamente a cada merge de pull request para manter a visualização do projeto sempre atual.
 
 ![Babelup Screenshot](./screenshots/project-snapshot.png)
 
-*Última atualização: Quando a próxima merge de PR for realizada*
+**Nota**: O snapshot é capturado automaticamente via [GitHub Actions Workflow](./.github/workflows/update-snapshot.yml) e atualizado em cada push para a branch `main`/`master`. Para mais detalhes, consulte a [Documentação de Automação](./.github/SNAPSHOT_AUTOMATION.md).
 
 ---
 
@@ -557,5 +555,6 @@ Contribuindo para uma educação mais inclusiva, tecnológica e eficaz. 🌟
 
 ---
 
-**Última atualização**: Maio de 2026
+**Última atualização**: Snapshot atualizado automaticamente em cada merge (Maio de 2026)
+
 **Versão**: 0.0.1-SNAPSHOT

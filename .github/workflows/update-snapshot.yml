@@ -1,0 +1,129 @@
+name: Update Project Snapshot
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-snapshot:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Start Docker containers
+        run: |
+          docker-compose up -d
+          echo "Waiting for services to be ready..."
+          sleep 30
+          # Check if services are running
+          docker-compose ps
+
+      - name: Wait for application to be ready
+        run: |
+          max_attempts=30
+          attempt=1
+          while [ $attempt -le $max_attempts ]; do
+            if curl -s http://localhost:5173/ > /dev/null; then
+              echo "Frontend is ready!"
+              break
+            fi
+            echo "Attempt $attempt: Waiting for frontend..."
+            sleep 2
+            attempt=$((attempt + 1))
+          done
+          
+          if [ $attempt -gt $max_attempts ]; then
+            echo "Frontend failed to start"
+            docker-compose logs
+            exit 1
+          fi
+
+      - name: Install Playwright
+        run: npm install --save-dev playwright puppeteer
+
+      - name: Create screenshot script
+        run: |
+          cat > take-screenshot.js << 'EOF'
+          const { chromium } = require('playwright');
+          const fs = require('fs');
+          const path = require('path');
+
+          (async () => {
+            const browser = await chromium.launch();
+            const page = await browser.newPage();
+            
+            try {
+              // Navigate to the application
+              await page.goto('http://localhost:5173', { waitUntil: 'networkidle' });
+              
+              // Wait a bit for rendering
+              await page.waitForTimeout(2000);
+              
+              // Create screenshots directory
+              const screenshotDir = './screenshots';
+              if (!fs.existsSync(screenshotDir)) {
+                fs.mkdirSync(screenshotDir, { recursive: true });
+              }
+              
+              // Take full page screenshot
+              const filename = path.join(screenshotDir, 'project-snapshot.png');
+              await page.screenshot({ path: filename, fullPage: true });
+              
+              console.log(`Screenshot saved: ${filename}`);
+            } catch (error) {
+              console.error('Error taking screenshot:', error);
+              process.exit(1);
+            } finally {
+              await browser.close();
+            }
+          })();
+          EOF
+        
+      - name: Take application screenshot
+        run: node take-screenshot.js
+
+      - name: Check if screenshot exists
+        run: |
+          if [ -f "screenshots/project-snapshot.png" ]; then
+            echo "Screenshot exists"
+            ls -lh screenshots/
+          else
+            echo "Screenshot not found, creating placeholder"
+            mkdir -p screenshots
+          fi
+
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          
+          # Add screenshot to git
+          git add screenshots/ || true
+          
+          # Check if there are changes to commit
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update project snapshot [skip ci]" || true
+            git push origin HEAD:${{ github.ref }} || echo "Nothing to push or already up to date"
+          fi
+
+      - name: Stop Docker containers
+        if: always()
+        run: docker-compose down

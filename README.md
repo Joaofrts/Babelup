@@ -6,6 +6,7 @@
 
 ## 📋 Índice
 
+- [Snapshot do Projeto](#-snapshot-do-projeto)
 - [Visão Geral](#-visão-geral)
 - [Características Principais](#-características-principais)
 - [Stack Tecnológico](#-stack-tecnológico)
@@ -17,6 +18,16 @@
 - [API Endpoints](#-api-endpoints)
 - [Contribuindo](#-contribuindo)
 - [Licença](#-licença)
+
+---
+
+## 📸 Snapshot do Projeto
+
+Este snapshot é atualizado automaticamente a cada merge de pull request para manter a visualização do projeto sempre atual.
+
+![Babelup Screenshot](./screenshots/project-snapshot.png)
+
+*Última atualização: Quando a próxima merge de PR for realizada*
 
 ---
 

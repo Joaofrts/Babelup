@@ -10,8 +10,10 @@
 - [Características Principais](#-características-principais)
 - [Stack Tecnológico](#-stack-tecnológico)
 - [Estrutura do Projeto](#-estrutura-do-projeto)
+- [⚠️ Aviso de Segurança](#-️-aviso-de-segurança)
 - [Pré-requisitos](#-pré-requisitos)
 - [Instalação e Setup](#-instalação-e-setup)
+- [Variáveis de Ambiente](#-variáveis-de-ambiente)
 - [Executando a Aplicação](#-executando-a-aplicação)
 - [Arquitetura do Projeto](#-arquitetura-do-projeto)
 - [API Endpoints](#-api-endpoints)
@@ -128,12 +130,47 @@ Babelup/
 │   ├── tsconfig.json               # Configuração TypeScript
 │   ├── vite.config.ts              # Configuração Vite
 │   ├── Dockerfile                  # Imagem Docker do frontend
+│   ├── .env.example                # Exemplo de variáveis de ambiente
 │   └── README.md
 │
 ├── docker-compose.yml              # Orquestração dos serviços
+├── .env.example                    # Exemplo de variáveis de ambiente
 ├── .gitignore
 └── .git/
 ```
+
+---
+
+## ⚠️ Aviso de Segurança
+
+### 🔐 Proteção de Credenciais
+
+**IMPORTANTE:** Nunca commite credenciais, senhas ou tokens no repositório. Este projeto segue as melhores práticas de segurança:
+
+#### O que NÃO fazer:
+- ❌ Não adicione senhas ou chaves secretas em arquivos `.properties`
+- ❌ Não exponha credenciais no `docker-compose.yml`
+- ❌ Não commite arquivos `.env` com valores reais
+- ❌ Não inclua tokens, chaves API ou certificados no Git
+
+#### Como fazer corretamente:
+- ✅ Use arquivos `.env.example` para documentar variáveis necessárias
+- ✅ Configure credenciais via variáveis de ambiente no seu sistema
+- ✅ Use arquivos `.env` locais (nunca comitidos) para desenvolvimento local
+- ✅ Adicione `.env` e `*.properties` com dados sensíveis ao `.gitignore`
+- ✅ Documente as variáveis de ambiente em `.env.example` (sem valores reais)
+
+### 📝 Arquivos de Exemplo Fornecidos
+
+Este projeto inclui dois arquivos de exemplo para configuração segura:
+
+1. **`.env.example`** - Variáveis de ambiente para Docker Compose
+   - Contém as variáveis necessárias com valores placeholder
+   - Copie para `.env` e atualize com seus valores
+
+2. **`frontend/.env.example`** - Variáveis de ambiente do Frontend
+   - Contém as variáveis necessárias para a aplicação React
+   - Copie para `frontend/.env.local` e atualize com seus valores
 
 ---
 
@@ -155,7 +192,65 @@ Antes de começar, certifique-se de ter instalado:
 
 ---
 
-## 🚀 Instalação e Setup
+## 🌍 Variáveis de Ambiente
+
+### Configuração para Docker Compose
+
+1. **Crie um arquivo `.env` na raiz do projeto:**
+   ```bash
+   cp .env.example .env
+   ```
+
+2. **Edite o arquivo `.env` com valores seguros:**
+   ```
+   MYSQL_ROOT_PASSWORD=sua_senha_segura_aqui
+   MYSQL_DATABASE=Babelup
+   SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/Babelup?createDatabaseIfNotExist=true
+   SPRING_DATASOURCE_USERNAME=root
+   SPRING_DATASOURCE_PASSWORD=sua_senha_segura_aqui
+   SPRING_SECURITY_USER_NAME=admin
+   SPRING_SECURITY_USER_PASSWORD=sua_senha_segura_aqui
+   API_SECURITY_TOKEN_SECRET=sua_chave_jwt_super_secreta_aqui_minimo_32_caracteres
+   ```
+
+### Configuração para Frontend (Desenvolvimento Local)
+
+1. **Crie um arquivo `frontend/.env.local`:**
+   ```bash
+   cp frontend/.env.example frontend/.env.local
+   ```
+
+2. **Edite o arquivo `frontend/.env.local`:**
+   ```
+   VITE_API_URL=http://localhost:8080
+   ```
+
+### Configuração para Backend (Desenvolvimento Local)
+
+1. **Edite `backend/src/main/resources/application.properties`:**
+   ```properties
+   # Banco de Dados
+   spring.datasource.url=jdbc:mysql://localhost:3307/Babelup?createDatabaseIfNotExist=true&serverTimezone=UTC
+   spring.datasource.username=root
+   spring.datasource.password=sua_senha_segura_aqui
+   
+   # Segurança (Spring Security)
+   spring.security.user.name=admin
+   spring.security.user.password=sua_senha_segura_aqui
+   
+   # JWT Token
+   api.security.token.secret=sua_chave_jwt_super_secreta_aqui_minimo_32_caracteres
+   ```
+
+### Boas Práticas de Segurança 🔒
+
+- **Senhas Fortes**: Use senhas complexas com pelo menos 12 caracteres
+- **Variáveis Diferentes**: Sempre use valores diferentes para desenvolvimento, staging e produção
+- **Nunca Commitar**: Adicione `.env` e `*.properties` com dados sensíveis ao `.gitignore`
+- **Rotação de Chaves**: Mude regularmente suas chaves JWT e senhas de banco de dados
+- **Secrets em Produção**: Use um gerenciador de secrets (AWS Secrets Manager, HashiCorp Vault, etc.)
+
+---
 
 ### Opção 1: Com Docker (Mais Fácil)
 
@@ -165,7 +260,14 @@ git clone https://github.com/Joaofrts/Babelup.git
 cd Babelup
 ```
 
-2. **Inicie os serviços com Docker Compose**
+2. **Configure as variáveis de ambiente**
+```bash
+cp .env.example .env
+# Edite o arquivo .env com suas credenciais seguras
+nano .env  # ou use seu editor favorito
+```
+
+3. **Inicie os serviços com Docker Compose**
 ```bash
 docker-compose up -d
 ```
@@ -175,7 +277,7 @@ Isso iniciará:
 - 🖥️ **Backend** (Spring Boot) na porta `8080`
 - 🌐 **Frontend** (React) na porta `5173`
 
-3. **Aguarde a inicialização** (2-3 minutos)
+4. **Aguarde a inicialização** (2-3 minutos)
 
 ### Opção 2: Desenvolvimento Local
 
@@ -186,17 +288,27 @@ Isso iniciará:
 cd backend
 ```
 
-2. **Instale as dependências com Maven**
+2. **Configure as credenciais do banco de dados**
+   - Copie `src/main/resources/application.properties` se necessário
+   - Atualize as credenciais com valores seguros (ver seção [Variáveis de Ambiente](#-variáveis-de-ambiente))
+
+3. **Instale as dependências com Maven**
 ```bash
 mvn clean install
 ```
 
-3. **Configure o banco de dados**
-   - Certifique-se de que MySQL está rodando
-   - Crie um banco de dados chamado `Babelup`
-   - Configure as credenciais do banco de dados em `application.properties`
+4. **Certifique-se de que MySQL está rodando**
+   - Se estiver usando Docker apenas para o banco: `docker run -d -p 3307:3306 -e MYSQL_ROOT_PASSWORD=sua_senha -e MYSQL_DATABASE=Babelup mysql:9.7`
+   - Se estiver usando MySQL instalado localmente, inicie-o
 
-4. **Inicie o backend**
+5. **Crie o banco de dados**
+```bash
+mysql -u root -p
+CREATE DATABASE Babelup;
+EXIT;
+```
+
+6. **Inicie o backend**
 ```bash
 mvn spring-boot:run
 ```
@@ -210,15 +322,15 @@ Backend rodará em: `http://localhost:8080`
 cd frontend
 ```
 
-2. **Instale as dependências npm**
+2. **Configure a variável de ambiente**
 ```bash
-npm install
+cp .env.example .env.local
+# Edite .env.local se necessário
 ```
 
-3. **Configure a variável de ambiente** (se necessário)
-Crie um arquivo `.env`:
-```
-VITE_API_URL=http://localhost:8080
+3. **Instale as dependências npm**
+```bash
+npm install
 ```
 
 4. **Inicie o servidor de desenvolvimento**

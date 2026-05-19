@@ -196,3 +196,18 @@ fabric.properties
 # SonarLint working directories, configuration files (including credentials)
 .sonarlint/
 
+### Environment Variables & Secrets ###
+# Environment files with sensitive data
+.env
+.env.local
+.env.production.local
+.env.staging.local
+.env.development.local
+
+# Properties files with credentials
+backend/src/main/resources/application.properties
+!backend/src/main/resources/application.example.properties
+
+# Docker compose override with local settings
+docker-compose.override.yml
+

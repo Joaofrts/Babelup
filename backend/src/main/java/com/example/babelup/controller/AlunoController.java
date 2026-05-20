@@ -2,7 +2,9 @@ package com.example.babelup.controller;
 
 import com.example.babelup.dto.PerfilAlunoDto;
 import com.example.babelup.entities.Usuario;
+import com.example.babelup.service.AlunoService;
 import com.example.babelup.service.UsuarioService;
+import org.jspecify.annotations.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -13,12 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Optional;
 
+import static com.example.babelup.service.AlunoService.getPerfilAlunoDto;
+
 @RestController
 @RequestMapping("/api/alunos")
 public class AlunoController {
 
     @Autowired
     private UsuarioService usuarioService;
+    @Autowired
+    private AlunoService alunoService;
 
     @GetMapping("/meu-perfil")
     public ResponseEntity<PerfilAlunoDto> obterMeuPerfil(@AuthenticationPrincipal UserDetails userDetails) {
@@ -34,25 +40,13 @@ public class AlunoController {
         Optional<Usuario> usuarioOpt = usuarioService.buscarUsuarioPorEmail(email);
 
         if (usuarioOpt.isPresent()) {
-            Usuario usuario = usuarioOpt.get();
-
-            // NOTA: Para atender ao Requisito RF-011, futuramente buscaremos este progresso
-            // através do ProgressoService. Por agora, passaremos dados estáticos
-            // apenas para ver a barra de progresso no React funcionar!
-            String nivelAtual = "Iniciante";
-            int progressoGeral = 25;
-
-            // 4. Montamos o DTO para enviar ao React
-            PerfilAlunoDto perfil = new PerfilAlunoDto(
-                    usuario.getNome(),
-                    usuario.getEmail(),
-                    nivelAtual,
-                    progressoGeral
-            );
+            PerfilAlunoDto perfil = getPerfilAlunoDto(usuarioOpt);
 
             return ResponseEntity.ok(perfil);
         }
 
         return ResponseEntity.notFound().build();
     }
+
+
 }

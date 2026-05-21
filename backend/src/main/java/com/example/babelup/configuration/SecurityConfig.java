@@ -43,9 +43,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/autenticacao/refresh").permitAll()
 
                         // 2. Rotas restritas ao Administrador (Garante a Regra RB-008)
-                        .requestMatchers(HttpMethod.POST, "/api/modulos").hasRole("ADMINISTRADOR")
-                        .requestMatchers(HttpMethod.PUT, "/api/modulos/**").hasRole("ADMINISTRADOR")
-                        .requestMatchers(HttpMethod.DELETE, "/api/modulos/**").hasRole("ADMINISTRADOR")
+                        .requestMatchers(HttpMethod.POST, "/api/modulos").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/modulos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/modulos/**").hasRole("ADMIN")
 
                         // Qualquer outra requisição precisará de autenticação (Estar logado)
                         .anyRequest().authenticated()

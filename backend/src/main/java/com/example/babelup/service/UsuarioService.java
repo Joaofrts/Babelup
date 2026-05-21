@@ -1,16 +1,13 @@
 package com.example.babelup.service;
 
 import com.example.babelup.dto.UsuarioDto;
-import com.example.babelup.entities.Perfil;
+import com.example.babelup.entities.EnumPerfil;
 import com.example.babelup.entities.Usuario;
 import com.example.babelup.repository.UsuarioRepository;
-import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -52,9 +49,9 @@ public class UsuarioService {
 
     public void startDb(){
         List<UsuarioDto> usuariosIniciais = Arrays.asList(
-                new UsuarioDto(null, "João Marcelo", "joao@gmail.com", "Joao123", Perfil.ADMINISTRADOR),
-                new UsuarioDto(null, "Ludmila", "ludmila@gmail.com", "Ludmila123", Perfil.PROFESSOR),
-                new UsuarioDto(null, "Rodrigo Santos", "rodrigo@gmail.com", "Rodrigo123", Perfil.ALUNO)
+                new UsuarioDto(null, "João Marcelo", "joao@gmail.com", "Joao123", EnumPerfil.ADMIN),
+                new UsuarioDto(null, "Ludmila", "ludmila@gmail.com", "Ludmila123", EnumPerfil.PROFESSOR),
+                new UsuarioDto(null, "Rodrigo Santos", "rodrigo@gmail.com", "Rodrigo123", EnumPerfil.ALUNO)
         );
 
         for (UsuarioDto u : usuariosIniciais) {

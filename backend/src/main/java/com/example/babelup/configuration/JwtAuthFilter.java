@@ -58,8 +58,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 System.out.println("ERRO AO EXTRAIR E-MAIL: " + e.getMessage());
             }
         } else {
-            // Agora, se cair aqui, é porque uma rota protegida (como Dashboard)
-            // foi acessada sem o token, aí sim é um aviso válido!
+
             System.out.println("AVISO: Requisição em rota protegida sem token JWT.");
         }
 

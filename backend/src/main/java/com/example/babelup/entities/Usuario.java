@@ -4,14 +4,16 @@ import com.example.babelup.dto.UsuarioDto;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
-@Table(name = "usuarios")
+@Table(name = "usuario")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(nullable = false, length = 100)
     private String nome;
@@ -19,14 +21,14 @@ public class Usuario {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name= "senha_hash",nullable = false)
     private String senha;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Perfil perfil;
+    @Column(name = "perfil",nullable = false, length= 20)
+    private EnumPerfil enumPerfil;
 
-    @Column(name = "data_cadastro", nullable = false, updatable = false)
+    @Column(name = "criado_em", nullable = false, updatable = false)
     private LocalDateTime dataCadastro;
 
     @PrePersist
@@ -36,23 +38,14 @@ public class Usuario {
 
     public Usuario() {}
 
-    public Usuario(UsuarioDto dto) {
-        this.id = dto.getId(); // Usando getters do DTO
-        this.nome = dto.getNome();
-        this.email = dto.getEmail();
-        this.senha = dto.getSenha();
-        this.perfil = dto.getPerfil();
-    }
-
-
-    public Usuario(Long id, String nome, String email, String senha, Perfil perfil) {
+    public Usuario(UUID id, String nome, String email, String senha, EnumPerfil enumPerfil) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.senha = senha;
-        this.perfil = perfil;
+        this.enumPerfil = enumPerfil;
     }
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -80,11 +73,11 @@ public class Usuario {
         this.senha = senha;
     }
 
-    public Perfil getPerfil() {
-        return perfil;
+    public EnumPerfil getPerfil() {
+        return enumPerfil;
     }
 
-    public void setPerfil(Perfil perfil) {
-        this.perfil = perfil;
+    public void setPerfil(EnumPerfil enumPerfil) {
+        this.enumPerfil = enumPerfil;
     }
 }

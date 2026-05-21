@@ -1,37 +1,49 @@
 package com.example.babelup.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 @Entity
-@Table(name = "modulos")
+@Table(name = "modulo")
 public class Modulo {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 100)
     private String titulo;
 
-    @Column(name = "url_videoaula")
-    private String urlVideoaula;
+    @Column(columnDefinition = "TEXT")
+    private String descricao;
 
-    @Column(name = "url_pdf")
-    private String urlPdf;
-    @JsonIgnore
+    @Column(nullable = false)
+    private Integer ordem;
+
+    @Column(name = "carga_horaria_min")
+    private Integer cargaHorariaMinima;
+
     @ManyToOne
     @JoinColumn(name = "nivel_id", nullable = false)
     private Nivel nivel;
 
-    @Column(name = "ordem_sequencial")
-    private Integer ordemSequencial;
+    @OneToMany(mappedBy = "modulo", cascade = CascadeType.ALL)
+    private List<VideoAula> videoAulas = new ArrayList<>();
 
-    public Long getId() {
+    @OneToMany(mappedBy = "modulo", cascade = CascadeType.ALL)
+    private List<MaterialApoio> materiaisApoio = new ArrayList<>();
+
+    @OneToMany(mappedBy = "modulo", cascade = CascadeType.ALL)
+    private List<Exercicio> exercicios = new ArrayList<>();
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -43,20 +55,28 @@ public class Modulo {
         this.titulo = titulo;
     }
 
-    public String getUrlVideoaula() {
-        return urlVideoaula;
+    public String getDescricao() {
+        return descricao;
     }
 
-    public void setUrlVideoaula(String urlVideoaula) {
-        this.urlVideoaula = urlVideoaula;
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
-    public String getUrlPdf() {
-        return urlPdf;
+    public Integer getOrdem() {
+        return ordem;
     }
 
-    public void setUrlPdf(String urlPdf) {
-        this.urlPdf = urlPdf;
+    public void setOrdem(Integer ordem) {
+        this.ordem = ordem;
+    }
+
+    public Integer getCargaHorariaMinima() {
+        return cargaHorariaMinima;
+    }
+
+    public void setCargaHorariaMinima(Integer cargaHorariaMinima) {
+        this.cargaHorariaMinima = cargaHorariaMinima;
     }
 
     public Nivel getNivel() {
@@ -67,11 +87,27 @@ public class Modulo {
         this.nivel = nivel;
     }
 
-    public Integer getOrdemSequencial() {
-        return ordemSequencial;
+    public List<VideoAula> getVideoAulas() {
+        return videoAulas;
     }
 
-    public void setOrdemSequencial(Integer ordemSequencial) {
-        this.ordemSequencial = ordemSequencial;
+    public void setVideoAulas(List<VideoAula> videoAulas) {
+        this.videoAulas = videoAulas;
+    }
+
+    public List<MaterialApoio> getMateriaisApoio() {
+        return materiaisApoio;
+    }
+
+    public void setMateriaisApoio(List<MaterialApoio> materiaisApoio) {
+        this.materiaisApoio = materiaisApoio;
+    }
+
+    public List<Exercicio> getExercicios() {
+        return exercicios;
+    }
+
+    public void setExercicios(List<Exercicio> exercicios) {
+        this.exercicios = exercicios;
     }
 }

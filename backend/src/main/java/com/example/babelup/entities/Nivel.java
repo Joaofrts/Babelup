@@ -2,30 +2,54 @@ package com.example.babelup.entities;
 
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
-@Table(name = "niveis")
+@Table(name = "nivel")
 public class Nivel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false, length = 50)
     private String nome;
 
-    @Column(name = "carga_horaria_estimada")
-    private Integer cargaHorariaEstimada;
+    @Column(columnDefinition = "TEXT")
+    private String descricao;
+
+    @Column(name = "carga_horaria")
+    private Integer cargaHoraria;
+
+    @Column(nullable = false)
+    private Integer ordem;
 
     @OneToMany(mappedBy = "nivel", cascade = CascadeType.ALL)
-    private List<Modulo> modulos;
+    private List<Modulo> modulos = new ArrayList<>();
 
-    public Long getId() {
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
+    }
+
+    public Integer getOrdem() {
+        return ordem;
+    }
+
+    public void setOrdem(Integer ordem) {
+        this.ordem = ordem;
+    }
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -37,12 +61,12 @@ public class Nivel {
         this.nome = nome;
     }
 
-    public Integer getCargaHorariaEstimada() {
-        return cargaHorariaEstimada;
+    public Integer getCargaHoraria() {
+        return cargaHoraria;
     }
 
-    public void setCargaHorariaEstimada(Integer cargaHorariaEstimada) {
-        this.cargaHorariaEstimada = cargaHorariaEstimada;
+    public void setCargaHoraria(Integer cargaHoraria) {
+        this.cargaHoraria = cargaHoraria;
     }
 
     public List<Modulo> getModulos() {

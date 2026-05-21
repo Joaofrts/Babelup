@@ -3,7 +3,6 @@ package com.example.babelup.controller;
 import com.example.babelup.dto.ModuloDto;
 import com.example.babelup.dto.ProgressoDto;
 import com.example.babelup.entities.Modulo;
-import com.example.babelup.entities.Progresso;
 import com.example.babelup.entities.Usuario;
 import com.example.babelup.repository.UsuarioRepository;
 import com.example.babelup.service.ModuloService;

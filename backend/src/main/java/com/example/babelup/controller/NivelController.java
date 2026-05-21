@@ -25,7 +25,7 @@ public class NivelController {
         try {
             List<Nivel> niveis = nivelService.listarNiveis();
             List<NivelDto> dtos = niveis.stream()
-                    .map(n -> new NivelDto(n.getId(), n.getNome(), n.getCargaHorariaEstimada()))
+                    .map(n -> new NivelDto(n.getId(), n.getNome(), n.getCargaHoraria()))
                     .collect(Collectors.toList());
             return ResponseEntity.ok(dtos);
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class NivelController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nível não encontrado");
             }
             Nivel n = nivel.get();
-            NivelDto dto = new NivelDto(n.getId(), n.getNome(), n.getCargaHorariaEstimada());
+            NivelDto dto = new NivelDto(n.getId(), n.getNome(), n.getCargaHoraria());
             return ResponseEntity.ok(dto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -60,7 +60,7 @@ public class NivelController {
             }
             
             Nivel nivel = nivelService.criarNivel(dto.getNome(), dto.getCargaHorariaEstimada());
-            NivelDto resposta = new NivelDto(nivel.getId(), nivel.getNome(), nivel.getCargaHorariaEstimada());
+            NivelDto resposta = new NivelDto(nivel.getId(), nivel.getNome(), nivel.getCargaHoraria());
             return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
@@ -75,7 +75,7 @@ public class NivelController {
     public ResponseEntity<Object> atualizarNivel(@PathVariable Long id, @RequestBody NivelDto dto) {
         try {
             Nivel nivel = nivelService.atualizarNivel(id, dto.getNome(), dto.getCargaHorariaEstimada());
-            NivelDto resposta = new NivelDto(nivel.getId(), nivel.getNome(), nivel.getCargaHorariaEstimada());
+            NivelDto resposta = new NivelDto(nivel.getId(), nivel.getNome(), nivel.getCargaHoraria());
             return ResponseEntity.ok(resposta);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -120,7 +120,7 @@ public class NivelController {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Não há próximo nível");
             }
             Nivel n = proximo.get();
-            NivelDto dto = new NivelDto(n.getId(), n.getNome(), n.getCargaHorariaEstimada());
+            NivelDto dto = new NivelDto(n.getId(), n.getNome(), n.getCargaHoraria());
             return ResponseEntity.ok(dto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -2,15 +2,17 @@ package com.example.babelup.service;
 
 import com.example.babelup.entities.Modulo;
 import com.example.babelup.entities.Nivel;
-import com.example.babelup.entities.Progresso;
-import com.example.babelup.repository.ModuloRepository;
-import com.example.babelup.repository.NivelRepository;
+import com.example.babelup.entities.ProgressoAluno;
+import com.example.babelup.repository.pedagogicos.ModuloRepository;
+import com.example.babelup.repository.pedagogicos.NivelRepository;
 import com.example.babelup.repository.ProgressoRepository;
+import com.example.babelup.repository.pedagogicos.ProgressoAlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class NivelService {
@@ -22,7 +24,7 @@ public class NivelService {
     private ModuloRepository moduloRepository;
 
     @Autowired
-    private ProgressoRepository progressoRepository;
+    private ProgressoAlunoRepository progressoAlunoRepository;
 
     // Criar novo nível
     public Nivel criarNivel(String nome, Integer cargaHorariaEstimada) {
@@ -31,7 +33,7 @@ public class NivelService {
         }
         Nivel nivel = new Nivel();
         nivel.setNome(nome);
-        nivel.setCargaHorariaEstimada(cargaHorariaEstimada);
+        nivel.setCargaHoraria(cargaHorariaEstimada);
         return nivelRepository.save(nivel);
     }
 
@@ -41,37 +43,37 @@ public class NivelService {
     }
 
     // Obter nível por ID
-    public Optional<Nivel> obterNivel(Long id) {
+    public Optional<Nivel> obterNivel(UUID id) {
         return nivelRepository.findById(id);
     }
 
     // Atualizar nível
-    public Nivel atualizarNivel(Long id, String nome, Integer cargaHorariaEstimada) {
+    public Nivel atualizarNivel(UUID id, String nome, Integer cargaHorariaEstimada) {
         Optional<Nivel> nivel = nivelRepository.findById(id);
         if (nivel.isEmpty()) {
             throw new IllegalArgumentException("Nível não encontrado");
         }
         Nivel n = nivel.get();
         n.setNome(nome);
-        n.setCargaHorariaEstimada(cargaHorariaEstimada);
+        n.setCargaHoraria(cargaHorariaEstimada);
         return nivelRepository.save(n);
     }
 
     // Deletar nível
-    public void deletarNivel(Long id) {
+    public void deletarNivel(UUID id) {
         nivelRepository.deleteById(id);
     }
 
     // Validar se aluno pode progredir para o próximo nível
     // Todos os módulos do nível atual devem estar concluídos
-    public boolean podeProgressarParaProximo(Long alunoId, Long nivelAtualId) {
+    public boolean podeProgressarParaProximo(UUID alunoId, UUID nivelAtualId) {
         Nivel nivel = nivelRepository.findById(nivelAtualId)
                 .orElseThrow(() -> new IllegalArgumentException("Nível não encontrado"));
 
-        List<Modulo> modulosNivel = moduloRepository.findByNivelIdOrderByOrdemSequencialAsc(nivelAtualId);
+        List<Modulo> modulosNivel = moduloRepository.findByNivelIdOrderByOrdemAsc(nivelAtualId);
 
         for (Modulo modulo : modulosNivel) {
-            Optional<Progresso> progresso = progressoRepository.findByAlunoIdAndModuloId(alunoId, modulo.getId());
+            Optional<ProgressoAluno> progresso = progressoAlunoRepository.findByAlunoIdAndModuloId(alunoId, modulo.getId());
             
             // Se algum módulo não foi concluído, não pode progredir
             if (progresso.isEmpty() || !progresso.get().getExercicioConcluido()) {

@@ -1,7 +1,7 @@
 package com.example.babelup.entities;
 
-public enum Perfil {
+public enum EnumPerfil {
     ALUNO,
     PROFESSOR,
-    ADMINISTRADOR;
+    ADMIN
 }

@@ -2,13 +2,14 @@ package com.example.babelup.service;
 
 import com.example.babelup.entities.Modulo;
 import com.example.babelup.entities.Nivel;
-import com.example.babelup.repository.ModuloRepository;
-import com.example.babelup.repository.NivelRepository;
+import com.example.babelup.repository.pedagogicos.ModuloRepository;
+import com.example.babelup.repository.pedagogicos.NivelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class ModuloService {
@@ -48,8 +49,8 @@ public class ModuloService {
     }
 
     // Obter módulos de um nível
-    public List<Modulo> obterModulosPorNivel(Long nivelId) {
-        return moduloRepository.findByNivelIdOrderByOrdemSequencialAsc(nivelId);
+    public List<Modulo> obterModulosPorNivel(UUID nivelId) {
+        return moduloRepository.findByNivelIdOrderByOrdemAsc(nivelId);
     }
 
     // Atualizar módulo
@@ -82,7 +83,7 @@ public class ModuloService {
         }
 
         // Buscar módulo anterior
-        List<Modulo> modulosNivel = moduloRepository.findByNivelIdOrderByOrdemSequencialAsc(modulo.getNivel().getId());
+        List<Modulo> modulosNivel = moduloRepository.findByNivelIdOrderByOrdemAsc(modulo.getNivel().getId());
         
         for (Modulo m : modulosNivel) {
             if (m.getOrdemSequencial() == modulo.getOrdemSequencial() - 1) {
@@ -95,11 +96,11 @@ public class ModuloService {
     }
 
     // Obter próximo módulo na sequência
-    public Optional<Modulo> obterProximoModulo(Long nivelId, Integer ordemAtual) {
-        List<Modulo> modulos = moduloRepository.findByNivelIdOrderByOrdemSequencialAsc(nivelId);
+    public Optional<Modulo> obterProximoModulo(UUID nivelId, Integer ordemAtual) {
+        List<Modulo> modulos = moduloRepository.findByNivelIdOrderByOrdemAsc(nivelId);
         
         for (Modulo modulo : modulos) {
-            if (modulo.getOrdemSequencial() == ordemAtual + 1) {
+            if (modulo.getOrdem() == ordemAtual + 1) {
                 return Optional.of(modulo);
             }
         }

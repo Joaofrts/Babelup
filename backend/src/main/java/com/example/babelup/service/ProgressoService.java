@@ -1,25 +1,28 @@
 package com.example.babelup.service;
 
+import com.example.babelup.entities.Aluno;
 import com.example.babelup.entities.Modulo;
-import com.example.babelup.entities.Progresso;
+import com.example.babelup.entities.ProgressoAluno;
 import com.example.babelup.entities.Usuario;
 import com.example.babelup.repository.ProgressoRepository;
+import com.example.babelup.repository.pedagogicos.ProgressoAlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Service
 public class ProgressoService {
 
     @Autowired
-    private ProgressoRepository progressoRepository;
+    private ProgressoAlunoRepository progressoAlunoRepository;
 
-    public Progresso registrarConclusaoModulo(Usuario aluno, Modulo modulo, boolean exercicioFeito, Double nota) {
+    public ProgressoAluno registrarConclusaoModulo(Aluno aluno, Modulo modulo, boolean exercicioFeito, Double nota) {
         if (!exercicioFeito) {
             throw new IllegalStateException("O aluno precisa concluir o exercício integrado para finalizar o módulo.");
         }
-        Progresso novoProgresso = new Progresso();
+        ProgressoAluno novoProgresso = new ProgressoAluno();
         novoProgresso.setAluno(aluno);
         novoProgresso.setModulo(modulo);
         novoProgresso.setExercicioConcluido(true);
@@ -28,14 +31,14 @@ public class ProgressoService {
         return progressoRepository.save(novoProgresso);
     }
 
-    public boolean podeAcessarModulo(Long alunoId, Long moduloAtualId, Long moduloAnteriorId) {
+    public boolean podeAcessarModulo(UUID alunoId, UUID moduloAtualId, UUID moduloAnteriorId) {
         if (moduloAnteriorId == null) {
             return true;
         }
-        return progressoRepository.existsByAlunoIdAndModuloIdAndExercicioConcluidoTrue(alunoId, moduloAnteriorId);
+        return progressoAlunoRepository.existsByAlunoIdAndModuloIdAndExercicioConcluidoTrue(alunoId, moduloAnteriorId);
     }
 
-    public Progresso obterProgresso(Long alunoId, Long moduloId) {
-        return progressoRepository.findByAlunoIdAndModuloId(alunoId, moduloId).orElse(null);
+    public ProgressoAluno obterProgresso(UUID alunoId, UUID moduloId) {
+        return progressoAlunoRepository.findByAlunoIdAndModuloId(alunoId, moduloId).orElse(null);
     }
 }

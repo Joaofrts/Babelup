@@ -48,7 +48,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/modulos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/modulos/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/modulos/**").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET,"api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"/api/admin/**").hasRole("ADMIN")
 
                         // Qualquer outra requisição precisará de autenticação
                         .anyRequest().authenticated()
@@ -56,7 +56,7 @@ public class SecurityConfig {
                         .deleteCookies("remove")
                         .invalidateHttpSession(false)
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("logout-success")
+                        .logoutSuccessUrl("/api/admin/teste")
                 )
 
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

@@ -18,7 +18,6 @@ public class ModuloService {
     private final NivelRepository nivelRepository;
     private final ProgressoService progressoService;
 
-    // --- MELHORIA: Injeção via construtor (obrigatório para dependências finais) ---
     public ModuloService(ModuloRepository moduloRepository, NivelRepository nivelRepository, ProgressoService progressoService) {
         this.moduloRepository = moduloRepository;
         this.nivelRepository = nivelRepository;

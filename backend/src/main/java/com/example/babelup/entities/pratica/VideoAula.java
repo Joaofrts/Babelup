@@ -45,7 +45,7 @@ public class VideoAula extends EntidadeAuditavel {
     @JoinColumn(name = "modulo_id", nullable = false)
     private Modulo modulo;
 
-    @OneToMany(mappedBy = "videoaula",
+    @OneToMany(mappedBy = "videoAula",
             cascade = CascadeType.ALL,
             orphanRemoval = true,
             fetch = FetchType.LAZY)

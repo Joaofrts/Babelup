@@ -1,5 +1,6 @@
 package com.example.babelup.controller;
 
+import com.example.babelup.dto.NovoUsuarioDto;
 import com.example.babelup.dto.ProfessorCadastroDto;
 import com.example.babelup.dto.UsuarioRespostaDTO;
 import com.example.babelup.entities.usuarios.Usuario;
@@ -19,7 +20,7 @@ public class AdminController {
     private UsuarioService service;
 
     @PostMapping("/cadastroProfessor")
-    public ResponseEntity<Object> addProfessor(@RequestBody ProfessorCadastroDto dto){
+    public ResponseEntity<Object> addProfessor(@RequestBody NovoUsuarioDto dto){
         try{
             Usuario resposta = service.cadastrarUsuario(dto);
             return ResponseEntity.ok().body(resposta);
@@ -27,7 +28,7 @@ public class AdminController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar novo usuario.");
         }
         catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

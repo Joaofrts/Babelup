@@ -4,6 +4,7 @@ import com.example.babelup.entities.Enum.EnumStatusProgresso;
 import com.example.babelup.entities.usuarios.Aluno;
 import com.example.babelup.entities.estruturaAcademica.Modulo;
 import com.example.babelup.entities.progressoGamificacao.ProgressoAluno;
+import com.example.babelup.entities.usuarios.Usuario;
 import com.example.babelup.repository.pedagogicos.ProgressoAlunoRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,12 +24,12 @@ public class ProgressoService {
 
 
     @Transactional
-    public ProgressoAluno atualizarProgressoModulo(Aluno aluno, Modulo modulo, Double novoPercentual) {
+    public ProgressoAluno atualizarProgressoModulo(Usuario aluno, Modulo modulo, Double novoPercentual) {
 
         ProgressoAluno progresso = progressoAlunoRepository.findByAlunoIdAndModuloId(aluno.getId(), modulo.getId())
                 .orElseGet(() -> {
                     ProgressoAluno novo = new ProgressoAluno();
-                    novo.setAluno(aluno);
+                    novo.setAluno((Aluno) aluno);
                     novo.setModulo(modulo);
                     return novo;
                 });

@@ -1,18 +1,21 @@
 package com.example.babelup.dto;
 
+import com.example.babelup.entities.Enum.EnumStatusProgresso;
+import com.example.babelup.entities.progressoGamificacao.ProgressoAluno;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
-public class ProgressoDto {
+public class RespostaProgressoDto {
     
     @JsonProperty("id")
-    private Long id;
+    private UUID id;
     
     @JsonProperty("aluno_id")
-    private Long alunoId;
+    private UUID alunoId;
     
     @JsonProperty("modulo_id")
-    private Long moduloId;
+    private UUID moduloId;
     
     @JsonProperty("exercicio_concluido")
     private Boolean exercicioConcluido;
@@ -23,9 +26,9 @@ public class ProgressoDto {
     @JsonProperty("data_conclusao")
     private LocalDateTime dataConclusao;
 
-    public ProgressoDto() {}
+    public RespostaProgressoDto() {}
 
-    public ProgressoDto(Long id, Long alunoId, Long moduloId, Boolean exercicioConcluido, Double notaExercicio, LocalDateTime dataConclusao) {
+    public RespostaProgressoDto(UUID id, UUID alunoId, UUID moduloId, Boolean exercicioConcluido, Double notaExercicio, LocalDateTime dataConclusao) {
         this.id = id;
         this.alunoId = alunoId;
         this.moduloId = moduloId;
@@ -34,27 +37,37 @@ public class ProgressoDto {
         this.dataConclusao = dataConclusao;
     }
 
-    public Long getId() {
+    public RespostaProgressoDto(ProgressoAluno progressoAluno){
+        this.id = progressoAluno.getId();
+        this.alunoId = progressoAluno.getAluno().getId();
+        this.moduloId = progressoAluno.getModulo().getId();
+        this.exercicioConcluido = progressoAluno.getStatus() == EnumStatusProgresso.CONCLUIDO;
+        this.notaExercicio = progressoAluno.getPercentualConcluido();
+        this.dataConclusao = progressoAluno.getUltimoAcesso();
+    }
+
+
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public Long getAlunoId() {
+    public UUID getAlunoId() {
         return alunoId;
     }
 
-    public void setAlunoId(Long alunoId) {
+    public void setAlunoId(UUID alunoId) {
         this.alunoId = alunoId;
     }
 
-    public Long getModuloId() {
+    public UUID getModuloId() {
         return moduloId;
     }
 
-    public void setModuloId(Long moduloId) {
+    public void setModuloId(UUID moduloId) {
         this.moduloId = moduloId;
     }
 

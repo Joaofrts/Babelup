@@ -56,9 +56,9 @@ public class UsuarioService {
 
     public void startDb(){
         List<NovoUsuarioDto> usuariosIniciais = Arrays.asList(
-                new NovoUsuarioDto("João Marcelo", "joao@gmail.com", "Joao123", EnumPerfil.ADMIN, null, true,false,null),
+                new NovoUsuarioDto("João Marcelo", "joao@gmail.com", "Joao123456", EnumPerfil.ADMIN, null, true,false,null),
                 new NovoUsuarioDto("Ludmila", "ludmila@gmail.com", "Ludmila123", EnumPerfil.PROFESSOR, null, true,false,null),
-                new NovoUsuarioDto("Rodrigo Santos", "rodrigo@gmail.com", "Rodrigo123", EnumPerfil.ALUNO, null, true,true,null)
+                new NovoUsuarioDto("Rodrigo Santos", "rodrigo@gmail.com", "Rodrigo123", EnumPerfil.ALUNO, null, true,false,null)
         );
 
         for (NovoUsuarioDto u : usuariosIniciais) {

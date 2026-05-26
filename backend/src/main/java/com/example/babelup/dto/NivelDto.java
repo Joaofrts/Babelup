@@ -2,10 +2,12 @@ package com.example.babelup.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.UUID;
+
 public class NivelDto {
     
     @JsonProperty("id")
-    private Long id;
+    private UUID id;
     
     @JsonProperty("nome")
     private String nome;
@@ -15,17 +17,17 @@ public class NivelDto {
 
     public NivelDto() {}
 
-    public NivelDto(Long id, String nome, Integer cargaHorariaEstimada) {
+    public NivelDto(UUID id, String nome, Integer cargaHorariaEstimada) {
         this.id = id;
         this.nome = nome;
         this.cargaHorariaEstimada = cargaHorariaEstimada;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RestController
@@ -36,7 +37,7 @@ public class NivelController {
 
     // GET /api/niveis/{id} - Obter nível específico
     @GetMapping("/{id}")
-    public ResponseEntity<Object> obterNivel(@PathVariable Long id) {
+    public ResponseEntity<Object> obterNivel(@PathVariable UUID id) {
         try {
             Optional<Nivel> nivel = nivelService.obterNivel(id);
             if (nivel.isEmpty()) {
@@ -72,7 +73,7 @@ public class NivelController {
 
     // PUT /api/niveis/{id} - Atualizar nível
     @PutMapping("/{id}")
-    public ResponseEntity<Object> atualizarNivel(@PathVariable Long id, @RequestBody NivelDto dto) {
+    public ResponseEntity<Object> atualizarNivel(@PathVariable UUID id, @RequestBody NivelDto dto) {
         try {
             Nivel nivel = nivelService.atualizarNivel(id, dto.getNome(), dto.getCargaHorariaEstimada());
             NivelDto resposta = new NivelDto(nivel.getId(), nivel.getNome(), nivel.getCargaHoraria());
@@ -87,7 +88,7 @@ public class NivelController {
 
     // DELETE /api/niveis/{id} - Deletar nível
     @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletarNivel(@PathVariable Long id) {
+    public ResponseEntity<Object> deletarNivel(@PathVariable UUID id) {
         try {
             nivelService.deletarNivel(id);
             return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
@@ -99,7 +100,7 @@ public class NivelController {
 
     // GET /api/niveis/{id}/pode-progredir/{alunoId} - Validar se aluno pode progredir
     @GetMapping("/{nivelId}/pode-progredir/{alunoId}")
-    public ResponseEntity<Object> podeProgredirParaProximo(@PathVariable Long nivelId, @PathVariable Long alunoId) {
+    public ResponseEntity<Object> podeProgredirParaProximo(@PathVariable UUID nivelId, @PathVariable UUID alunoId) {
         try {
             boolean pode = nivelService.podeProgressarParaProximo(alunoId, nivelId);
             return ResponseEntity.ok().body(new Object() {
@@ -113,7 +114,7 @@ public class NivelController {
 
     // GET /api/niveis/{id}/proximo - Obter próximo nível
     @GetMapping("/{id}/proximo")
-    public ResponseEntity<Object> obterProximoNivel(@PathVariable Long id) {
+    public ResponseEntity<Object> obterProximoNivel(@PathVariable UUID id) {
         try {
             Optional<Nivel> proximo = nivelService.obterProximoNivel(id);
             if (proximo.isEmpty()) {

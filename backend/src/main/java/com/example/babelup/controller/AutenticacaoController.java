@@ -45,6 +45,9 @@ public class AutenticacaoController {
 
             // Busca o usuário no banco de dados
             Optional<Usuario> usuarioLogado = usuarioService.buscarUsuarioPorEmail(loginDto.getEmail());
+            if(usuarioLogado.isEmpty()){
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario não encontrado");
+            }
             Usuario usuario = usuarioLogado.get();
 
 

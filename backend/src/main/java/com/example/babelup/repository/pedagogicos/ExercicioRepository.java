@@ -8,8 +8,6 @@ import java.util.UUID;
 
 public interface ExercicioRepository extends JpaRepository<Exercicio, UUID> {
 
-    List<Exercicio> findByModuloId(UUID moduloId);
-
     List<Exercicio> findByVideoAulaId(UUID videoAulaId);
 
     long countByVideoAulaModuloId(UUID id);

@@ -1,6 +1,6 @@
 package com.example.babelup.repository.pedagogicos;
 
-import com.example.babelup.entities.Nivel;
+import com.example.babelup.entities.estruturaAcademica.Nivel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

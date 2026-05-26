@@ -2,7 +2,7 @@ package com.example.babelup.controller;
 
 import com.example.babelup.dto.LoginDto;
 import com.example.babelup.dto.RefreshTokenRequisicaoDto;
-import com.example.babelup.entities.Usuario;
+import com.example.babelup.entities.usuarios.Usuario;
 import com.example.babelup.service.JwtService;
 import com.example.babelup.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,6 +64,11 @@ public class AutenticacaoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Houve um erro inesperado.");
         }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Object> logout(){
+        return ResponseEntity.accepted().body("Deslogado");
     }
 
 

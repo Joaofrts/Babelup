@@ -1,11 +1,10 @@
 package com.example.babelup.service;
 
-import com.example.babelup.entities.Modulo;
-import com.example.babelup.entities.Nivel;
-import com.example.babelup.entities.ProgressoAluno;
+import com.example.babelup.entities.estruturaAcademica.Modulo;
+import com.example.babelup.entities.estruturaAcademica.Nivel;
+import com.example.babelup.entities.progressoGamificacao.ProgressoAluno;
 import com.example.babelup.repository.pedagogicos.ModuloRepository;
 import com.example.babelup.repository.pedagogicos.NivelRepository;
-import com.example.babelup.repository.ProgressoRepository;
 import com.example.babelup.repository.pedagogicos.ProgressoAlunoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,7 @@
 package com.example.babelup.controller;
 
 import com.example.babelup.dto.PerfilAlunoDto;
-import com.example.babelup.entities.Usuario;
+import com.example.babelup.entities.usuarios.Usuario;
 import com.example.babelup.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

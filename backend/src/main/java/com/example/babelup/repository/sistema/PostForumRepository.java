@@ -1,6 +1,6 @@
 package com.example.babelup.repository.sistema;
 
-import com.example.babelup.entities.PostForum;
+import com.example.babelup.entities.comunicacao.PostForum;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

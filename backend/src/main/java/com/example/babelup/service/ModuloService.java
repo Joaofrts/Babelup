@@ -1,11 +1,11 @@
 package com.example.babelup.service;
 
-import com.example.babelup.entities.Modulo;
-import com.example.babelup.entities.Nivel;
+import com.example.babelup.entities.estruturaAcademica.Modulo;
+import com.example.babelup.entities.estruturaAcademica.Nivel;
 import com.example.babelup.repository.pedagogicos.ModuloRepository;
 import com.example.babelup.repository.pedagogicos.NivelRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,97 +14,91 @@ import java.util.UUID;
 @Service
 public class ModuloService {
 
-    @Autowired
-    private ModuloRepository moduloRepository;
+    private final ModuloRepository moduloRepository;
+    private final NivelRepository nivelRepository;
+    private final ProgressoService progressoService;
 
-    @Autowired
-    private NivelRepository nivelRepository;
+    // --- MELHORIA: Injeção via construtor (obrigatório para dependências finais) ---
+    public ModuloService(ModuloRepository moduloRepository, NivelRepository nivelRepository, ProgressoService progressoService) {
+        this.moduloRepository = moduloRepository;
+        this.nivelRepository = nivelRepository;
+        this.progressoService = progressoService;
+    }
 
-    @Autowired
-    private ProgressoService progressoService;
 
-    // Criar novo módulo
-    public Modulo criarModulo(Long nivelId, String titulo, String urlVideoaula, String urlPdf, Integer ordemSequencial) {
+    @Transactional
+    public Modulo criarModulo(UUID nivelId, String titulo, String descricao, Integer ordem, Integer cargaHorariaMinima) {
         Nivel nivel = nivelRepository.findById(nivelId)
                 .orElseThrow(() -> new IllegalArgumentException("Nível não encontrado"));
 
         Modulo modulo = new Modulo();
         modulo.setNivel(nivel);
         modulo.setTitulo(titulo);
-        modulo.setUrlVideoaula(urlVideoaula);
-        modulo.setUrlPdf(urlPdf);
-        modulo.setOrdemSequencial(ordemSequencial);
-        
+        modulo.setDescricao(descricao);
+        modulo.setOrdem(ordem);
+        modulo.setCargaHorariaMinima(cargaHorariaMinima);
+
         return moduloRepository.save(modulo);
     }
 
-    // Obter todos os módulos
     public List<Modulo> listarModulos() {
         return moduloRepository.findAll();
     }
 
-    // Obter módulo por ID
-    public Optional<Modulo> obterModulo(Long id) {
+    public Optional<Modulo> obterModulo(UUID id) {
         return moduloRepository.findById(id);
     }
 
-    // Obter módulos de um nível
     public List<Modulo> obterModulosPorNivel(UUID nivelId) {
         return moduloRepository.findByNivelIdOrderByOrdemAsc(nivelId);
     }
 
-    // Atualizar módulo
-    public Modulo atualizarModulo(Long id, String titulo, String urlVideoaula, String urlPdf) {
+    @Transactional
+    public Modulo atualizarModulo(UUID id, String titulo, String descricao, Integer ordem, Integer cargaHorariaMinima) {
         Modulo modulo = moduloRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Módulo não encontrado"));
+                .orElseThrow(() -> new IllegalArgumentException("Módulo não encontrado com ID: " + id));
 
         modulo.setTitulo(titulo);
-        modulo.setUrlVideoaula(urlVideoaula);
-        modulo.setUrlPdf(urlPdf);
+        modulo.setDescricao(descricao);
+        modulo.setOrdem(ordem);
+        modulo.setCargaHorariaMinima(cargaHorariaMinima);
 
         return moduloRepository.save(modulo);
     }
 
-    // Deletar módulo
-    public void deletarModulo(Long id) {
+    @Transactional
+    public void deletarModulo(UUID id) {
         moduloRepository.deleteById(id);
     }
 
-    // Validar se aluno pode acessar o módulo
-    // - Primeiro módulo (ordem_sequencial = 1) pode ser acessado livremente
-    // - Outros módulos exigem conclusão do módulo anterior
-    public boolean podeAcessarModulo(Long alunoId, Long moduloId) {
-        Modulo modulo = moduloRepository.findById(moduloId)
+
+    public boolean podeAcessarModulo(UUID alunoId, UUID moduloId) {
+        Modulo moduloAtual = moduloRepository.findById(moduloId)
                 .orElseThrow(() -> new IllegalArgumentException("Módulo não encontrado"));
 
-        // Primeiro módulo do nível pode ser acessado
-        if (modulo.getOrdemSequencial() == 1) {
+        if (moduloAtual.getOrdem() == 1) {
             return true;
         }
 
-        // Buscar módulo anterior
-        List<Modulo> modulosNivel = moduloRepository.findByNivelIdOrderByOrdemAsc(modulo.getNivel().getId());
-        
-        for (Modulo m : modulosNivel) {
-            if (m.getOrdemSequencial() == modulo.getOrdemSequencial() - 1) {
-                // Validar se módulo anterior foi concluído
-                return progressoService.podeAcessarModulo(alunoId, moduloId, m.getId());
-            }
+
+        Optional<Modulo> moduloAnteriorOpt = moduloRepository.findByNivelIdAndOrdem(
+                moduloAtual.getNivel().getId(),
+                moduloAtual.getOrdem() - 1
+        );
+
+        if (moduloAnteriorOpt.isEmpty()) {
+
+            return false;
         }
 
-        return false;
+        Modulo moduloAnterior = moduloAnteriorOpt.get();
+
+        // A validação final de status "CONCLUIDO" é delegada ao ProgressoService
+        return progressoService.moduloFoiConcluido(alunoId, moduloAnterior.getId());
     }
 
-    // Obter próximo módulo na sequência
-    public Optional<Modulo> obterProximoModulo(UUID nivelId, Integer ordemAtual) {
-        List<Modulo> modulos = moduloRepository.findByNivelIdOrderByOrdemAsc(nivelId);
-        
-        for (Modulo modulo : modulos) {
-            if (modulo.getOrdem() == ordemAtual + 1) {
-                return Optional.of(modulo);
-            }
-        }
 
-        return Optional.empty();
+    public Optional<Modulo> obterProximoModulo(UUID nivelId, Integer ordemAtual) {
+        return moduloRepository.findByNivelIdAndOrdem(nivelId, ordemAtual + 1);
     }
 }

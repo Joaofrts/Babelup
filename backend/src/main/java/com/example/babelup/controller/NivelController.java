@@ -1,7 +1,7 @@
 package com.example.babelup.controller;
 
 import com.example.babelup.dto.NivelDto;
-import com.example.babelup.entities.Nivel;
+import com.example.babelup.entities.estruturaAcademica.Nivel;
 import com.example.babelup.service.NivelService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

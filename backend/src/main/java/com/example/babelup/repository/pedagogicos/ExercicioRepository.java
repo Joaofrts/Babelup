@@ -1,6 +1,6 @@
 package com.example.babelup.repository.pedagogicos;
 
-import com.example.babelup.entities.Exercicio;
+import com.example.babelup.entities.pratica.Exercicio;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -10,4 +10,7 @@ public interface ExercicioRepository extends JpaRepository<Exercicio, UUID> {
 
     List<Exercicio> findByModuloId(UUID moduloId);
 
+    List<Exercicio> findByVideoAulaId(UUID videoAulaId);
+
+    long countByVideoAulaModuloId(UUID id);
 }

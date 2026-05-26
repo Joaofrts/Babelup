@@ -1,6 +1,6 @@
 package com.example.babelup.repository.sistema;
 
-import com.example.babelup.entities.MensagemChat;
+import com.example.babelup.entities.comunicacao.MensagemChat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

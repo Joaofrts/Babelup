@@ -40,16 +40,25 @@ public class SecurityConfig {
                         // Rotas públicas (Qualquer um pode acessar sem Token)
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/cadastro").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/autenticacao/login").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/autenticacao/refresh").permitAll()
 
-                        // 2. Rotas restritas ao Administrador (Garante a Regra RB-008)
+                        //Rotas para usuarios autenticados
+                        .requestMatchers(HttpMethod.POST,"/api/autenticacao/refresh").authenticated()
+
+                        // 2. Rotas restritas ao Administrador
                         .requestMatchers(HttpMethod.POST, "/api/modulos").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT, "/api/modulos/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/modulos/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET,"api/admin/**").hasRole("ADMIN")
 
-                        // Qualquer outra requisição precisará de autenticação (Estar logado)
+                        // Qualquer outra requisição precisará de autenticação
                         .anyRequest().authenticated()
+                ).logout(logout-> logout
+                        .deleteCookies("remove")
+                        .invalidateHttpSession(false)
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("logout-success")
                 )
+
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -58,7 +67,6 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Permite a origem do seu frontend
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
         // Permite os métodos necessários, incluindo o OPTIONS que o navegador faz sozinho
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));

@@ -1,41 +1,58 @@
 package com.example.babelup.service;
 
-import com.example.babelup.entities.Aluno;
-import com.example.babelup.entities.Modulo;
-import com.example.babelup.entities.ProgressoAluno;
-import com.example.babelup.entities.Usuario;
-import com.example.babelup.repository.ProgressoRepository;
+import com.example.babelup.entities.Enum.EnumStatusProgresso;
+import com.example.babelup.entities.usuarios.Aluno;
+import com.example.babelup.entities.estruturaAcademica.Modulo;
+import com.example.babelup.entities.progressoGamificacao.ProgressoAluno;
 import com.example.babelup.repository.pedagogicos.ProgressoAlunoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 public class ProgressoService {
 
-    @Autowired
-    private ProgressoAlunoRepository progressoAlunoRepository;
+    private final ProgressoAlunoRepository progressoAlunoRepository;
 
-    public ProgressoAluno registrarConclusaoModulo(Aluno aluno, Modulo modulo, boolean exercicioFeito, Double nota) {
-        if (!exercicioFeito) {
-            throw new IllegalStateException("O aluno precisa concluir o exercício integrado para finalizar o módulo.");
-        }
-        ProgressoAluno novoProgresso = new ProgressoAluno();
-        novoProgresso.setAluno(aluno);
-        novoProgresso.setModulo(modulo);
-        novoProgresso.setExercicioConcluido(true);
-        novoProgresso.setNotaExercicio(nota);
-        novoProgresso.setDataConclusao(LocalDateTime.now());
-        return progressoRepository.save(novoProgresso);
+    public ProgressoService(ProgressoAlunoRepository progressoAlunoRepository) {
+        this.progressoAlunoRepository = progressoAlunoRepository;
     }
 
-    public boolean podeAcessarModulo(UUID alunoId, UUID moduloAtualId, UUID moduloAnteriorId) {
-        if (moduloAnteriorId == null) {
-            return true;
+
+    @Transactional
+    public ProgressoAluno atualizarProgressoModulo(Aluno aluno, Modulo modulo, Double novoPercentual) {
+
+        ProgressoAluno progresso = progressoAlunoRepository.findByAlunoIdAndModuloId(aluno.getId(), modulo.getId())
+                .orElseGet(() -> {
+                    ProgressoAluno novo = new ProgressoAluno();
+                    novo.setAluno(aluno);
+                    novo.setModulo(modulo);
+                    return novo;
+                });
+
+        progresso.setPercentualConcluido(novoPercentual);
+        progresso.setUltimoAcesso(LocalDateTime.now());
+
+        if (novoPercentual >= 100.0) {
+            progresso.setStatus(EnumStatusProgresso.CONCLUIDO);
+        } else if (novoPercentual > 0.0) {
+            progresso.setStatus(EnumStatusProgresso.EM_ANDAMENTO);
         }
-        return progressoAlunoRepository.existsByAlunoIdAndModuloIdAndExercicioConcluidoTrue(alunoId, moduloAnteriorId);
+
+        return progressoAlunoRepository.save(progresso);
+    }
+
+    public boolean moduloFoiConcluido(UUID alunoId, UUID moduloId) {
+        Optional<ProgressoAluno> progressoOpt = progressoAlunoRepository.findByAlunoIdAndModuloId(alunoId, moduloId);
+
+        if (progressoOpt.isEmpty()) {
+            return false;
+        }
+
+        return progressoOpt.get().getStatus() == EnumStatusProgresso.CONCLUIDO;
     }
 
     public ProgressoAluno obterProgresso(UUID alunoId, UUID moduloId) {

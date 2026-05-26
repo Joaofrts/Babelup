@@ -1,6 +1,5 @@
 package com.example.babelup.service;
 
-import com.example.babelup.entities.Usuario;
 import org.springframework.stereotype.Service;
 
 @Service

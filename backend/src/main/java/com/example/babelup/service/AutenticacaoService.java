@@ -1,7 +1,7 @@
 package com.example.babelup.service;
 
-import com.example.babelup.entities.Usuario;
-import com.example.babelup.repository.UsuarioRepository;
+import com.example.babelup.entities.usuarios.Usuario;
+import com.example.babelup.repository.usuarios.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,22 +14,24 @@ import java.util.Optional;
 @Service
 public class AutenticacaoService implements UserDetailsService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+    private final UsuarioRepository usuarioRepository;
+
+    public AutenticacaoService(UsuarioRepository usuarioRepository) {
+        this.usuarioRepository = usuarioRepository;
+    }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         
-        Optional<Usuario> usuario = usuarioRepository.findByEmail(email);
-        if (usuario.isEmpty()) {
-            throw new UsernameNotFoundException("Utilizador não encontrado com o e-mail: " + email);
-        }
+        Usuario usuario = usuarioRepository.findByEmail(email)
+                .orElseThrow(()->
+                        new UsernameNotFoundException("Usuario não encontrado com o e-mail: " + email));
 
-        Usuario u = usuario.get();
+
         return User.builder()
-                .username(u.getEmail())
-                .password(u.getSenha())
-                .roles(u.getPerfil().name())
+                .username(usuario.getEmail())
+                .password(usuario.getSenha())
+                .roles(usuario.getPerfil().name())
                 .build();
     }
 }

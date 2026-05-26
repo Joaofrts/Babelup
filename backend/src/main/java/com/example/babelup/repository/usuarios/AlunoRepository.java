@@ -1,6 +1,6 @@
 package com.example.babelup.repository.usuarios;
 
-import com.example.babelup.entities.Aluno;
+import com.example.babelup.entities.usuarios.Aluno;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

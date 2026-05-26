@@ -1,6 +1,6 @@
 package com.example.babelup.repository.usuarios;
 
-import com.example.babelup.entities.Matricula;
+import com.example.babelup.entities.financeiro.Matricula;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

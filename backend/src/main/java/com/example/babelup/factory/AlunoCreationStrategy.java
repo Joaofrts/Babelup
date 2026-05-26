@@ -29,13 +29,6 @@ public class AlunoCreationStrategy implements UsuarioCreationStrategy{
     private void validaAlunoDTO(NovoUsuarioDto dto) {
         logger.debug("Validando dados específicos de Aluno: {}", dto.email());
 
-        if (dto.aceitouTermosLgpd() == null || !dto.aceitouTermosLgpd()) {
-            logger.warn("Aluno {} não aceitou termos LGPD", dto.email());
-            throw new IllegalStateException(
-                    "O aluno deve aceitar os termos da LGPD para se cadastrar. " +
-                            "A LGPD protege seus dados pessoais conforme a Lei Geral de Proteção de Dados."
-            );
-        }
 
         if (dto.aceiteTermos() == null || !dto.aceiteTermos()) {
             logger.warn("Aluno {} não aceitou termos de uso", dto.email());

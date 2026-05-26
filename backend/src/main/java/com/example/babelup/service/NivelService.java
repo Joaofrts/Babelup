@@ -25,7 +25,6 @@ public class NivelService {
     @Autowired
     private ProgressoAlunoRepository progressoAlunoRepository;
 
-    // Criar novo nível
     public Nivel criarNivel(String nome, Integer cargaHorariaEstimada) {
         if (nivelRepository.findByNome(nome).isPresent()) {
             throw new IllegalArgumentException("Nível com nome '" + nome + "' já existe");
@@ -58,13 +57,10 @@ public class NivelService {
         return nivelRepository.save(n);
     }
 
-    // Deletar nível
     public void deletarNivel(UUID id) {
         nivelRepository.deleteById(id);
     }
 
-    // Validar se aluno pode progredir para o próximo nível
-    // Todos os módulos do nível atual devem estar concluídos
     public boolean podeProgressarParaProximo(UUID alunoId, UUID nivelAtualId) {
         Nivel nivel = nivelRepository.findById(nivelAtualId)
                 .orElseThrow(() -> new IllegalArgumentException("Nível não encontrado"));
@@ -73,9 +69,8 @@ public class NivelService {
 
         for (Modulo modulo : modulosNivel) {
             Optional<ProgressoAluno> progresso = progressoAlunoRepository.findByAlunoIdAndModuloId(alunoId, modulo.getId());
-            
-            // Se algum módulo não foi concluído, não pode progredir
-            if (progresso.isEmpty() || !progresso.get().getExercicioConcluido()) {
+
+            if (progresso.isEmpty() || !progresso.get().isConcluido()) {
                 return false;
             }
         }
@@ -84,7 +79,7 @@ public class NivelService {
     }
 
     // Obter próximo nível
-    public Optional<Nivel> obterProximoNivel(Long nivelAtualId) {
+    public Optional<Nivel> obterProximoNivel(UUID nivelAtualId) {
         Optional<Nivel> nivelAtual = nivelRepository.findById(nivelAtualId);
         if (nivelAtual.isEmpty()) {
             return Optional.empty();
@@ -93,7 +88,7 @@ public class NivelService {
         List<Nivel> todos = nivelRepository.findAll();
         // Simples: pega o próximo ID
         for (int i = 0; i < todos.size() - 1; i++) {
-            if (todos.get(i).getId().equals(nivelAtualId)) {
+            if (todos.get(i).getOrdem().equals(nivelAtual.get().getOrdem())) {
                 return Optional.of(todos.get(i + 1));
             }
         }

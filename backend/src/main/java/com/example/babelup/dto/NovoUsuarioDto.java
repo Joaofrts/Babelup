@@ -14,7 +14,7 @@ public record NovoUsuarioDto(
                              String senha,
                              EnumPerfil perfil,
                              String telefone,
-                             Boolean aceitouTermosLgpd,
+                             Boolean aceiteTermos,
                              Boolean menorIdade,
                              String dadosResponsaveis
 ){}

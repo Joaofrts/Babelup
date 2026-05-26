@@ -20,6 +20,8 @@ public class ProfessorCadastroDto {
     }
 
 
+
+
     public String getNome() {
         return nome;
     }

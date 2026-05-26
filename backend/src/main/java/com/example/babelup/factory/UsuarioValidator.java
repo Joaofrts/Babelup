@@ -10,7 +10,7 @@ public class UsuarioValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(UsuarioValidator.class);
 
-    private static final int SENHA_MINIMA_LENGTH = 6;
+    private static final int SENHA_MINIMA_LENGTH = 8;
 
     public void validarDTO(NovoUsuarioDto dto){
         if (dto==null){

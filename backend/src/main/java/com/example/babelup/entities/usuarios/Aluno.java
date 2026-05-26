@@ -62,7 +62,7 @@ public class Aluno extends Usuario{
                 dto.email(),
                 senhaCriptografada,
                 dto.telefone(),
-                dto.aceitouTermosLgpd() != null ? dto.aceitouTermosLgpd() : false,
+                dto.aceiteTermos() != null ? dto.aceiteTermos() : false,
                 dto.menorIdade() != null ? dto.menorIdade() : false);
     }
 

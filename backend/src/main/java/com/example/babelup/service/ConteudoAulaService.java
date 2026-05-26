@@ -45,7 +45,7 @@ public class ConteudoAulaService {
         aula.setUrl(url);
         aula.setDuracao(duracao);
         aula.setTipo(tipo);
-        aula.setDataTransmissao(dataTransmissao);
+        aula.setAtualizadoEm(dataTransmissao);
 
         return videoAulaRepository.save(aula);
     }

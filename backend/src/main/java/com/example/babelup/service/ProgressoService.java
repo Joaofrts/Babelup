@@ -34,7 +34,7 @@ public class ProgressoService {
                 });
 
         progresso.setPercentualConcluido(novoPercentual);
-        progresso.setUltimoAcesso(LocalDateTime.now());
+        progresso.setAtualizadoEm(LocalDateTime.now());
 
         if (novoPercentual >= 100.0) {
             progresso.setStatus(EnumStatusProgresso.CONCLUIDO);

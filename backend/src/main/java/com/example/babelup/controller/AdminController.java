@@ -1,6 +1,7 @@
 package com.example.babelup.controller;
 
 import com.example.babelup.dto.ProfessorCadastroDto;
+import com.example.babelup.dto.UsuarioRespostaDTO;
 import com.example.babelup.entities.usuarios.Usuario;
 import com.example.babelup.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class AdminController {
     @PostMapping("/cadastroProfessor")
     public ResponseEntity<Object> addProfessor(@RequestBody ProfessorCadastroDto dto){
         try{
-            Usuario resposta = service.cadastrarProfessor(dto);
+            Usuario resposta = service.cadastrarUsuario(dto);
             return ResponseEntity.ok().body(resposta);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar novo usuario.");
@@ -33,7 +34,7 @@ public class AdminController {
     @GetMapping("/listarUsuarios")
     public ResponseEntity<Object> listarUsuarios(){
         try {
-            List<ProfessorCadastroDto> dtos = service.findAll();
+            List<UsuarioRespostaDTO> dtos = service.findAll();
             return ResponseEntity.ok().body(dtos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Houve um erro inesperado");

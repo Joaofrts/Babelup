@@ -1,10 +1,12 @@
 package com.example.babelup.service;
 
+import com.example.babelup.dto.NovoUsuarioDto;
 import com.example.babelup.dto.ProfessorCadastroDto;
+import com.example.babelup.dto.UsuarioRespostaDTO;
 import com.example.babelup.entities.Enum.EnumPerfil;
 import com.example.babelup.entities.usuarios.Usuario;
+import com.example.babelup.factory.UsuarioFactory;
 import com.example.babelup.repository.usuarios.UsuarioRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,24 +17,29 @@ import java.util.Optional;
 @Service
 public class UsuarioService {
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+
+    private final UsuarioRepository usuarioRepository;
+
+    private final PasswordEncoder passwordEncoder;
+    private final UsuarioFactory usuarioFactory;
+
+    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, UsuarioFactory usuarioFactory) {
+        this.usuarioRepository = usuarioRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.usuarioFactory = usuarioFactory;
+    }
 
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
-
-    public Usuario cadastrarProfessor(ProfessorCadastroDto novoAlunoDto) {
-        if (usuarioRepository.existsByEmail(novoAlunoDto.getEmail())) {
+    public Usuario cadastrarUsuario(NovoUsuarioDto usuarioDto) {
+        if (usuarioRepository.existsByEmail(usuarioDto.email())) {
             throw new IllegalArgumentException("Este e-mail já está em uso na BabelUp.");
         }
-        Usuario novoAluno = new Usuario(novoAlunoDto);
+        Usuario usuario = usuarioFactory.fabricar(usuarioDto);
 
-        String senhaCriptografada = passwordEncoder.encode(novoAluno.getSenha());
-        novoAluno.setSenha(senhaCriptografada);
+        String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
+        usuario.setSenha(senhaCriptografada);
 
-        return usuarioRepository.save(novoAluno);
+        return usuarioRepository.save(usuario);
     }
 
     public Optional<Usuario> buscarUsuarioPorEmail(String email){
@@ -40,25 +47,25 @@ public class UsuarioService {
     }
 
 
-    public List<ProfessorCadastroDto> findAll(){
+    public List<UsuarioRespostaDTO> findAll(){
         return usuarioRepository.findAll().stream()
-                .map(ProfessorCadastroDto::new)
+                .map(u-> new UsuarioRespostaDTO(u.getNome(), u.getEmail(), u.getPerfil().name()))
                 .toList();
     }
 
 
     public void startDb(){
-        List<ProfessorCadastroDto> usuariosIniciais = Arrays.asList(
-                new ProfessorCadastroDto("João Marcelo", "joao@gmail.com", "Joao123", EnumPerfil.ADMIN),
-                new ProfessorCadastroDto("Ludmila", "ludmila@gmail.com", "Ludmila123", EnumPerfil.PROFESSOR),
-                new ProfessorCadastroDto("Rodrigo Santos", "rodrigo@gmail.com", "Rodrigo123", EnumPerfil.ALUNO)
+        List<NovoUsuarioDto> usuariosIniciais = Arrays.asList(
+                new NovoUsuarioDto("João Marcelo", "joao@gmail.com", "Joao123", EnumPerfil.ADMIN, null, true,false,null),
+                new NovoUsuarioDto("Ludmila", "ludmila@gmail.com", "Ludmila123", EnumPerfil.PROFESSOR, null, true,false,null),
+                new NovoUsuarioDto("Rodrigo Santos", "rodrigo@gmail.com", "Rodrigo123", EnumPerfil.ALUNO, null, true,true,null)
         );
 
-        for (ProfessorCadastroDto u : usuariosIniciais) {
+        for (NovoUsuarioDto u : usuariosIniciais) {
 
-            if (!usuarioRepository.existsByEmail(u.getEmail())) {
-                cadastrarAluno(u);
-                System.out.println("Usuário criado na inicialização: " + u.getNome());
+            if (!usuarioRepository.existsByEmail(u.email())) {
+                cadastrarUsuario(u);
+                System.out.println("Usuário criado na inicialização: " + u.nome());
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.example.babelup.entities.usuarios;
 
+import com.example.babelup.dto.NovoUsuarioDto;
 import com.example.babelup.entities.Enum.EnumPerfil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -31,6 +32,13 @@ public class Administrador extends Usuario{
     public Administrador(String nome, String email, String senha, String nivelAcesso) {
         this(nome, email, senha);
         this.nivelAcesso = nivelAcesso;
+    }
+
+    public Administrador(NovoUsuarioDto dto, String senhaCriptografada) {
+        this(dto.nome(), dto.email(), senhaCriptografada, "ADMIN");
+        if (dto.telefone() != null && !dto.telefone().isEmpty()) {
+            this.setTelefone(dto.telefone());
+        }
     }
 
 

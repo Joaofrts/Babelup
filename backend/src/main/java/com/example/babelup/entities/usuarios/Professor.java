@@ -1,5 +1,6 @@
 package com.example.babelup.entities.usuarios;
 
+import com.example.babelup.dto.NovoUsuarioDto;
 import com.example.babelup.entities.Enum.EnumPerfil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,6 +33,13 @@ public class Professor extends Usuario{
         this(nome, email, senha);
         this.idiomasLecionados = idiomasLecionados;
         this.disponibilidade = disponibilidade;
+    }
+
+    public Professor(NovoUsuarioDto dto, String senhaCriptografada) {
+        super(dto.nome(), dto.email(), senhaCriptografada, EnumPerfil.PROFESSOR);
+        if (dto.telefone() != null && !dto.telefone().isEmpty()) {
+            this.setTelefone(dto.telefone());
+        }
     }
 
 

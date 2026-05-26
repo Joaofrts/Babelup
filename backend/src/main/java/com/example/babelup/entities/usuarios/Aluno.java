@@ -50,10 +50,20 @@ public class Aluno extends Usuario{
                  boolean aceiteTermos, boolean menorIdade) {
         super(nome, email, senha, EnumPerfil.ALUNO);
         this.setTelefone(telefone);
-        this.aceiteTermos = aceiteTermos;
+        this.aceiteTermos = aceiteTermos ;
         this.menorIdade = menorIdade;
+
         this.progressoGeral = 0.0;
         this.pontuacaoRanking = 0;
+    }
+
+    public Aluno(NovoUsuarioDto dto, String senhaCriptografada) {
+        this(dto.nome(),
+                dto.email(),
+                senhaCriptografada,
+                dto.telefone(),
+                dto.aceitouTermosLgpd() != null ? dto.aceitouTermosLgpd() : false,
+                dto.menorIdade() != null ? dto.menorIdade() : false);
     }
 
     public Nivel getNivelAtual() {

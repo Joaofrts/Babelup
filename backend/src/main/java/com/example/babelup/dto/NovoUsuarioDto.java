@@ -16,6 +16,5 @@ public record NovoUsuarioDto(
                              String telefone,
                              Boolean aceitouTermosLgpd,
                              Boolean menorIdade,
-                             Boolean aceiteTermos,
                              String dadosResponsaveis
 ){}

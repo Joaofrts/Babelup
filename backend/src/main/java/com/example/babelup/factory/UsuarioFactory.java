@@ -2,16 +2,19 @@ package com.example.babelup.factory;
 
 import com.example.babelup.dto.NovoUsuarioDto;
 import com.example.babelup.entities.Enum.EnumPerfil;
-import com.example.babelup.entities.usuarios.Administrador;
-import com.example.babelup.entities.usuarios.Aluno;
-import com.example.babelup.entities.usuarios.Professor;
 import com.example.babelup.entities.usuarios.Usuario;
 import com.example.babelup.exceptions.PerfilUsuarioInvalidoException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
+
 @Component
 public class UsuarioFactory {
+
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioFactory.class);
 
     private final PasswordEncoder passwordEncoder;
     private final UsuarioValidator validator;
@@ -31,22 +34,32 @@ public class UsuarioFactory {
                 EnumPerfil.PROFESSOR, professorStrategy,
                 EnumPerfil.ADMIN, adminStrategy
         );
+        logger.debug("UsuarioFactory inicializado com {} estratégias", strategies.size());
     }
 
     public Usuario fabricar(NovoUsuarioDto dto) {
-        // Validações comuns
+        logger.debug("Iniciando criação de usuário com perfil: {}", dto.perfil());
+
         validator.validarDTO(dto);
+        logger.debug("DTO validado com sucesso");
 
         String senhaCriptografada = passwordEncoder.encode(dto.senha());
+        logger.debug("Senha criptografada com sucesso");
 
-        UsuarioCreationStrategy strategy = strategies.getOrDefault(
-                dto.perfil(),
-                () -> { throw new PerfilUsuarioInvalidoException(
-                        "Perfil desconhecido: " + dto.perfil()
-                ); }
-        );
+        UsuarioCreationStrategy strategy = strategies.get(dto.perfil());
 
-        return strategy.criar(dto, senhaCriptografada);
+        if (strategy == null) {
+            String mensagem = "Perfil desconhecido: " + dto.perfil();
+            logger.error(mensagem);
+            throw new PerfilUsuarioInvalidoException(mensagem);
+        }
+
+        logger.debug("Strategy encontrada para perfil: {}", dto.perfil());
+
+        Usuario usuarioCriado = strategy.criar(dto, senhaCriptografada);
+
+        logger.info("Usuário criado com sucesso: {} ({})", usuarioCriado.getEmail(), dto.perfil());
+        return usuarioCriado;
     }
 }
 

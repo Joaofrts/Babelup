@@ -1,6 +1,6 @@
 package com.example.babelup.repository.pedagogicos;
 
-import com.example.babelup.entities.Enum.EnumStatusProgresso;
+import com.example.babelup.entities.enumEntities.EnumStatusProgresso;
 import com.example.babelup.entities.progressoGamificacao.ProgressoAluno;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

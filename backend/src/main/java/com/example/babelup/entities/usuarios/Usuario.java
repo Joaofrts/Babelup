@@ -1,6 +1,6 @@
 package com.example.babelup.entities.usuarios;
 
-import com.example.babelup.entities.Enum.EnumPerfil;
+import com.example.babelup.entities.enumEntities.EnumPerfil;
 import com.example.babelup.entities.base.EntidadeAuditavel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

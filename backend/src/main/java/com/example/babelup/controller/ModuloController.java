@@ -175,18 +175,6 @@ public class ModuloController {
         }
     }
 
-    // GET /api/modulos/{moduloId}/pode-acessar/{alunoId} - Validar se aluno pode acessar módulo
-    @GetMapping("/{moduloId}/pode-acessar/{alunoId}")
-    public ResponseEntity<Object> podeAcessarModulo(@PathVariable UUID moduloId, @PathVariable UUID alunoId) {
-        try {
-            boolean pode = moduloService.podeAcessarModulo(alunoId, moduloId);
-            return ResponseEntity.ok().body(new Object() {
-                public final boolean pode_acessar = pode;
-            });
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao validar acesso: " + e.getMessage());
-        }
-    }
+    
 }
 

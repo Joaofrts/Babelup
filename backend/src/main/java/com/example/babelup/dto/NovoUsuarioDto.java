@@ -1,6 +1,6 @@
 package com.example.babelup.dto;
 
-import com.example.babelup.entities.Enum.EnumPerfil;
+import com.example.babelup.entities.enumEntities.EnumPerfil;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 

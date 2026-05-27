@@ -1,6 +1,6 @@
 package com.example.babelup.entities.progressoGamificacao;
 
-import com.example.babelup.entities.Enum.EnumStatusProgresso;
+import com.example.babelup.entities.enumEntities.EnumStatusProgresso;
 import com.example.babelup.entities.base.EntidadeAuditavel;
 import com.example.babelup.entities.estruturaAcademica.Modulo;
 import com.example.babelup.entities.usuarios.Aluno;
@@ -10,7 +10,6 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "progresso_aluno",

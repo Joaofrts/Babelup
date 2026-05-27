@@ -1,4 +1,4 @@
-package com.example.babelup.entities.Enum;
+package com.example.babelup.entities.enumEntities;
 
 public enum EnumTipoVideo {
     GRAVADO,

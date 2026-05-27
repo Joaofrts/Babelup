@@ -1,7 +1,7 @@
 package com.example.babelup.service;
 
-import com.example.babelup.entities.Enum.EnumStatusSessao;
-import com.example.babelup.entities.Enum.EnumTipoSessao;
+import com.example.babelup.entities.enumEntities.EnumStatusSessao;
+import com.example.babelup.entities.enumEntities.EnumTipoSessao;
 import com.example.babelup.entities.avaliacao.SessaoConversacao;
 import com.example.babelup.entities.usuarios.Professor;
 import com.example.babelup.repository.pedagogicos.ModuloRepository;

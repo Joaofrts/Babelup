@@ -1,6 +1,6 @@
 package com.example.babelup.entities.avaliacao;
 
-import com.example.babelup.entities.Enum.EnumTipoTeste;
+import com.example.babelup.entities.enumEntities.EnumTipoTeste;
 import com.example.babelup.entities.base.EntidadeAuditavel;
 import com.example.babelup.entities.estruturaAcademica.Nivel;
 import com.example.babelup.entities.usuarios.Aluno;
@@ -11,7 +11,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
-import java.util.UUID;
 
 @Entity
 @Table(name = "teste_diagnostico",indexes = {

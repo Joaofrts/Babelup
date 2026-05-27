@@ -1,7 +1,7 @@
 package com.example.babelup.entities.usuarios;
 
 import com.example.babelup.dto.NovoUsuarioDto;
-import com.example.babelup.entities.Enum.EnumPerfil;
+import com.example.babelup.entities.enumEntities.EnumPerfil;
 import com.example.babelup.entities.estruturaAcademica.Nivel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;

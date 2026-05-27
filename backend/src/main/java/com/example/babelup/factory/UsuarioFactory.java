@@ -1,7 +1,7 @@
 package com.example.babelup.factory;
 
 import com.example.babelup.dto.NovoUsuarioDto;
-import com.example.babelup.entities.Enum.EnumPerfil;
+import com.example.babelup.entities.enumEntities.EnumPerfil;
 import com.example.babelup.entities.usuarios.Usuario;
 import com.example.babelup.exceptions.PerfilUsuarioInvalidoException;
 import org.slf4j.Logger;

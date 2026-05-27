@@ -1,6 +1,6 @@
 package com.example.babelup.entities.comunicacao;
 
-import com.example.babelup.entities.Enum.EnumTipoNotificacao;
+import com.example.babelup.entities.enumEntities.EnumTipoNotificacao;
 import com.example.babelup.entities.base.EntidadeAuditavel;
 import com.example.babelup.entities.usuarios.Usuario;
 import jakarta.persistence.*;

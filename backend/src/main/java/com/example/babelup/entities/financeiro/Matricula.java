@@ -1,6 +1,6 @@
 package com.example.babelup.entities.financeiro;
 
-import com.example.babelup.entities.Enum.EnumStatusMatricula;
+import com.example.babelup.entities.enumEntities.EnumStatusMatricula;
 import com.example.babelup.entities.usuarios.Aluno;
 import jakarta.persistence.*;
 

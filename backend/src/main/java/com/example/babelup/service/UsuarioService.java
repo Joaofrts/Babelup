@@ -1,9 +1,8 @@
 package com.example.babelup.service;
 
 import com.example.babelup.dto.NovoUsuarioDto;
-import com.example.babelup.dto.ProfessorCadastroDto;
 import com.example.babelup.dto.UsuarioRespostaDTO;
-import com.example.babelup.entities.Enum.EnumPerfil;
+import com.example.babelup.entities.enumEntities.EnumPerfil;
 import com.example.babelup.entities.usuarios.Usuario;
 import com.example.babelup.factory.UsuarioFactory;
 import com.example.babelup.repository.usuarios.UsuarioRepository;

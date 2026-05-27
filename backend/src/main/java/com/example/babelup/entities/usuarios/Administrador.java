@@ -1,14 +1,12 @@
 package com.example.babelup.entities.usuarios;
 
 import com.example.babelup.dto.NovoUsuarioDto;
-import com.example.babelup.entities.Enum.EnumPerfil;
+import com.example.babelup.entities.enumEntities.EnumPerfil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Pattern;
-
-import java.util.UUID;
 
 @Entity
 @Table(name = "administrador")

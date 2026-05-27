@@ -40,6 +40,8 @@ public class SecurityConfig {
                         // Rotas públicas (Qualquer um pode acessar sem Token)
                         .requestMatchers(HttpMethod.POST, "/api/usuarios/cadastro").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/autenticacao/login").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/swagger-ui/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/v3/api-docs/**").permitAll()
 
                         //Rotas para usuarios autenticados
                         .requestMatchers(HttpMethod.POST,"/api/autenticacao/refresh").authenticated()

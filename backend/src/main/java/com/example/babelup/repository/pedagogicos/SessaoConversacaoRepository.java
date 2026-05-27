@@ -1,6 +1,6 @@
 package com.example.babelup.repository.pedagogicos;
 
-import com.example.babelup.entities.Enum.EnumStatusSessao;
+import com.example.babelup.entities.enumEntities.EnumStatusSessao;
 import com.example.babelup.entities.avaliacao.SessaoConversacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

@@ -1,6 +1,6 @@
 package com.example.babelup.dto;
 
-import com.example.babelup.entities.Enum.EnumStatusProgresso;
+import com.example.babelup.entities.enumEntities.EnumStatusProgresso;
 import com.example.babelup.entities.progressoGamificacao.ProgressoAluno;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
 package com.example.babelup.service;
 
-import com.example.babelup.entities.Enum.EnumTipoTeste;
+import com.example.babelup.entities.enumEntities.EnumTipoTeste;
 import com.example.babelup.entities.avaliacao.SessaoConversacao;
 import com.example.babelup.entities.avaliacao.TesteDiagnostico;
 import com.example.babelup.entities.estruturaAcademica.Nivel;

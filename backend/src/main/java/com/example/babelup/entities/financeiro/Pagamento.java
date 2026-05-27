@@ -1,6 +1,6 @@
 package com.example.babelup.entities.financeiro;
 
-import com.example.babelup.entities.Enum.EnumStatusPagamento;
+import com.example.babelup.entities.enumEntities.EnumStatusPagamento;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;

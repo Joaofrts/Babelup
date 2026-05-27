@@ -1,5 +1,5 @@
 package com.example.babelup.service;
-import com.example.babelup.entities.Enum.EnumTipoVideo;
+import com.example.babelup.entities.enumEntities.EnumTipoVideo;
 import com.example.babelup.entities.pratica.Exercicio;
 import com.example.babelup.entities.pratica.MaterialApoio;
 import com.example.babelup.entities.pratica.VideoAula;

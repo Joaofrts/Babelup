@@ -1,6 +1,6 @@
 package com.example.babelup.entities.pratica;
 
-import com.example.babelup.entities.Enum.EnumTipoVideo;
+import com.example.babelup.entities.enumEntities.EnumTipoVideo;
 import com.example.babelup.entities.base.EntidadeAuditavel;
 import com.example.babelup.entities.estruturaAcademica.Modulo;
 import jakarta.persistence.*;
@@ -12,7 +12,6 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "videoaula", indexes = {

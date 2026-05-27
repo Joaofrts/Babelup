@@ -1,6 +1,6 @@
 package com.example.babelup.repository.sistema;
 
-import com.example.babelup.entities.Enum.EnumStatusPagamento;
+import com.example.babelup.entities.enumEntities.EnumStatusPagamento;
 import com.example.babelup.entities.financeiro.Pagamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

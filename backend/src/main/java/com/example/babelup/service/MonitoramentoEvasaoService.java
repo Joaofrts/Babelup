@@ -1,5 +1,5 @@
 package com.example.babelup.service;
-import com.example.babelup.entities.Enum.EnumStatusProgresso;
+import com.example.babelup.entities.enumEntities.EnumStatusProgresso;
 import com.example.babelup.entities.comunicacao.AlertaEvasao;
 import com.example.babelup.entities.progressoGamificacao.ProgressoAluno;
 import com.example.babelup.entities.usuarios.Aluno;

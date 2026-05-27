@@ -1,7 +1,7 @@
 package com.example.babelup.entities.usuarios;
 
 import com.example.babelup.dto.NovoUsuarioDto;
-import com.example.babelup.entities.Enum.EnumPerfil;
+import com.example.babelup.entities.enumEntities.EnumPerfil;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;

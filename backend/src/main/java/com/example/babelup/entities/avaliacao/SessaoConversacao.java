@@ -1,8 +1,8 @@
 package com.example.babelup.entities.avaliacao;
 
-import com.example.babelup.entities.Enum.EnumModalidadeSessao;
-import com.example.babelup.entities.Enum.EnumStatusSessao;
-import com.example.babelup.entities.Enum.EnumTipoSessao;
+import com.example.babelup.entities.enumEntities.EnumModalidadeSessao;
+import com.example.babelup.entities.enumEntities.EnumStatusSessao;
+import com.example.babelup.entities.enumEntities.EnumTipoSessao;
 import com.example.babelup.entities.base.EntidadeAuditavel;
 import com.example.babelup.entities.estruturaAcademica.Modulo;
 import com.example.babelup.entities.usuarios.Aluno;

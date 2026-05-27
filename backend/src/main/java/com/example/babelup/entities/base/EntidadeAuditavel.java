@@ -18,11 +18,11 @@ public abstract class EntidadeAuditavel extends EntidadeBase{
     @Column(name= "versao")
     protected Long versao;
 
-    public EntidadeAuditavel() {
+    protected EntidadeAuditavel() {
         super();
     }
 
-    public EntidadeAuditavel(UUID id) {
+    protected EntidadeAuditavel(UUID id) {
         super(id);
     }
 
@@ -49,4 +49,6 @@ public abstract class EntidadeAuditavel extends EntidadeBase{
     public void setVersao(Long versao) {
         this.versao = versao;
     }
+
+
 }

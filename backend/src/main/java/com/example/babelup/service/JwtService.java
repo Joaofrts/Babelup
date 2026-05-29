@@ -65,8 +65,7 @@ public class JwtService {
     }
 
     public String extrairEmailUsuario(String token) {
-        return Jwts.parser()
-                .verifyWith(getChaveAssinatura())
+        return Jwts.parser().verifyWith(getChaveAssinatura())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload()

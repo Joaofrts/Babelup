@@ -106,7 +106,7 @@ public class AutenticacaoController {
                 }
             }
         } catch (Exception e) {
-            System.out.println("Erro ao validar refresh token: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Erro ao validar refresh token: " + e.getMessage());
         }
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Sessão encerrada. Faça login novamente.");

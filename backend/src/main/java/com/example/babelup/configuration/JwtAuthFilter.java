@@ -30,7 +30,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
         // Ignora o filtro se for a rota de login ou cadastro
-        return path.startsWith("/api/autenticacao/login") || path.startsWith("/api/usuarios/cadastro");
+        return path.startsWith("/api/autenticacao/login") || path.startsWith("/api/alunos/cadastro") || path.startsWith("/api/autenticacao/refresh");
     }
 
     @Override
@@ -52,6 +52,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             System.out.println("1. Token recebido no Filtro!");
 
             try {
+                System.out.println(token);
                 email = jwtService.extrairEmailUsuario(token);
                 System.out.println("2. E-mail extraído: " + email);
             } catch (Exception e) {

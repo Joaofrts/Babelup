@@ -1,5 +1,6 @@
 package com.example.babelup.controller;
 
+import com.example.babelup.dto.NovoUsuarioDto;
 import com.example.babelup.dto.PerfilAlunoDto;
 import com.example.babelup.entities.usuarios.Usuario;
 import com.example.babelup.service.UsuarioService;
@@ -7,9 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Optional;
 
@@ -22,15 +21,12 @@ public class AlunoController {
 
     @GetMapping("/meu-perfil")
     public ResponseEntity<PerfilAlunoDto> obterMeuPerfil(@AuthenticationPrincipal UserDetails userDetails) {
-        // 1. O Spring Security injeta o usuário logado aqui graças ao nosso JwtAuthFilter
         if (userDetails == null) {
             return ResponseEntity.status(401).build(); // Não autorizado
         }
 
-        // 2. Extraímos o e-mail do token já validado
         String email = userDetails.getUsername();
 
-        // 3. Buscamos as informações completas no banco de dados
         Optional<Usuario> usuarioOpt = usuarioService.buscarUsuarioPorEmail(email);
 
         if (usuarioOpt.isPresent()) {
@@ -54,5 +50,17 @@ public class AlunoController {
         }
 
         return ResponseEntity.notFound().build();
+    }
+
+    @PostMapping("/cadastro")
+    public ResponseEntity<String> cadastrarAluno(@RequestBody NovoUsuarioDto dto) {
+        try {
+            usuarioService.cadastrarUsuario(dto);
+            return ResponseEntity.ok("Aluno cadastrado com sucesso!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Houve um erro inesperado ao cadastrar o aluno.");
+        }
     }
 }

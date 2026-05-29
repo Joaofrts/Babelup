@@ -11,10 +11,12 @@ public record NovoUsuarioDto(
         @Email
         String email,
         @NotNull
-                             String senha,
-                             EnumPerfil perfil,
-                             String telefone,
-                             Boolean aceiteTermos,
-                             Boolean menorIdade,
-                             String dadosResponsaveis
+        String senha,
+        @NotNull
+        EnumPerfil perfil,
+        String telefone,
+        @NotNull
+        Boolean aceiteTermos,
+        Boolean menorIdade,
+        String dadosResponsaveis
 ){}

@@ -7,8 +7,8 @@
 ## 📋 Índice
 
 - [Visão Geral](#-visão-geral)
-- [Snapshot do Projeto](#-snapshot-do-projeto)
 - [Características Principais](#-características-principais)
+- [Segurança e Credenciais](#-segurança-e-credenciais)
 - [Stack Tecnológico](#-stack-tecnológico)
 - [Estrutura do Projeto](#-estrutura-do-projeto)
 - [Pré-requisitos](#-pré-requisitos)
@@ -34,14 +34,6 @@
 O projeto foi idealizado como uma plataforma escalável, segura e intuitiva que democratiza o acesso à educação de qualidade.
 
 ---
-
-## 📸 Snapshot do Projeto
-
-Aqui você pode visualizar a interface da aplicação Babelup:
-
-![Babelup Screenshot](./snapshots/screenshot.png)
-
-*Nota: Este screenshot é atualizado automaticamente via CI/CD em cada atualização no branch principal.*
 
 ---
 
@@ -70,12 +62,29 @@ Aqui você pode visualizar a interface da aplicação Babelup:
 - Suporte a múltiplos alunos por sessão
 - Gerenciamento de horários
 
-### 🔒 Segurança
-- Autenticação com Spring Security
-- Proteção de endpoints
-- Validação de dados
-
 ---
+
+## 🔒 Segurança e Credenciais
+
+### ⚠️ IMPORTANTE - Desenvolvimento vs Produção
+
+O repositório contém configurações padrão apenas para fins de desenvolvimento local usando Docker. **Essas credenciais padrão nunca devem ser usadas em ambientes de produção!**
+
+### Configuração Segura para Produção
+
+- Sempre defina senhas fortes e únicas para todas as credenciais
+- Utilize variáveis de ambiente para armazenar valores sensíveis
+- Use um gerenciador de secrets (AWS Secrets Manager, HashiCorp Vault, etc.)
+- Nunca comite credenciais reais no repositório (adicione-as ao .gitignore)
+- Implemente rotação regular de tokens e chaves
+- Configure JWT com chaves seguras e únicas
+- Valide e sanitize todas as entradas de usuário
+- Sempre revise os arquivos de configuração (`application.properties`, `docker-compose.yml`, etc.) antes de fazer deploy
+
+### 🔑 Autenticação e Segurança
+- Autenticação com Spring Security
+- Proteção de endpoints com controle de acesso baseado em papéis
+- Validação de dados em entrada
 
 ## 🛠 Stack Tecnológico
 
@@ -188,6 +197,8 @@ Isso iniciará:
 
 3. **Aguarde a inicialização** (2-3 minutos)
 
+> ⚠️ **Nota de Segurança**: As credenciais padrão fornecidas no arquivo `docker-compose.yml` são apenas para desenvolvimento. Para produção, substitua-as por credenciais seguras e use variáveis de ambiente.
+
 ### Opção 2: Desenvolvimento Local
 
 #### Backend Setup
@@ -205,7 +216,8 @@ mvn clean install
 3. **Configure o banco de dados**
    - Certifique-se de que MySQL está rodando
    - Crie um banco de dados chamado `Babelup`
-   - Configure as credenciais do banco de dados em `application.properties`
+   - Configure as credenciais do banco de dados em `application.properties` (use credenciais seguras, diferentes das padrões do projeto)
+   - **Importante**: Nunca use as credenciais padrão do repositório em ambientes que não sejam locais
 
 4. **Inicie o backend**
 ```bash
@@ -452,7 +464,7 @@ docker-compose ps
 # Acessar o shell de um container
 docker-compose exec backend bash
 docker-compose exec frontend sh
-docker-compose exec db mysql -u root -p
+# Nota: Para acessar MySQL, use as credenciais configuradas em seu ambiente
 
 # Ver logs de um serviço específico
 docker-compose logs backend
@@ -559,3 +571,5 @@ Contribuindo para uma educação mais inclusiva, tecnológica e eficaz. 🌟
 
 **Última atualização**: Maio de 2026
 **Versão**: 0.0.1-SNAPSHOT
+
+> **Status do Projeto**: Em desenvolvimento ativo com foco em funcionalidades principais de educação, agendamento e rastreamento de progresso.

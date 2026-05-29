@@ -632,7 +632,7 @@ PUT    /api/nivel/{id}              - Atualizar nível
 ### Catálogo
 ```
 GET    /api/catalogo                - Listar cursos disponíveis no catálogo
-GET    /api/catalogo/{id}           - Detaldes de um curso
+GET    /api/catalogo/{id}           - Detalhes de um curso
 ```
 
 ---
@@ -737,7 +737,7 @@ docker-compose logs db
 ```
 
 ### Problemas de autenticação
-- Verifique se o token JWT está sendo enviado no header `Authorization: ******
+- Verifique se o token JWT está sendo enviado corretamente no header: `Authorization: ******
 - Confirme se o token não expirou
 - Verifique a chave secreta do JWT em `application.properties`
 

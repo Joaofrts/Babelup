@@ -35,8 +35,6 @@ O projeto foi idealizado como uma plataforma escalável, segura e intuitiva que 
 
 ---
 
----
-
 ## ✨ Características Principais
 
 ### 👥 Gerenciamento de Usuários
@@ -85,6 +83,8 @@ O repositório contém configurações padrão apenas para fins de desenvolvimen
 - Autenticação com Spring Security
 - Proteção de endpoints com controle de acesso baseado em papéis
 - Validação de dados em entrada
+
+---
 
 ## 🛠 Stack Tecnológico
 

@@ -51,6 +51,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/autenticacao/login").permitAll()
                         .requestMatchers(HttpMethod.GET,"/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/v3/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/catalogo/cursos").permitAll()
 
                         //Rotas para usuarios autenticados
                         .requestMatchers(HttpMethod.POST,"/api/autenticacao/refresh").authenticated()

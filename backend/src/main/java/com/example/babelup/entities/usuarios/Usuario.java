@@ -34,7 +34,7 @@ public abstract class Usuario extends EntidadeAuditavel {
 
     @NotBlank(message = "Senha não pode ser vazia")
     @Size(min = 8, message = "Senha deve ter no mínimo 8 caracteres")
-    @Column(name= "senha_hash",nullable = false)
+    @Column(name= "senha_hash",nullable = false,length = 255)
     private String senha;
 
     @NotNull(message = "Perfil é obrigatório")

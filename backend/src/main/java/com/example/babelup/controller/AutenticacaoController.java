@@ -12,6 +12,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,19 +33,22 @@ public class AutenticacaoController {
     private JwtService jwtService;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private UsuarioService usuarioService;
 
     @PostMapping("/login")
     public ResponseEntity<Object> fazerLogin(@RequestBody LoginDto loginDto) {
         try {
             UsernamePasswordAuthenticationToken credenciais =
-                    new UsernamePasswordAuthenticationToken(loginDto.getEmail(), loginDto.getSenha());
+                    new UsernamePasswordAuthenticationToken(loginDto.email(), loginDto.senha());
 
             // Tenta autenticar o usuário
             Authentication autenticacao = authenticationManager.authenticate(credenciais);
 
             // Busca o usuário no banco de dados
-            Optional<Usuario> usuarioLogado = usuarioService.buscarUsuarioPorEmail(loginDto.getEmail());
+            Optional<Usuario> usuarioLogado = usuarioService.buscarUsuarioPorEmail(loginDto.email());
             if(usuarioLogado.isEmpty()){
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario não encontrado");
             }

@@ -1,10 +1,13 @@
 package com.example.babelup.configuration;
 
+import com.example.babelup.service.AutenticacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,8 +26,14 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Autowired
-    private JwtAuthFilter jwtAuthFilter;
+    private final AutenticacaoService autenticacaoService;
+    private final JwtAuthFilter jwtAuthFilter;
+
+
+    public SecurityConfig(AutenticacaoService autenticacaoService, JwtAuthFilter jwtAuthFilter) {
+        this.autenticacaoService = autenticacaoService;
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -51,6 +60,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/api/modulos/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/modulos/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET,"/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST,"/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT,"/api/admin/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE,"/api/admin/**").hasRole("ADMIN")
 
                         // Qualquer outra requisição precisará de autenticação
                         .anyRequest().authenticated()
@@ -60,7 +72,6 @@ public class SecurityConfig {
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/api/admin/teste")
                 )
-
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
@@ -83,6 +94,7 @@ public class SecurityConfig {
     public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
+
 
     // Definir o algoritmo de criptografia de senhas
     @Bean

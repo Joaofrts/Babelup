@@ -35,9 +35,6 @@ public class UsuarioService {
         }
         Usuario usuario = usuarioFactory.fabricar(usuarioDto);
 
-        String senhaCriptografada = passwordEncoder.encode(usuario.getSenha());
-        usuario.setSenha(senhaCriptografada);
-
         return usuarioRepository.save(usuario);
     }
 

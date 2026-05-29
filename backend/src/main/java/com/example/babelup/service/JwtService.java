@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
@@ -26,33 +27,36 @@ public class JwtService {
     @Value("${api.security.token.refresh_expiration_ms}")
     private long refreshExpirationMs;
 
-    private Key getChaveAssinatura() {
+    private SecretKey getChaveAssinatura() {
         return Keys.hmacShaKeyFor(CHAVE_SECRETA.getBytes(StandardCharsets.UTF_8));
     }
 
     public String gerarToken(Usuario usuario) {
         return Jwts.builder()
-                .setSubject(usuario.getEmail())
+                .subject(usuario.getEmail())
                 .claim("perfil", usuario.getPerfil().name())
                 .claim("nome", usuario.getNome())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
-                .signWith(getChaveAssinatura(), SignatureAlgorithm.HS256)
+                .issuedAt(new Date())
+                .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+                .signWith(getChaveAssinatura())
                 .compact();
     }
 
     public String gerarRefreshToken(Usuario usuario) {
         return Jwts.builder()
-                .setSubject(usuario.getEmail())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + refreshExpirationMs)) // 1 hora
-                .signWith(getChaveAssinatura(), SignatureAlgorithm.HS256)
+                .subject(usuario.getEmail())
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + refreshExpirationMs)) // 1 hora
+                .signWith(getChaveAssinatura())
                 .compact();
     }
 
     public boolean isTokenValido(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(getChaveAssinatura()).build().parseClaimsJws(token);
+            Jwts.parser()
+                    .verifyWith(getChaveAssinatura())
+                    .build()
+                    .parseSignedClaims(token);
             return true;
         } catch (Exception e) {
             logger.error("Token JWT inválido ou expirado: {}", e.getMessage());
@@ -61,11 +65,11 @@ public class JwtService {
     }
 
     public String extrairEmailUsuario(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(getChaveAssinatura())
+        return Jwts.parser()
+                .verifyWith(getChaveAssinatura())
                 .build()
-                .parseClaimsJws(token)
-                .getBody()
+                .parseSignedClaims(token)
+                .getPayload()
                 .getSubject();
     }
 }

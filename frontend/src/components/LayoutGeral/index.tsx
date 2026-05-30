@@ -1,4 +1,3 @@
-import React from 'react';
 import { Outlet, useNavigation } from 'react-router-dom';
 
 export default function LayoutGeral() {

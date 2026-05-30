@@ -18,13 +18,10 @@ public class UsuarioService {
 
 
     private final UsuarioRepository usuarioRepository;
-
-    private final PasswordEncoder passwordEncoder;
     private final UsuarioFactory usuarioFactory;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, PasswordEncoder passwordEncoder, UsuarioFactory usuarioFactory) {
+    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioFactory usuarioFactory) {
         this.usuarioRepository = usuarioRepository;
-        this.passwordEncoder = passwordEncoder;
         this.usuarioFactory = usuarioFactory;
     }
 

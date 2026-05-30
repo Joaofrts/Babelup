@@ -94,6 +94,8 @@ API.interceptors.response.use(
         // Libera a trava de refresh independentemente de sucesso ou falha
         isRefreshing = false;
       }
+    }else if(error.response?.status===400){
+      return Promise.resolve([])
     }
 
     // Se o erro não for 401, apenas repassa o erro para o componente lidar (ex: ErrorBoundary)

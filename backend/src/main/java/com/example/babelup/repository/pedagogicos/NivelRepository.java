@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface NivelRepository extends JpaRepository<Nivel, UUID> {
     Optional<Nivel> findByNome(String nome);
 
+    Optional<Object> findByNomeAndIdioma(String nome, String idioma);
 }

@@ -2,7 +2,6 @@ package com.example.babelup.controller;
 
 import com.example.babelup.dto.*;
 import com.example.babelup.entities.estruturaAcademica.Modulo;
-import com.example.babelup.entities.estruturaAcademica.Nivel;
 import com.example.babelup.entities.usuarios.Usuario;
 import com.example.babelup.service.ModuloService;
 import com.example.babelup.service.NivelService;
@@ -62,12 +61,10 @@ public class AdminController {
     @PostMapping("/niveis/criar")
     public ResponseEntity<Object> criarNivel(@RequestBody AdicionarNivelDto dto) {
         try {
-            if (dto.getNome() == null || dto.getNome().isEmpty()) {
+            if (dto.nome() == null || dto.nome().isEmpty()) {
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Nome do nível é obrigatório");
             }
-
-            Nivel nivel = nivelService.criarNivel(dto.getNome(), dto.getCargaHorariaEstimada());
-            AdicionarNivelDto resposta = new AdicionarNivelDto(nivel.getId(), nivel.getNome(), nivel.getCargaHoraria());
+            RespostaNivelDto resposta = nivelService.criarNivel(dto);
             return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
@@ -81,8 +78,7 @@ public class AdminController {
     @PutMapping("/niveis/{id}")
     public ResponseEntity<Object> atualizarNivel(@PathVariable UUID id, @RequestBody AdicionarNivelDto dto) {
         try {
-            Nivel nivel = nivelService.atualizarNivel(id, dto.getNome(), dto.getCargaHorariaEstimada());
-            AdicionarNivelDto resposta = new AdicionarNivelDto(nivel.getId(), nivel.getNome(), nivel.getCargaHoraria());
+            RespostaNivelDto resposta = nivelService.atualizarNivel(id, dto.nome(), dto.cargaHoraria());
             return ResponseEntity.ok(resposta);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

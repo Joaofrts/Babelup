@@ -1,5 +1,6 @@
 package com.example.babelup.entities.estruturaAcademica;
 
+import com.example.babelup.dto.AdicionarNivelDto;
 import com.example.babelup.entities.base.EntidadeAuditavel;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -60,10 +61,15 @@ public class Nivel extends EntidadeAuditavel {
         this.ordem = ordem;
     }
 
-    public Nivel(String idioma, String nome, Integer ordem, String descricao, BigDecimal precoMensal) {
+    public Nivel(String idioma, String nome, Integer ordem, String descricao, BigDecimal precoMensal, Integer cargaHoraria) {
         this(idioma, nome, ordem);
         this.descricao = descricao;
         this.precoMensal = precoMensal;
+        this.cargaHoraria = cargaHoraria;
+    }
+
+    public Nivel(AdicionarNivelDto dto) {
+        this(dto.idioma(), dto.nome(), dto.ordem(), dto.descricao(), dto.precoMensal(), dto.cargaHoraria());
     }
 
     public String getIdioma() {

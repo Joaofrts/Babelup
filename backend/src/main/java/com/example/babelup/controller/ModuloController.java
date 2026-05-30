@@ -2,7 +2,10 @@ package com.example.babelup.controller;
 
 import com.example.babelup.dto.RespostaModuloDto;
 import com.example.babelup.entities.estruturaAcademica.Modulo;
+import com.example.babelup.factory.AdminCreationStrategy;
 import com.example.babelup.service.ModuloService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +21,7 @@ public class ModuloController {
 
 
     private final ModuloService moduloService;
+    private static final Logger logger = LoggerFactory.getLogger(ModuloController.class);
 
 
     public ModuloController(ModuloService moduloService){
@@ -29,8 +33,8 @@ public class ModuloController {
     public ResponseEntity<Object> listarModulos() {
         try {
             List<Modulo> modulos = moduloService.listarModulos();
-            List<RespostaModuloDto> dtos = modulos.stream().map(m-> new RespostaModuloDto(m))
-                    .collect(Collectors.toList());
+            List<RespostaModuloDto> dtos = modulos.stream().map(RespostaModuloDto::new)
+                    .toList();
             return ResponseEntity.ok(dtos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -40,9 +44,9 @@ public class ModuloController {
 
     // GET /api/modulos/{id} - Obter módulo específico
     @GetMapping("/{id}")
-    public ResponseEntity<Object> obterModulo(@PathVariable UUID id) {
+    public ResponseEntity<Object> obterModulo(@PathVariable String id) {
         try {
-            Optional<Modulo> modulo = moduloService.obterModulo(id);
+            Optional<Modulo> modulo = moduloService.obterModulo(UUID.fromString(id));
             if (modulo.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Módulo não encontrado");
             }
@@ -57,29 +61,22 @@ public class ModuloController {
 
     // GET /api/modulos/nivel/{nivelId} - Obter módulos de um nível
         @GetMapping("/nivel/{nivelId}")
-    public ResponseEntity<Object> obterModulosPorNivel(@PathVariable UUID nivelId) {
+    public ResponseEntity<Object> obterModulosPorNivel(@PathVariable String nivelId) {
         try {
-            List<Modulo> modulos = moduloService.obterModulosPorNivel(nivelId);
+            List<Modulo> modulos = moduloService.obterModulosPorNivel(UUID.fromString(nivelId));
             List<RespostaModuloDto> dtos = modulos.stream()
-                    .map(m -> new RespostaModuloDto(m))
-                    .collect(Collectors.toList());
+                    .map(RespostaModuloDto::new)
+                    .toList();
             return ResponseEntity.ok(dtos);
-        } catch (Exception e) {
+        }catch(IllegalArgumentException e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("ID de nível inválido: " + e.getMessage());
+        }catch (Exception e) {
+            logger.warn("⚠️  ERRO AO OBTER MÓDULOS POR NÍVEL: nivelId={}, erro={}", nivelId, e.getClass().getSimpleName());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro ao obter módulos do nível: " + e.getMessage());
         }
     }
-
-    // POST /api/modulos - Criar novo módulo
-
-
-    // DELETE /api/modulos/{id} - Deletar módulo
-
-
-    // POST /api/modulos/{moduloId}/submeter-exercicio - Registrar conclusão de exercício
-
-
-    // GET /api/modulos/{moduloId}/progresso/{alunoId} - Obter progresso do aluno
 
 
 

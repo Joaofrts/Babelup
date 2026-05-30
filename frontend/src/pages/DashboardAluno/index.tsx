@@ -18,7 +18,7 @@ export async function dashboardAlunoLoader({ request }: { request: Request }) {
   const [progressoResponse, niveisResponse, modulosResponse] = await Promise.all([
     API.get('/alunos/meu-perfil', {signal: request.signal}),
     API.get('/niveis/listar', {signal: request.signal}),
-    API.get('modulos/nivel/1', {signal: request.signal})
+    API.get('/modulos/nivel/1', {signal: request.signal})
   ])
   
   return {
@@ -64,13 +64,13 @@ export default function DashboardAluno() {
           {/* Barra de Progresso Visual */}
           <div style={{ width: '100%', background: '#e0e0e0', height: '24px', borderRadius: '12px', overflow: 'hidden', marginTop: '15px' }}>
             <div style={{ 
-              width: `${dados.progressoGeral}%`, 
+              width: `${dados.perfil.progressoGeral}%`, 
               background: '#4caf50', 
               height: '100%', 
               transition: 'width 0.5s ease-in-out' 
             }} />
           </div>
-          <p style={{ marginTop: '10px', color: '#555', fontWeight: 'bold' }}>{dados.progressoGeral}% concluído</p>
+          <p style={{ marginTop: '10px', color: '#555', fontWeight: 'bold' }}>{dados.perfil.progressoGeral}% concluído</p>
         </div>
 
         <button style={{ marginTop: '30px', padding: '15px 30px', background: '#007bff', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '16px', width: '100%' }}>

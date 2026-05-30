@@ -1,6 +1,7 @@
 package com.example.babelup.controller;
 
 import com.example.babelup.dto.AdicionarNivelDto;
+import com.example.babelup.dto.RespostaNivelDto;
 import com.example.babelup.entities.estruturaAcademica.Nivel;
 import com.example.babelup.service.NivelService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,8 @@ public class NivelController {
     public ResponseEntity<Object> listarNiveis() {
         try {
             List<Nivel> niveis = nivelService.listarNiveis();
-            List<AdicionarNivelDto> dtos = niveis.stream()
-                    .map(n -> new AdicionarNivelDto(n.getId(), n.getNome(), n.getCargaHoraria()))
+            List<RespostaNivelDto> dtos = niveis.stream()
+                    .map(n -> new RespostaNivelDto(n))
                     .collect(Collectors.toList());
             return ResponseEntity.ok(dtos);
         } catch (Exception e) {
@@ -37,14 +38,15 @@ public class NivelController {
 
     // GET /api/niveis/{id} - Obter nível específico
     @GetMapping("/{id}")
-    public ResponseEntity<Object> obterNivel(@PathVariable UUID id) {
+    public ResponseEntity<Object> obterNivel(@PathVariable String id) {
         try {
-            Optional<Nivel> nivel = nivelService.obterNivel(id);
+
+            Optional<Nivel> nivel = nivelService.obterNivel(UUID.fromString(id));
             if (nivel.isEmpty()) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nível não encontrado");
             }
             Nivel n = nivel.get();
-            AdicionarNivelDto dto = new AdicionarNivelDto(n.getId(), n.getNome(), n.getCargaHoraria());
+            RespostaNivelDto dto = new RespostaNivelDto(n);
             return ResponseEntity.ok(dto);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -1,12 +1,10 @@
 package com.example.babelup.service;
 
-import com.example.babelup.entities.estruturaAcademica.Modulo;
+import com.example.babelup.dto.AdicionarNivelDto;
+import com.example.babelup.dto.RespostaNivelDto;
 import com.example.babelup.entities.estruturaAcademica.Nivel;
-import com.example.babelup.entities.progressoGamificacao.ProgressoAluno;
-import com.example.babelup.repository.pedagogicos.ModuloRepository;
 import com.example.babelup.repository.pedagogicos.NivelRepository;
-import com.example.babelup.repository.pedagogicos.ProgressoAlunoRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,23 +14,18 @@ import java.util.UUID;
 @Service
 public class NivelService {
 
-    @Autowired
-    private NivelRepository nivelRepository;
+    private final NivelRepository nivelRepository;
 
-    @Autowired
-    private ModuloRepository moduloRepository;
+    public NivelService(NivelRepository nivelRepository) {
+        this.nivelRepository = nivelRepository;
+    }
 
-    @Autowired
-    private ProgressoAlunoRepository progressoAlunoRepository;
-
-    public Nivel criarNivel(String nome, Integer cargaHorariaEstimada) {
-        if (nivelRepository.findByNome(nome).isPresent()) {
-            throw new IllegalArgumentException("Nível com nome '" + nome + "' já existe");
+    public RespostaNivelDto criarNivel(AdicionarNivelDto dto) {
+        if (nivelRepository.findByNomeAndIdioma(dto.nome(),dto.idioma()).isPresent()) {
+            throw new IllegalArgumentException("Idioma '"+dto.idioma()+"' com nivel '" + dto.nome() + "' já existe");
         }
-        Nivel nivel = new Nivel();
-        nivel.setNome(nome);
-        nivel.setCargaHoraria(cargaHorariaEstimada);
-        return nivelRepository.save(nivel);
+        Nivel nivelSalvo = nivelRepository.save(new Nivel(dto));
+        return new RespostaNivelDto(nivelSalvo);
     }
 
     // Obter todos os níveis
@@ -46,37 +39,23 @@ public class NivelService {
     }
 
     // Atualizar nível
-    public Nivel atualizarNivel(UUID id, String nome, Integer cargaHorariaEstimada) {
+    @Transactional
+    public RespostaNivelDto atualizarNivel(UUID id, String descricao, Integer cargaHorariaEstimada) {
         Optional<Nivel> nivel = nivelRepository.findById(id);
         if (nivel.isEmpty()) {
             throw new IllegalArgumentException("Nível não encontrado");
         }
         Nivel n = nivel.get();
-        n.setNome(nome);
+        n.setDescricao(descricao);
         n.setCargaHoraria(cargaHorariaEstimada);
-        return nivelRepository.save(n);
+        Nivel nivelAlterado = nivelRepository.save(n);
+        return new RespostaNivelDto(nivelAlterado);
     }
 
     public void deletarNivel(UUID id) {
         nivelRepository.deleteById(id);
     }
 
-    public boolean podeProgressarParaProximo(UUID alunoId, UUID nivelAtualId) {
-        Nivel nivel = nivelRepository.findById(nivelAtualId)
-                .orElseThrow(() -> new IllegalArgumentException("Nível não encontrado"));
-
-        List<Modulo> modulosNivel = moduloRepository.findByNivelIdOrderByOrdemAsc(nivelAtualId);
-
-        for (Modulo modulo : modulosNivel) {
-            Optional<ProgressoAluno> progresso = progressoAlunoRepository.findByAlunoIdAndModuloId(alunoId, modulo.getId());
-
-            if (progresso.isEmpty() || !progresso.get().isConcluido()) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     // Obter próximo nível
     public Optional<Nivel> obterProximoNivel(UUID nivelAtualId) {

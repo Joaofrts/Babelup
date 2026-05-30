@@ -2,54 +2,19 @@ package com.example.babelup.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
-public class AdicionarNivelDto {
-    
-    @JsonProperty("id")
-    private UUID id;
-
-    @JsonProperty("idioma")
-    private String idioma;
-    
-    @JsonProperty("nome")
-    private String nome;
-    
-    @JsonProperty("carga_horaria_estimada")
-    private Integer cargaHorariaEstimada;
-
-    @JsonProperty("descricao")
-    private String descricao;
-
-    public AdicionarNivelDto() {}
-
-    public AdicionarNivelDto(UUID id, String nome, Integer cargaHorariaEstimada) {
-        this.id = id;
-        this.nome = nome;
-        this.cargaHorariaEstimada = cargaHorariaEstimada;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public Integer getCargaHorariaEstimada() {
-        return cargaHorariaEstimada;
-    }
-
-    public void setCargaHorariaEstimada(Integer cargaHorariaEstimada) {
-        this.cargaHorariaEstimada = cargaHorariaEstimada;
-    }
-}
+public record AdicionarNivelDto(
+        @JsonProperty("idioma")
+        String idioma,
+        @JsonProperty("nome")
+        String nome,
+        @JsonProperty("ordem")
+        Integer ordem,
+        @JsonProperty("carga_horaria")
+        Integer cargaHoraria,
+        @JsonProperty("descricao")
+        String descricao,
+        @JsonProperty("preco_mensal")
+        BigDecimal precoMensal) {}

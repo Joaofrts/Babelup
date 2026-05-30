@@ -71,31 +71,6 @@ public class ModuloService {
     }
 
 
-    public boolean podeAcessarModulo(UUID alunoId, UUID moduloId) {
-        Modulo moduloAtual = moduloRepository.findById(moduloId)
-                .orElseThrow(() -> new IllegalArgumentException("Módulo não encontrado"));
-
-        if (moduloAtual.getOrdem() == 1) {
-            return true;
-        }
-
-
-        Optional<Modulo> moduloAnteriorOpt = moduloRepository.findByNivelIdAndOrdem(
-                moduloAtual.getNivel().getId(),
-                moduloAtual.getOrdem() - 1
-        );
-
-        if (moduloAnteriorOpt.isEmpty()) {
-
-            return false;
-        }
-
-        Modulo moduloAnterior = moduloAnteriorOpt.get();
-
-        // A validação final de status "CONCLUIDO" é delegada ao ProgressoService
-        return progressoService.moduloFoiConcluido(alunoId, moduloAnterior.getId());
-    }
-
 
     public Optional<Modulo> obterProximoModulo(UUID nivelId, Integer ordemAtual) {
         return moduloRepository.findByNivelIdAndOrdem(nivelId, ordemAtual + 1);

@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.UUID;
 
-public class NivelDto {
+public class AdicionarNivelDto {
     
     @JsonProperty("id")
     private UUID id;
+
+    @JsonProperty("idioma")
+    private String idioma;
     
     @JsonProperty("nome")
     private String nome;
@@ -15,9 +18,12 @@ public class NivelDto {
     @JsonProperty("carga_horaria_estimada")
     private Integer cargaHorariaEstimada;
 
-    public NivelDto() {}
+    @JsonProperty("descricao")
+    private String descricao;
 
-    public NivelDto(UUID id, String nome, Integer cargaHorariaEstimada) {
+    public AdicionarNivelDto() {}
+
+    public AdicionarNivelDto(UUID id, String nome, Integer cargaHorariaEstimada) {
         this.id = id;
         this.nome = nome;
         this.cargaHorariaEstimada = cargaHorariaEstimada;

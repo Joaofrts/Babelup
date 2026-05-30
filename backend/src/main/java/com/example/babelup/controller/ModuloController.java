@@ -1,16 +1,8 @@
 package com.example.babelup.controller;
 
-import com.example.babelup.dto.AdicionarModuloDto;
-import com.example.babelup.dto.RespostaProgressoDto;
 import com.example.babelup.dto.RespostaModuloDto;
-import com.example.babelup.dto.UpdateModuloDto;
 import com.example.babelup.entities.estruturaAcademica.Modulo;
-import com.example.babelup.entities.progressoGamificacao.ProgressoAluno;
-import com.example.babelup.entities.usuarios.Usuario;
-import com.example.babelup.repository.usuarios.UsuarioRepository;
 import com.example.babelup.service.ModuloService;
-import com.example.babelup.service.ProgressoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,14 +16,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/modulos")
 public class ModuloController {
 
-    @Autowired
-    private ModuloService moduloService;
 
-    @Autowired
-    private ProgressoService progressoService;
+    private final ModuloService moduloService;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
+
+    public ModuloController(ModuloService moduloService){
+        this.moduloService = moduloService;
+    }
 
     // GET /api/modulos/listar - Listar todos os módulos
     @GetMapping("/listar")
@@ -65,7 +56,7 @@ public class ModuloController {
     }
 
     // GET /api/modulos/nivel/{nivelId} - Obter módulos de um nível
-    @GetMapping("/nivel/{nivelId}")
+        @GetMapping("/nivel/{nivelId}")
     public ResponseEntity<Object> obterModulosPorNivel(@PathVariable UUID nivelId) {
         try {
             List<Modulo> modulos = moduloService.obterModulosPorNivel(nivelId);
@@ -80,100 +71,16 @@ public class ModuloController {
     }
 
     // POST /api/modulos - Criar novo módulo
-    @PostMapping("/criar")
-    public ResponseEntity<Object> criarModulo(@RequestBody AdicionarModuloDto dto) {
-        try {
-            if (dto.getNivelId() == null || dto.getTitulo() == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body("nivelId e título são obrigatórios");
-            }
 
-            Modulo modulo = moduloService.criarModulo(dto.getNivelId(), dto.getTitulo(),dto.getDescricao(), dto.getOrdem(),dto.getCargaHorariaMinima());
-            
-            RespostaModuloDto resposta = new RespostaModuloDto( modulo.getId(),modulo.getTitulo(),modulo.getDescricao(),
-                    modulo.getVideoAulas(), modulo.getMateriaisApoio(), modulo.getNivel().getId(),
-                    modulo.getOrdem());
-            return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao criar módulo: " + e.getMessage());
-        }
-    }
-
-    // PUT /api/modulos/{id} - Atualizar módulo
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> atualizarModulo(@PathVariable UUID id, @RequestBody UpdateModuloDto dto) {
-        try {
-            Modulo modulo = moduloService.atualizarModulo(id, dto.getTitulo(),dto.getDescricao(),
-                    dto.getOrdem(), dto.getCargaHorariaMinima());
-            
-            RespostaModuloDto resposta = new RespostaModuloDto(modulo);
-            return ResponseEntity.ok(resposta);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao atualizar módulo: " + e.getMessage());
-        }
-    }
 
     // DELETE /api/modulos/{id} - Deletar módulo
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deletarModulo(@PathVariable UUID id) {
-        try {
-            moduloService.deletarModulo(id);
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao deletar módulo: " + e.getMessage());
-        }
-    }
+
 
     // POST /api/modulos/{moduloId}/submeter-exercicio - Registrar conclusão de exercício
-    @PostMapping("/{moduloId}/submeter-exercicio")
-    public ResponseEntity<Object> submeterExercicio(
-            @PathVariable UUID moduloId,
-            @RequestParam UUID alunoId,
-            @RequestParam Double nota) {
-        try {
-            Usuario aluno = usuarioRepository.findById(alunoId)
-                    .orElseThrow(() -> new IllegalArgumentException("Aluno não encontrado"));
-            
-            Modulo modulo = moduloService.obterModulo(moduloId)
-                    .orElseThrow(() -> new IllegalArgumentException("Módulo não encontrado"));
 
-            ProgressoAluno progresso = progressoService.atualizarProgressoModulo(aluno, modulo, 100.0);
-            
-            RespostaProgressoDto dto = new RespostaProgressoDto(progresso);
-            
-            return ResponseEntity.status(HttpStatus.CREATED).body(dto);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao submeter exercício: " + e.getMessage());
-        }
-    }
 
     // GET /api/modulos/{moduloId}/progresso/{alunoId} - Obter progresso do aluno
-    @GetMapping("/{moduloId}/progresso/{alunoId}")
-    public ResponseEntity<Object> obterProgresso(@PathVariable UUID moduloId, @PathVariable UUID alunoId) {
-        try {
-            ProgressoAluno progresso = progressoService.obterProgresso(alunoId, moduloId);
-            if (progresso == null) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Progresso não encontrado");
-            }
 
-            RespostaProgressoDto dto = new RespostaProgressoDto(progresso);
-            
-            return ResponseEntity.ok(dto);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Erro ao obter progresso: " + e.getMessage());
-        }
-    }
 
 
 }

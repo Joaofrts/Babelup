@@ -15,17 +15,22 @@ interface DadosAluno {
 export async function dashboardAlunoLoader({ request }: { request: Request }) {
   // Passamos o 'request.signal' para o Axios. Se o aluno clicar em "Voltar" 
   // antes da requisição terminar, o Axios cancela a chamada para poupar internet [5, 6].
-  const response = await API.get('/alunos/meu-perfil', {
-    signal: request.signal
-  });
+  const [progressoResponse, niveisResponse, modulosResponse] = await Promise.all([
+    API.get('/alunos/meu-perfil', {signal: request.signal}),
+    API.get('/niveis/listar', {signal: request.signal}),
+    API.get('modulos/nivel/1', {signal: request.signal})
+  ])
   
-  return response.data;
-}
+  return {
+    perfil: progressoResponse.data,
+    niveis: niveisResponse,
+    modulos: modulosResponse 
+}}
 
 // 3. O Componente Visual
 export default function DashboardAluno() {
   // O React Router nos entrega os dados que o Loader buscou já tipados! [3]
-  const dados = useLoaderData() as DadosAluno;
+  const dados = useLoaderData() as any;
   const navigate = useNavigate();
 
   const lidarComLogout = () => {
@@ -54,7 +59,7 @@ export default function DashboardAluno() {
         
         {/* Card de Progresso (RF-011) */}
         <div style={{ background: '#f9f9f9', padding: '25px', borderRadius: '10px', marginTop: '20px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
-          <h3 style={{ margin: '0 0 10px 0' }}>Trilha: Nível {dados.nivelAtual}</h3>
+          <h3 style={{ margin: '0 0 10px 0' }}>Trilha: Nível {dados.perfil.nivelAtual}</h3>
           
           {/* Barra de Progresso Visual */}
           <div style={{ width: '100%', background: '#e0e0e0', height: '24px', borderRadius: '12px', overflow: 'hidden', marginTop: '15px' }}>

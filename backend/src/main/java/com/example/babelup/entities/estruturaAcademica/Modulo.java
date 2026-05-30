@@ -36,9 +36,6 @@ public class Modulo extends EntidadeAuditavel {
     @PositiveOrZero(message = "Carga horária mínima não pode ser negativa")
     private Integer cargaHorariaMinima;
 
-    @Column(name = "preco_mensal", precision = 10, scale = 2)
-    @DecimalMin(value = "0.00", inclusive = true, message = "Preço mensal deve ser positivo ou zero")
-    private BigDecimal precoMensal;
 
     @NotNull(message = "Nivel não pode ser nulo")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -70,11 +67,11 @@ public class Modulo extends EntidadeAuditavel {
         this.nivel = nivel;
     }
 
-    public Modulo(String titulo, String descricao, Integer ordem, Integer cargaHorariaMinima, Nivel nivel, BigDecimal precoMensal) {
+    public Modulo(String titulo, String descricao, Integer ordem, Integer cargaHorariaMinima, Nivel nivel) {
         this(titulo, ordem, nivel);
         this.descricao = descricao;
         this.cargaHorariaMinima = cargaHorariaMinima;
-        this.precoMensal = precoMensal;
+
 
     }
 
@@ -120,18 +117,6 @@ public class Modulo extends EntidadeAuditavel {
 
     public List<VideoAula> getVideoAulas() {
         return videoAulas;
-    }
-
-    public BigDecimal getPrecoMensal() {
-        return precoMensal;
-    }
-
-    public void setPrecoMensal(BigDecimal precoMensal) {
-        this.precoMensal = precoMensal;
-    }
-
-    public void setVideoAulas(List<VideoAula> videoAulas) {
-        this.videoAulas = videoAulas;
     }
 
     public List<MaterialApoio> getMateriaisApoio() {

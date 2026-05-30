@@ -2,15 +2,21 @@ package com.example.babelup.controller;
 
 import com.example.babelup.dto.NovoUsuarioDto;
 import com.example.babelup.dto.PerfilAlunoDto;
+import com.example.babelup.dto.RespostaModuloDto;
+import com.example.babelup.entities.estruturaAcademica.Modulo;
 import com.example.babelup.entities.usuarios.Usuario;
 import com.example.babelup.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/alunos")

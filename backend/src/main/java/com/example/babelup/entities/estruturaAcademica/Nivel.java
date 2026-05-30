@@ -2,11 +2,9 @@ package com.example.babelup.entities.estruturaAcademica;
 
 import com.example.babelup.entities.base.EntidadeAuditavel;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -40,6 +38,10 @@ public class Nivel extends EntidadeAuditavel {
     @Column(nullable = false)
     private Integer ordem;
 
+    @Column(name = "preco_mensal", precision = 10, scale = 2)
+    @DecimalMin(value = "0.00", inclusive = true, message = "Preço mensal deve ser positivo ou zero")
+    private BigDecimal precoMensal;
+
     @OneToMany(
             mappedBy = "nivel",
             cascade = CascadeType.ALL,
@@ -58,9 +60,10 @@ public class Nivel extends EntidadeAuditavel {
         this.ordem = ordem;
     }
 
-    public Nivel(String idioma, String nome, Integer ordem, String descricao) {
+    public Nivel(String idioma, String nome, Integer ordem, String descricao, BigDecimal precoMensal) {
         this(idioma, nome, ordem);
         this.descricao = descricao;
+        this.precoMensal = precoMensal;
     }
 
     public String getIdioma() {
@@ -101,6 +104,14 @@ public class Nivel extends EntidadeAuditavel {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public BigDecimal getPrecoMensal() {
+        return precoMensal;
+    }
+
+    public void setPrecoMensal(BigDecimal precoMensal) {
+        this.precoMensal = precoMensal;
     }
 
     public Integer getCargaHoraria() {

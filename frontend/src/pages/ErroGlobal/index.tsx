@@ -1,4 +1,3 @@
-import React from 'react';
 import { useRouteError, isRouteErrorResponse, Link } from 'react-router-dom';
 
 export default function ErroGlobal() {
@@ -28,7 +27,7 @@ export default function ErroGlobal() {
       
       <Link 
         to="/" 
-        style={{ padding: '10px 20px', background: '#007bff', color: 'white', textDecoration: 'none', borderRadius: '5px' }}
+        style={{ padding: '10px 20px', background: '#214A85', color: 'white', textDecoration: 'none', borderRadius: '5px' }}
       >
         Voltar para o Início
       </Link>

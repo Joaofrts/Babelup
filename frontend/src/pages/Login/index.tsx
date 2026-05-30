@@ -1,80 +1,103 @@
-import { Form, useNavigation, useActionData, redirect } from 'react-router-dom';
+import { Form, useNavigation, useActionData, redirect, Link } from 'react-router-dom';
 import { API } from '../../services/api';
 import axios from 'axios';
+import logoAzul from '../../assets/LogoAzul.png';
+import './style.css';
 
-// 1. A Ação: Roda nos bastidores quando o formulário é enviado [15]
+// 1. A Ação: Roda nos bastidores quando o formulário é enviado
 export async function loginAction({ request }: { request: Request }) {
-  // Pega os dados do formulário nativo do HTML [16]
+  // Pega os dados do formulário nativo do HTML
   const formData = await request.formData();
   const dadosLogin = Object.fromEntries(formData);
 
   try {
-    // Enviamos para o Java passando o "signal" para cancelamento automático [5, 6]
-    const response = await API.post('/autenticacao/login', dadosLogin, { 
-      signal: request.signal 
+    // Envia os dados para o backend
+    const response = await API.post('/autenticacao/login', dadosLogin, {
+      signal: request.signal,
     });
-    
-    // Sucesso: Salva o token e redireciona (o React Router gerencia isso) [13]
+
+    // Sucesso: salva os tokens e redireciona
     localStorage.setItem('token', response.data.token);
     localStorage.setItem('refreshToken', response.data.refreshToken);
-    return redirect('/dashboard');  
 
-  }catch (error: unknown) {
-    // Verifica se o erro foi gerado pelo Axios [11, 12]
+    return redirect('/dashboard');
+  } catch (error: unknown) {
+    // Verifica se o erro foi gerado pelo Axios
     if (axios.isAxiosError(error)) {
       if (error.response) {
-        // O servidor Java respondeu com erro (ex: 401 Email ou senha incorretos) [11, 13]
+        // Erro de login inválido
         if (error.response.status === 401 || error.response.status === 403) {
-          return { error: "E-mail ou senha incorretos." };
+          return { error: 'E-mail ou senha incorretos.' };
         }
-        // Se o Java mandar uma mensagem de validação customizada, pegamos ela [13]
-        return { error: error.response.data?.message || "Falha na requisição." };
-      } else if (error.request) {
-        // A requisição foi feita, mas o Java está desligado (Erro de Rede / CORS) [11, 13]
-        // Se o Java estiver desligado, isso fará a Tela de Erro Global assumir o controle! [5]
-        throw new Response("Backend indisponível", { status: 503 }); 
+
+        // Mensagem customizada vinda do backend
+        return {
+          error: error.response.data?.message || 'Falha na requisição.',
+        };
+      }
+
+      if (error.request) {
+        // Backend indisponível
+        throw new Response('Backend indisponível', { status: 503 });
       }
     }
-    
-    // Erros genéricos ou cancelamentos de requisição [11]
-    return { error: "Erro interno no sistema." };
+
+    // Erro genérico
+    return { error: 'Erro interno no sistema.' };
   }
 }
 
-// 2. A Tela (Componente Visual)
+// 2. Tela de Login
 export default function Login() {
   const navigation = useNavigation();
-  const actionData = useActionData() as { error?: string };
-  
-  // O React Router nos diz se a requisição está acontecendo (submitting) [18, 19]
+  const actionData = useActionData() as { error?: string } | undefined;
+
   const isSubmitting = navigation.state === 'submitting';
 
   return (
-    <div style={{ padding: '50px', maxWidth: '400px', margin: '0 auto' }}>
-      <h2>Login - BabelUp</h2>
-      
-      {/* Exibe o erro devolvido pela Action, se houver */}
-      {actionData?.error && <p style={{ color: 'red' }}>{actionData.error}</p>}
+    <main className="login-page">
+      <div className="login-overlay">
+        <section className="login-card">
+          <div className="login-logo-area">
+            <img src={logoAzul} alt="Logo BabelUp" className="login-logo" />
 
-      {/* O componente Form substitui o form tradicional do HTML e o onSubmit [4] */}
-      <Form method="post">
-        
-        <div style={{ marginBottom: '15px' }}>
-          <label>E-mail:</label> <br />
-          {/* Note que o atributo 'name' dita a chave enviada no JSON [4] */}
-          <input name="email" type="email" required style={{ width: '100%', padding: '8px' }} />
-        </div>
+          </div>
 
-        <div style={{ marginBottom: '15px' }}>
-          <label>Senha:</label> <br />
-          <input name="senha" type="password" required style={{ width: '100%', padding: '8px' }} />
-        </div>
+          <h1>Portal do Aluno</h1>
+          <p> </p>
 
-        {/* Desabilita o botão enquanto aguarda o servidor (Feedback visual) [20] */}
-        <button type="submit" disabled={isSubmitting} style={{ width: '100%', padding: '10px' }}>
-          {isSubmitting ? 'Verificando...' : 'Entrar'}
-        </button>
-      </Form>
-    </div>
+          {actionData?.error && (
+            <p className="login-error">{actionData.error}</p>
+          )}
+
+          <Form method="post" className="login-form">
+            <input
+              name="email"
+              type="email"
+              placeholder="E-mail"
+              required
+            />
+
+            <input
+              name="senha"
+              type="password"
+              placeholder="Senha"
+              required
+            />
+
+            <button type="submit" disabled={isSubmitting}>
+              {isSubmitting ? 'Verificando...' : 'Acessar'}
+            </button>
+          </Form>
+
+          <a href="#" className="forgot-password">
+            Esqueceu sua senha?
+          </a>
+        </section>
+        <Link to="/" className="login-back-button">
+          Voltar
+        </Link>
+      </div>
+    </main>
   );
 }

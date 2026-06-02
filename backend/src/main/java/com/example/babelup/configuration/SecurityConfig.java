@@ -52,9 +52,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET,"/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/catalogo/cursos").permitAll()
-
-                        //Rotas para usuarios autenticados
-                        .requestMatchers(HttpMethod.POST,"/api/autenticacao/refresh").authenticated()
+                        .requestMatchers(HttpMethod.POST,"/api/autenticacao/refresh").permitAll()
 
                         // 2. Rotas restritas ao Administrador
                         .requestMatchers(HttpMethod.POST, "/api/modulos").hasRole("ADMIN")

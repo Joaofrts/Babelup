@@ -1,8 +1,8 @@
 package com.example.babelup.dto;
 
+import com.example.babelup.dto.ApiResponseDtos.MaterialApoioResponse;
+import com.example.babelup.dto.ApiResponseDtos.VideoAulaResponse;
 import com.example.babelup.entities.estruturaAcademica.Modulo;
-import com.example.babelup.entities.pratica.MaterialApoio;
-import com.example.babelup.entities.pratica.VideoAula;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -20,10 +20,10 @@ public class RespostaModuloDto {
     private String descricao;
 
     @JsonProperty("videoaulas")
-    private List<VideoAula> videoAulas;
+    private List<VideoAulaResponse> videoAulas;
 
     @JsonProperty("url_pdf")
-    private List<MaterialApoio> materialApoios;
+    private List<MaterialApoioResponse> materialApoios;
 
     @JsonProperty("nivel_id")
     private UUID nivelId;
@@ -40,14 +40,14 @@ public class RespostaModuloDto {
         this.id = modulo.getId();
         this.titulo = modulo.getTitulo();
         this.descricao = modulo.getDescricao();
-        this.videoAulas = modulo.getVideoAulas();
-        this.materialApoios = modulo.getMateriaisApoio();
+        this.videoAulas = modulo.getVideoAulas().stream().map(VideoAulaResponse::new).toList();
+        this.materialApoios = modulo.getMateriaisApoio().stream().map(MaterialApoioResponse::new).toList();
         this.nivelId = modulo.getNivel().getId();
         this.cargaHorariaMinima = modulo.getCargaHorariaMinima();
         this.ordem = modulo.getOrdem();
     }
 
-    public RespostaModuloDto(UUID id, String titulo, String descricao, List<VideoAula> videoAulas, List<MaterialApoio> materialApoios, UUID nivelId, Integer ordem) {
+    public RespostaModuloDto(UUID id, String titulo, String descricao, List<VideoAulaResponse> videoAulas, List<MaterialApoioResponse> materialApoios, UUID nivelId, Integer ordem) {
         this.id = id;
         this.titulo = titulo;
         this.descricao = descricao;
@@ -81,19 +81,19 @@ public class RespostaModuloDto {
         this.descricao = descricao;
     }
 
-    public List<VideoAula> getVideoAulas() {
+    public List<VideoAulaResponse> getVideoAulas() {
         return videoAulas;
     }
 
-    public void setVideoAulas(List<VideoAula> videoAulas) {
+    public void setVideoAulas(List<VideoAulaResponse> videoAulas) {
         this.videoAulas = videoAulas;
     }
 
-    public List<MaterialApoio> getMaterialApoios() {
+    public List<MaterialApoioResponse> getMaterialApoios() {
         return materialApoios;
     }
 
-    public void setMaterialApoios(List<MaterialApoio> materialApoios) {
+    public void setMaterialApoios(List<MaterialApoioResponse> materialApoios) {
         this.materialApoios = materialApoios;
     }
 

@@ -1,5 +1,6 @@
 package com.example.babelup.service;
 
+import com.example.babelup.controller.GamificacaoController;
 import com.example.babelup.dto.NovoUsuarioDto;
 import com.example.babelup.dto.UsuarioRespostaDTO;
 import com.example.babelup.entities.enumEntities.EnumPerfil;
@@ -17,12 +18,14 @@ import java.util.Optional;
 public class UsuarioService {
 
 
+    private final GamificacaoController gamificacaoController;
     private final UsuarioRepository usuarioRepository;
     private final UsuarioFactory usuarioFactory;
 
-    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioFactory usuarioFactory) {
+    public UsuarioService(UsuarioRepository usuarioRepository, UsuarioFactory usuarioFactory, GamificacaoController gamificacaoController) {
         this.usuarioRepository = usuarioRepository;
         this.usuarioFactory = usuarioFactory;
+        this.gamificacaoController = gamificacaoController;
     }
 
 
@@ -51,7 +54,8 @@ public class UsuarioService {
         List<NovoUsuarioDto> usuariosIniciais = Arrays.asList(
                 new NovoUsuarioDto("João Marcelo", "joao@gmail.com", "Joao123456", EnumPerfil.ADMIN, null, true,false,null),
                 new NovoUsuarioDto("Ludmila", "ludmila@gmail.com", "Ludmila123", EnumPerfil.PROFESSOR, null, true,false,null),
-                new NovoUsuarioDto("Rodrigo Santos", "rodrigo@gmail.com", "Rodrigo123", EnumPerfil.ALUNO, null, true,false,null)
+                new NovoUsuarioDto("Rodrigo Santos", "rodrigo@gmail.com", "Rodrigo123", EnumPerfil.ALUNO, null, true,false,null),
+                new NovoUsuarioDto("Lucas Lima", "lucas@gmail.com", "Lucas123", EnumPerfil.ALUNO, null, true,false,null)
         );
 
         for (NovoUsuarioDto u : usuariosIniciais) {

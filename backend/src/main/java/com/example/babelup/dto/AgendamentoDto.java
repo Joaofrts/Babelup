@@ -3,30 +3,31 @@ package com.example.babelup.dto;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 public class AgendamentoDto {
     
     @JsonProperty("id")
-    private Long id;
+    private UUID id;
     
     @JsonProperty("data_hora")
     private LocalDateTime dataHora;
     
     @JsonProperty("professor_id")
-    private Long professorId;
+    private UUID professorId;
     
     @JsonProperty("modulo_id")
-    private Long moduloId;
+    private UUID moduloId;
     
     @JsonProperty("aluno_ids")
-    private List<Long> alunoIds;
+    private List<UUID> alunoIds;
     
     @JsonProperty("quantidade_alunos")
     private Integer quantidadeAlunos;
 
     public AgendamentoDto() {}
 
-    public AgendamentoDto(Long id, LocalDateTime dataHora, Long professorId, Long moduloId, List<Long> alunoIds, Integer quantidadeAlunos) {
+    public AgendamentoDto(UUID id, LocalDateTime dataHora, UUID professorId, UUID moduloId, List<UUID> alunoIds, Integer quantidadeAlunos) {
         this.id = id;
         this.dataHora = dataHora;
         this.professorId = professorId;
@@ -35,11 +36,11 @@ public class AgendamentoDto {
         this.quantidadeAlunos = quantidadeAlunos;
     }
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -51,27 +52,27 @@ public class AgendamentoDto {
         this.dataHora = dataHora;
     }
 
-    public Long getProfessorId() {
+    public UUID getProfessorId() {
         return professorId;
     }
 
-    public void setProfessorId(Long professorId) {
+    public void setProfessorId(UUID professorId) {
         this.professorId = professorId;
     }
 
-    public Long getModuloId() {
+    public UUID getModuloId() {
         return moduloId;
     }
 
-    public void setModuloId(Long moduloId) {
+    public void setModuloId(UUID moduloId) {
         this.moduloId = moduloId;
     }
 
-    public List<Long> getAlunoIds() {
+    public List<UUID> getAlunoIds() {
         return alunoIds;
     }
 
-    public void setAlunoIds(List<Long> alunoIds) {
+    public void setAlunoIds(List<UUID> alunoIds) {
         this.alunoIds = alunoIds;
     }
 

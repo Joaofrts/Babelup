@@ -18,7 +18,7 @@ public class CatalogoController {
         this.catalogoService = catalogoService;
     }
 
-    @GetMapping("/cursos")
+    @GetMapping({"", "/cursos"})
     public ResponseEntity<List<CursoCatalogoDTO>> listarCursosDisponiveis() {
         List<CursoCatalogoDTO> cursos = catalogoService.listarCursosParaVitrine();
         return ResponseEntity.ok(cursos);

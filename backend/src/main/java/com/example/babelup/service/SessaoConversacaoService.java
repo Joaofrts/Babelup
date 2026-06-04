@@ -1,6 +1,7 @@
 package com.example.babelup.service;
 
 import com.example.babelup.entities.enumEntities.EnumStatusSessao;
+import com.example.babelup.entities.enumEntities.EnumModalidadeSessao;
 import com.example.babelup.entities.enumEntities.EnumTipoSessao;
 import com.example.babelup.entities.avaliacao.SessaoConversacao;
 import com.example.babelup.entities.usuarios.Professor;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SessaoConversacaoService {
@@ -42,7 +44,7 @@ public class SessaoConversacaoService {
     // 1. Professor (ou Admin) abre um horário na agenda
     @Transactional
     public SessaoConversacao abrirSessao(UUID professorId, UUID moduloId, EnumTipoSessao tipoSessao,
-                                         LocalDateTime dataHora, Integer maxAlunos) {
+                                         EnumModalidadeSessao modalidade, LocalDateTime dataHora, Integer maxAlunos) {
 
         Professor professor = professorRepository.findById(professorId)
                 .orElseThrow(() -> new IllegalArgumentException("Professor não encontrado"));
@@ -50,6 +52,7 @@ public class SessaoConversacaoService {
         SessaoConversacao sessao = new SessaoConversacao();
         sessao.setProfessor(professor);
         sessao.setTipoSessao(tipoSessao);
+        sessao.setModalidadeSessao(modalidade);
         sessao.setDataHora(dataHora);
         sessao.setMaxAlunos(maxAlunos);
         sessao.setStatus(EnumStatusSessao.AGENDADA);
@@ -116,5 +119,49 @@ public class SessaoConversacaoService {
     // Listar turmas abertas por módulo
     public List<SessaoConversacao> listarSessoesAbertasPorModulo(UUID moduloId) {
         return sessaoRepository.findByModuloIdAndStatus(moduloId, EnumStatusSessao.AGENDADA);
+    }
+
+    public List<SessaoConversacao> listarTodas() {
+        return sessaoRepository.findAll();
+    }
+
+    public Optional<SessaoConversacao> obterSessao(UUID sessaoId) {
+        return sessaoRepository.findById(sessaoId);
+    }
+
+    public List<SessaoConversacao> listarPorModulo(UUID moduloId) {
+        return sessaoRepository.findByModuloId(moduloId);
+    }
+
+    public List<SessaoConversacao> listarPorProfessor(UUID professorId) {
+        return sessaoRepository.findByProfessorId(professorId);
+    }
+
+    @Transactional
+    public SessaoConversacao atualizarDataHora(UUID sessaoId, LocalDateTime novaDataHora) {
+        SessaoConversacao sessao = sessaoRepository.findById(sessaoId)
+                .orElseThrow(() -> new IllegalArgumentException("SessÃ£o nÃ£o encontrada"));
+        sessao.setDataHora(novaDataHora);
+        return sessaoRepository.save(sessao);
+    }
+
+    @Transactional
+    public void removerAluno(UUID sessaoId, UUID alunoId) {
+        SessaoConversacao sessao = sessaoRepository.findById(sessaoId)
+                .orElseThrow(() -> new IllegalArgumentException("SessÃ£o nÃ£o encontrada"));
+        Aluno aluno = alunoRepository.findById(alunoId)
+                .orElseThrow(() -> new IllegalArgumentException("Aluno nÃ£o encontrado"));
+
+        if (!sessao.getAlunos().contains(aluno)) {
+            throw new IllegalArgumentException("Aluno nÃ£o encontrado no agendamento");
+        }
+
+        sessao.removerAluno(aluno);
+        sessaoRepository.save(sessao);
+    }
+
+    @Transactional
+    public void deletarSessao(UUID sessaoId) {
+        sessaoRepository.deleteById(sessaoId);
     }
 }

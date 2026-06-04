@@ -78,7 +78,7 @@ public class AdminController {
     @PutMapping("/niveis/{id}")
     public ResponseEntity<Object> atualizarNivel(@PathVariable UUID id, @RequestBody AdicionarNivelDto dto) {
         try {
-            RespostaNivelDto resposta = nivelService.atualizarNivel(id, dto.nome(), dto.cargaHoraria());
+            RespostaNivelDto resposta = nivelService.atualizarNivel(id, dto.descricao(), dto.cargaHoraria());
             return ResponseEntity.ok(resposta);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -119,12 +119,9 @@ public class AdminController {
                         .body("nivelId e título são obrigatórios");
             }
 
-            Modulo modulo = moduloService.criarModulo(dto.getNivelId(), dto.getTitulo(),dto.getDescricao(), dto.getOrdem(),dto.getCargaHorariaMinima());
-
-            RespostaModuloDto resposta = new RespostaModuloDto( modulo.getId(),modulo.getTitulo(),modulo.getDescricao(),
-                    modulo.getVideoAulas(), modulo.getMateriaisApoio(), modulo.getNivel().getId(),
-                    modulo.getOrdem());
-            return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
+                Modulo modulo = moduloService.criarModulo(dto.getNivelId(), dto.getTitulo(),dto.getDescricao(), dto.getOrdem(),dto.getCargaHorariaMinima());
+                RespostaModuloDto resposta = new RespostaModuloDto(modulo);
+                return ResponseEntity.status(HttpStatus.CREATED).body(resposta);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         } catch (Exception e) {

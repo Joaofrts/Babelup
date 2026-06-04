@@ -8,6 +8,8 @@ import com.example.babelup.repository.pedagogicos.ExercicioRepository;
 import com.example.babelup.repository.pedagogicos.MaterialApoioRepository;
 import com.example.babelup.repository.pedagogicos.ModuloRepository;
 import com.example.babelup.repository.pedagogicos.VideoAulaRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -74,10 +76,15 @@ public class ConteudoAulaService {
 
     @Transactional
     public Exercicio adicionarExercicioAula(UUID videoAulaId, String enunciado,
-                                            String alternativasJson, String respostaCorreta) {
+                                            List<String> alternativas, String respostaCorreta) {
         VideoAula aula = videoAulaRepository.findById(videoAulaId)
                 .orElseThrow(() -> new IllegalArgumentException("Videoaula não encontrada. O exercício deve ser vinculado a uma aula existente."));
-
+        String alternativasJson;
+        try {
+            alternativasJson = new ObjectMapper().writeValueAsString(alternativas);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
         Exercicio exercicio = new Exercicio();
         exercicio.setVideoAula(aula);
         exercicio.setEnunciado(enunciado);

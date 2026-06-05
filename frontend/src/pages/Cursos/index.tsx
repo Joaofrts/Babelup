@@ -1,14 +1,14 @@
 import { Link } from 'react-router-dom';
-import logoAzul from '../../assets/LogoAzul.png';
+import logoBranca from '../../assets/LogoBranca.png';
 import './style.css';
 
 interface Curso {
   etiqueta: string;
   titulo: string;
   descricao: string;
-  tempo: string;
-  aulas: string;
-  exercicios: string;
+  duracao: string;
+  alunos: string;
+  conteudo: string;
   preco: string;
   nota: string;
 }
@@ -18,29 +18,29 @@ const cursos: Curso[] = [
     etiqueta: 'Iniciante',
     titulo: 'Inglês - Iniciante',
     descricao: 'Comece sua jornada no inglês com vocabulário e gramática básicos.',
-    tempo: '3 meses',
-    aulas: '120 aulas',
-    exercicios: 'Vídeo aulas + exercícios',
+    duracao: '3 meses',
+    alunos: '1250 alunos',
+    conteudo: 'Vídeo aulas + exercícios',
     preco: 'R$ 299/mês',
     nota: '4.8',
   },
   {
     etiqueta: 'Básico',
     titulo: 'Inglês - Básico',
-    descricao: 'Desenvolva a confiança em conversas do dia a dia e escrita básica.',
-    tempo: '4 meses',
-    aulas: '160 aulas',
-    exercicios: 'Vídeo aulas + exercícios',
+    descricao: 'Desenvolva a confiança em conversas do dia a dia e na escrita básica.',
+    duracao: '4 meses',
+    alunos: '980 alunos',
+    conteudo: 'Vídeo aulas + exercícios',
     preco: 'R$ 349/mês',
     nota: '4.7',
   },
   {
     etiqueta: 'Intermediário',
     titulo: 'Inglês - Intermediário',
-    descricao: 'Desenvolva fluência em tópicos complexos e contextos profissionais.',
-    tempo: '6 meses',
-    aulas: '180 aulas',
-    exercicios: 'Vídeo aulas + exercícios',
+    descricao: 'Desenvolver fluência em tópicos complexos e contextos profissionais.',
+    duracao: '6 meses',
+    alunos: '1500 alunos',
+    conteudo: 'Vídeo aulas + exercícios',
     preco: 'R$ 399/mês',
     nota: '4.9',
   },
@@ -48,49 +48,49 @@ const cursos: Curso[] = [
     etiqueta: 'Avançado',
     titulo: 'Inglês - Avançado',
     descricao: 'Domine gramática avançada, expressões idiomáticas e inglês para negócios.',
-    tempo: '6 meses',
-    aulas: '250 aulas',
-    exercicios: 'Vídeo aulas + exercícios',
+    duracao: '6 meses',
+    alunos: '750 alunos',
+    conteudo: 'Vídeo aulas + exercícios',
     preco: 'R$ 449/mês',
     nota: '4.9',
   },
   {
     etiqueta: 'Iniciante',
     titulo: 'Espanhol - Iniciante',
-    descricao: 'Aprenda o básico de espanhol com aulas voltadas a viagens e rotina cultural.',
-    tempo: '3 meses',
-    aulas: '100 aulas',
-    exercicios: 'Vídeo aulas + exercícios',
+    descricao: 'Aprenda o básico de espanhol com falantes nativos e vivencie uma imersão cultural.',
+    duracao: '3 meses',
+    alunos: '890 alunos',
+    conteudo: 'Vídeo aulas + exercícios',
     preco: 'R$ 299/mês',
     nota: '4.8',
   },
   {
     etiqueta: 'Intermediário',
     titulo: 'Espanhol - Intermediário',
-    descricao: 'Aprimore seu espanhol com situações cotidianas e conversas do dia a dia.',
-    tempo: '5 meses',
-    aulas: '150 aulas',
-    exercicios: 'Vídeo aulas + exercícios',
+    descricao: 'Aprimore seu espanhol com situações e conversas do dia a dia.',
+    duracao: '5 meses',
+    alunos: '650 alunos',
+    conteudo: 'Vídeo aulas + exercícios',
     preco: 'R$ 379/mês',
     nota: '4.7',
   },
   {
     etiqueta: 'Iniciante',
     titulo: 'Francês - Iniciante',
-    descricao: 'Desenvolva o início da comunicação francesa de forma clara e prática.',
-    tempo: '6 meses',
-    aulas: '120 aulas',
-    exercicios: 'Vídeo aulas + exercícios',
+    descricao: 'Descubra a língua e a cultura francesa do zero.',
+    duracao: '4 meses',
+    alunos: '520 alunos',
+    conteudo: 'Vídeo aulas + exercícios',
     preco: 'R$ 329/mês',
     nota: '4.6',
   },
   {
     etiqueta: 'Iniciante',
     titulo: 'Alemão - Iniciante',
-    descricao: 'Comece a aprender alemão com aulas estruturadas e práticas.',
-    tempo: '4 meses',
-    aulas: '140 aulas',
-    exercicios: 'Vídeo aulas + exercícios',
+    descricao: 'Comece a aprender alemão com aulas estruturadas e prática.',
+    duracao: '4 meses',
+    alunos: '430 alunos',
+    conteudo: 'Vídeo aulas + exercícios',
     preco: 'R$ 329/mês',
     nota: '4.7',
   },
@@ -102,7 +102,7 @@ export default function Cursos() {
       <header className="catalog-navbar">
         <div className="catalog-navbar-content">
           <Link to="/" className="catalog-logo-area">
-            <img src={logoAzul} alt="Logo BabelUp" className="catalog-logo" />
+            <img src={logoBranca} alt="Logo BabelUp" className="catalog-logo" />
           </Link>
 
           <nav className="catalog-menu">
@@ -127,22 +127,25 @@ export default function Cursos() {
           {cursos.map((curso) => (
             <article className="course-card" key={curso.titulo}>
               <div className="course-card-header">
-                <span>{curso.etiqueta}</span>
+                <div className="course-card-top">
+                  <span>{curso.etiqueta}</span>
 
-                <div className="course-rating">
-                  <span>⭐</span>
-                  <strong>{curso.nota}</strong>
+                  <div className="course-rating">
+                    <span>⭐</span>
+                    <strong>{curso.nota}</strong>
+                  </div>
                 </div>
+
+                <h2>{curso.titulo}</h2>
               </div>
 
               <div className="course-card-body">
-                <h2>{curso.titulo}</h2>
                 <p>{curso.descricao}</p>
 
                 <ul>
-                  <li>🕒 {curso.tempo}</li>
-                  <li>📚 {curso.aulas}</li>
-                  <li>🖥️ {curso.exercicios}</li>
+                  <li>🕒 {curso.duracao}</li>
+                  <li>👥 {curso.alunos}</li>
+                  <li>📖 {curso.conteudo}</li>
                 </ul>
 
                 <strong className="course-price">{curso.preco}</strong>
@@ -159,14 +162,14 @@ export default function Cursos() {
             Faça nosso teste de nível gratuito e encontre o curso perfeito para suas habilidades atuais.
           </p>
 
-          <button type="button">Faça o teste de nível</button>
+          <button type="button">Agende seu teste</button>
         </section>
       </section>
 
       <footer className="catalog-footer" id="suporte">
         <div className="footer-content">
           <div className="footer-brand">
-            <img src={logoAzul} alt="Logo BabelUp" />
+            <img src={logoBranca} alt="Logo BabelUp" />
             <p>
               Sua plataforma para aprender idiomas online com qualidade e flexibilidade.
             </p>
@@ -174,9 +177,9 @@ export default function Cursos() {
 
           <div className="footer-column">
             <h3>Links</h3>
-            <a href="#cursos">Cursos</a>
-            <a href="#suporte">Suporte</a>
-            <Link to="/">Home</Link>
+            <a href="#cursos">Courses</a>
+            <a href="#suporte">Support</a>
+            <Link to="/">Terms</Link>
             <Link to="/">Privacy</Link>
           </div>
 
@@ -193,7 +196,7 @@ export default function Cursos() {
               <a href="#">f</a>
               <a href="#">◎</a>
               <a href="#">𝕏</a>
-              <a href="#">in</a>
+              <a href="#">▶</a>
             </div>
           </div>
         </div>

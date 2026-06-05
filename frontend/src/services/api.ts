@@ -6,6 +6,11 @@ export const API = axios.create({
   timeout: 10000,
 });
 
+export const API_PUBLIC = axios.create({
+  baseURL: 'http://localhost:8080/api',
+  timeout: 10000,
+});
+
 // Variáveis de controle para o sistema de Fila (Concurrency)
 let isRefreshing = false;
 let failedQueue: Array<{ resolve: (value?: unknown) => void, reject: (reason?: any) => void }> = [];

@@ -1,37 +1,50 @@
-import React from 'react';
 import { useLoaderData, useNavigate } from 'react-router-dom';
 import { API } from '../../services/api';
-import globalRouter from '../../services/globalRouter';
+import logoAzul from '../../assets/LogoAzul.png';
+import './style.css';
 
 // 1. Tipagem: O "espelho" dos dados que o Java vai nos devolver
 interface DadosAluno {
   nome: string;
   email: string;
   nivelAtual: string;
-  progressoGeral: number; // Para atender ao RF-011
+  progressoGeral: number;
+}
+
+interface DashboardLoaderData {
+  perfil: DadosAluno;
+  niveis: unknown;
+  modulos: unknown;
 }
 
 // 2. O Loader: Executa ANTES da tela renderizar para buscar os dados
 export async function dashboardAlunoLoader({ request }: { request: Request }) {
-  // Passamos o 'request.signal' para o Axios. Se o aluno clicar em "Voltar" 
-  // antes da requisição terminar, o Axios cancela a chamada para poupar internet [5, 6].
+  // Mantém a lógica antiga: busca perfil, níveis e módulos
   const [progressoResponse, niveisResponse, modulosResponse] = await Promise.all([
-    API.get('/alunos/meu-perfil', {signal: request.signal}),
-    API.get('/niveis/listar', {signal: request.signal}),
-    API.get('/modulos/nivel/1', {signal: request.signal})
-  ])
-  
+    API.get('/alunos/meu-perfil', { signal: request.signal }),
+    API.get('/niveis/listar', { signal: request.signal }),
+    API.get('/modulos/nivel/1', { signal: request.signal }),
+  ]);
+
   return {
     perfil: progressoResponse.data,
     niveis: niveisResponse,
-    modulos: modulosResponse 
-}}
+    modulos: modulosResponse,
+  };
+}
 
 // 3. O Componente Visual
 export default function DashboardAluno() {
-  // O React Router nos entrega os dados que o Loader buscou já tipados! [3]
-  const dados = useLoaderData() as any;
+  const dadosLoader = useLoaderData() as DashboardLoaderData | undefined;
   const navigate = useNavigate();
+
+  // Mantém a tela funcionando mesmo quando o loader estiver comentado no App.tsx
+  const dados: DadosAluno = dadosLoader?.perfil || {
+    nome: 'João',
+    email: 'aluno@email.com',
+    nivelAtual: 'B1',
+    progressoGeral: 65,
+  };
 
   const lidarComLogout = () => {
     localStorage.removeItem('token');
@@ -40,43 +53,167 @@ export default function DashboardAluno() {
   };
 
   return (
-    <div style={{ padding: '40px', fontFamily: 'sans-serif', maxWidth: '800px', margin: '0 auto' }}>
-      
-      {/* Cabeçalho */}
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '2px solid #eee', paddingBottom: '20px' }}>
-        <h1 style={{ color: '#007bff' }}>BabelUp</h1>
-        <div>
-          <span style={{ marginRight: '15px', fontWeight: 'bold' }}>Olá, {dados.nome}</span>
-          <button onClick={lidarComLogout} style={{ padding: '8px 15px', background: '#ff4d4f', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}>
+    <main className="dashboard-page">
+      <header className="dashboard-header">
+        <div className="dashboard-logo-area">
+          <img src={logoAzul} alt="Logo BabelUp" className="dashboard-logo" />
+        </div>
+
+        <div className="dashboard-welcome">
+          <h1>Bem-vindo de volta, {dados.nome}!</h1>
+          <p>Continue sua jornada de aprendizado</p>
+        </div>
+
+        <div className="dashboard-actions">
+          <button className="notification-button" type="button">
+            🔔
+          </button>
+
+          <button className="logout-button" onClick={lidarComLogout}>
             Sair
           </button>
         </div>
       </header>
 
-      {/* Conteúdo Principal */}
-      <main style={{ marginTop: '40px' }}>
-        <h2>Resumo do seu aprendizado</h2>
-        
-        {/* Card de Progresso (RF-011) */}
-        <div style={{ background: '#f9f9f9', padding: '25px', borderRadius: '10px', marginTop: '20px', boxShadow: '0 4px 6px rgba(0,0,0,0.05)' }}>
-          <h3 style={{ margin: '0 0 10px 0' }}>Trilha: Nível {dados.perfil.nivelAtual}</h3>
-          
-          {/* Barra de Progresso Visual */}
-          <div style={{ width: '100%', background: '#e0e0e0', height: '24px', borderRadius: '12px', overflow: 'hidden', marginTop: '15px' }}>
-            <div style={{ 
-              width: `${dados.perfil.progressoGeral}%`, 
-              background: '#4caf50', 
-              height: '100%', 
-              transition: 'width 0.5s ease-in-out' 
-            }} />
-          </div>
-          <p style={{ marginTop: '10px', color: '#555', fontWeight: 'bold' }}>{dados.perfil.progressoGeral}% concluído</p>
-        </div>
+      <section className="dashboard-content">
+        <section className="dashboard-stats">
+          <div className="stat-card">
+            <div className="stat-icon blue">📖</div>
+            <div>
+              <strong>{dados.progressoGeral}%</strong>
+              <span>Course Progress</span>
 
-        <button style={{ marginTop: '30px', padding: '15px 30px', background: '#007bff', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontSize: '16px', width: '100%' }}>
-          Continuar Estudos (Módulo Seguinte)
-        </button>
-      </main>
-    </div>
+              <div className="progress-track">
+                <div
+                  className="progress-fill"
+                  style={{ width: `${dados.progressoGeral}%` }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-icon green">🎖️</div>
+            <div>
+              <strong>{dados.nivelAtual}</strong>
+              <span>Nível atual</span>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-icon yellow">🏆</div>
+            <div>
+              <strong>#12</strong>
+              <span>Posição de classificação</span>
+              <a href="#">Ver classificação</a>
+            </div>
+          </div>
+
+          <div className="stat-card">
+            <div className="stat-icon purple">📅</div>
+            <div>
+              <strong>Próxima aula</strong>
+              <span>Amanhã, às 10h da manhã.</span>
+              <a href="#">Agende mais</a>
+            </div>
+          </div>
+        </section>
+
+        <section className="dashboard-grid">
+          <div className="lessons-card">
+            <div className="section-title">
+              <h2>Lições disponíveis</h2>
+              <span>26/40 concluído</span>
+            </div>
+
+            <div className="lesson-item completed">
+              <div className="lesson-icon">↗</div>
+              <div className="lesson-info">
+                <strong>Presente Perfeito</strong>
+                <span>15 min</span>
+              </div>
+              <p>✓ Concluído</p>
+            </div>
+
+            <div className="lesson-item completed">
+              <div className="lesson-icon">↗</div>
+              <div className="lesson-info">
+                <strong>Prática de Conversação: Viagens</strong>
+                <span>20 min</span>
+              </div>
+              <p>✓ Concluído</p>
+            </div>
+
+            <div className="lesson-item">
+              <div className="lesson-icon play">▷</div>
+              <div className="lesson-info">
+                <strong>Vocabulário: Inglês Comercial</strong>
+                <span>12 min</span>
+              </div>
+              <button>Assistir aula</button>
+            </div>
+
+            <div className="lesson-item">
+              <div className="lesson-icon play">▷</div>
+              <div className="lesson-info">
+                <strong>Exercício de Escuta: Reportagem Jornalística</strong>
+                <span>18 min</span>
+              </div>
+              <button>Assistir aula</button>
+            </div>
+          </div>
+
+          <aside className="dashboard-side">
+            <div className="pdf-card">
+              <h2>Materiais em PDF</h2>
+
+              <div className="pdf-item">
+                <span>📄</span>
+                <div>
+                  <strong>Grammar Guide - Present Perfect</strong>
+                  <p>2.3 MB</p>
+                </div>
+              </div>
+
+              <div className="pdf-item">
+                <span>📄</span>
+                <div>
+                  <strong>Vocabulary List - Business Terms</strong>
+                  <p>1.8 MB</p>
+                </div>
+              </div>
+
+              <div className="pdf-item">
+                <span>📄</span>
+                <div>
+                  <strong>Practice Exercises - Week 7</strong>
+                  <p>3.1 MB</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="quick-card">
+              <h2>Ações rápidas</h2>
+
+              <button className="quick-action blue-action">
+                📖 Pratique exercícios
+              </button>
+
+              <button className="quick-action green-action">
+                💬 Abrir bate-papo
+              </button>
+
+              <button className="quick-action purple-action">
+                🎧 Visite o Fórum
+              </button>
+
+              <button className="quick-action yellow-action">
+                🏆 Agendamento de aulas de conversação
+              </button>
+            </div>
+          </aside>
+        </section>
+      </section>
+    </main>
   );
 }

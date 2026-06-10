@@ -8,7 +8,9 @@ import DashboardAluno, { dashboardAlunoLoader } from './pages/DashboardAluno';
 import Cursos from './pages/Cursos';
 import LayoutGeral from './components/LayoutGeral';
 import Inicio from './pages/Inicio';
-
+import AddProfessores from './pages/AddProfessores';
+import AddAluno from './pages/AddAlunos';
+import AddCursos from './pages/AddCurso';
 const router = createBrowserRouter([
   {
     element: <LayoutGeral />,
@@ -43,6 +45,21 @@ const router = createBrowserRouter([
         element: <DashboardProfessor />,
         loader: dashboardProfessorLoader,
         errorElement: <ErroGlobal />,
+      },
+      {
+        path:'/add/professores',
+        element: <AddProfessores />,
+        errorElement: <ErroGlobal />
+      },
+      {
+        path: '/add/aluno',
+        element: <AddAluno />,
+        errorElement: <ErroGlobal />
+      },
+      {
+        path: '/add/curso',
+        element: <AddCursos />,
+        errorElement: <ErroGlobal />
       },
       {
         path: '/cursos',

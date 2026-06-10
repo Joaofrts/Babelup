@@ -198,3 +198,4 @@ fabric.properties
 
 REQUISICOES_API.md
 backend/src/main/resources/application.properties
+backend/sonar-project.properties

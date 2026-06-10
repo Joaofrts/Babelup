@@ -12,7 +12,7 @@ export async function loginAction({ request }: { request: Request }) {
 
   try {
     // Envia os dados para o backend
-    const response = await API.post('/autenticacao/login', dadosLogin, {
+    const response = await API.post('/autenticacao/login/aluno', dadosLogin, {
       signal: request.signal,
     });
 

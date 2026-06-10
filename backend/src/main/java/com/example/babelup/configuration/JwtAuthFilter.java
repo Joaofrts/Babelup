@@ -1,11 +1,14 @@
 package com.example.babelup.configuration;
 
+import com.example.babelup.factory.AdminCreationStrategy;
 import com.example.babelup.service.AutenticacaoService;
 import com.example.babelup.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -25,10 +28,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     @Autowired
     private AutenticacaoService autenticacaoService;
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthFilter.class);
+
     // NOVO MÉTODO AQUI: Define quais rotas NÃO devem passar por este filtro
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         String path = request.getServletPath();
+        logger.warn("Verificando se a rota '{}' deve ser filtrada", path.startsWith("/api/autenticacao/login"));
         // Ignora o filtro se for a rota de login ou cadastro
         return path.startsWith("/api/autenticacao/login") || path.startsWith("/api/alunos/cadastro") || path.startsWith("/api/autenticacao/refresh");
     }
@@ -38,6 +44,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
 
         // Se for uma requisição OPTIONS (Preflight do CORS), libera imediatamente sem checar token
+        logger.warn("Verificando método HTTP: {}", request.getMethod());
         if (request.getMethod().equals("OPTIONS")) {
             filterChain.doFilter(request, response);
             return;

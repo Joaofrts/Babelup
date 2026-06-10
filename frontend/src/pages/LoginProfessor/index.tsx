@@ -9,7 +9,7 @@ export async function loginProfessorAction({ request }: { request: Request }) {
   const dadosLogin = Object.fromEntries(formData);
 
   try {
-    const response = await API.post('/autenticacao/login', dadosLogin, {
+    const response = await API.post('/autenticacao/login/professor', dadosLogin, {
       signal: request.signal,
     });
 

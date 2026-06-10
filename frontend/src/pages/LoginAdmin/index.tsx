@@ -9,7 +9,7 @@ export async function loginAdminAction({ request }: { request: Request }) {
   const dadosLogin = Object.fromEntries(formData);
 
   try {
-    const response = await API.post('/autenticacao/login', dadosLogin, {
+    const response = await API.post('/autenticacao/login/adm', dadosLogin, {
       signal: request.signal,
     });
 

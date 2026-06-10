@@ -5,6 +5,8 @@ import com.example.babelup.dto.RefreshTokenRequisicaoDto;
 import com.example.babelup.entities.usuarios.Usuario;
 import com.example.babelup.service.JwtService;
 import com.example.babelup.service.UsuarioService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,7 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,27 +34,31 @@ public class AutenticacaoController {
     private JwtService jwtService;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
-
-    @Autowired
     private UsuarioService usuarioService;
 
-    @PostMapping("/login")
-    public ResponseEntity<Object> fazerLogin(@RequestBody LoginDto loginDto) {
+    private static final Logger logger = LoggerFactory.getLogger(AutenticacaoController.class);
+
+    @PostMapping("/login/aluno")
+    public ResponseEntity<Object> fazerLoginAluno(@RequestBody LoginDto loginDto) {
         try {
+            logger.warn("⚠️  Tentativa de login - Email: {}", loginDto.email());
             UsernamePasswordAuthenticationToken credenciais =
                     new UsernamePasswordAuthenticationToken(loginDto.email(), loginDto.senha());
 
-            // Tenta autenticar o usuário
+            logger.warn("1. Autenticando usuário...");
             Authentication autenticacao = authenticationManager.authenticate(credenciais);
 
             // Busca o usuário no banco de dados
             Optional<Usuario> usuarioLogado = usuarioService.buscarUsuarioPorEmail(loginDto.email());
             if(usuarioLogado.isEmpty()){
+                logger.error("Usuário não encontrado no banco de dados: {}", loginDto.email());
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario não encontrado");
             }
             Usuario usuario = usuarioLogado.get();
-
+            if(!usuario.getPerfil().name().equals("ALUNO")){
+                logger.error("Tentativa de login com perfil incorreto: email={}",usuario.getEmail());
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Perfil de usuário inválido para esta rota");
+            }
 
             String accessToken = jwtService.gerarToken(usuario);
             String refreshToken = jwtService.gerarRefreshToken(usuario);
@@ -67,6 +72,81 @@ public class AutenticacaoController {
             return ResponseEntity.ok(resposta);
 
         } catch (BadCredentialsException e) {
+            logger.warn("Falha na autenticação: email={}", loginDto.email());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email ou senha incorretos.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Houve um erro inesperado.");
+        }
+    }
+
+    @PostMapping("/login/professor")
+    public ResponseEntity<Object> fazerLoginProfessor(@RequestBody LoginDto loginDto) {
+        try {
+            UsernamePasswordAuthenticationToken credenciais =
+                    new UsernamePasswordAuthenticationToken(loginDto.email(), loginDto.senha());
+
+            Authentication autenticacao = authenticationManager.authenticate(credenciais);
+
+            Optional<Usuario> usuarioLogado = usuarioService.buscarUsuarioPorEmail(loginDto.email());
+            if(usuarioLogado.isEmpty()){
+                logger.error("Usuário não encontrado no banco de dados: {}", loginDto.email());
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario não encontrado");
+            }
+            Usuario usuario = usuarioLogado.get();
+            if(!usuario.getPerfil().name().equals("PROFESSOR")){
+                logger.error("Tentativa de login com perfil incorreto: email={}",usuario.getEmail());
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Perfil de usuário inválido para esta rota");
+            }
+            String accessToken = jwtService.gerarToken(usuario);
+            String refreshToken = jwtService.gerarRefreshToken(usuario);
+
+            Map<String, String> resposta = new HashMap<>();
+            resposta.put("mensagem", "Login realizado com sucesso");
+            resposta.put("token", accessToken);
+            resposta.put("refreshToken", refreshToken);
+            resposta.put("perfil", usuario.getPerfil().name());
+
+            return ResponseEntity.ok(resposta);
+
+        } catch (BadCredentialsException e) {
+            logger.warn("Falha na autenticação: email={}", loginDto.email());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email ou senha incorretos.");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Houve um erro inesperado.");
+        }
+    }
+
+    @PostMapping("/login/adm")
+    public ResponseEntity<Object> fazerLoginAdm(@RequestBody LoginDto loginDto) {
+        try {
+            UsernamePasswordAuthenticationToken credenciais =
+                    new UsernamePasswordAuthenticationToken(loginDto.email(), loginDto.senha());
+
+            Authentication autenticacao = authenticationManager.authenticate(credenciais);
+
+            Optional<Usuario> usuarioLogado = usuarioService.buscarUsuarioPorEmail(loginDto.email());
+            if(usuarioLogado.isEmpty()){
+                logger.error("Usuário não encontrado no banco de dados: {}", loginDto.email());
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario não encontrado");
+            }
+            Usuario usuario = usuarioLogado.get();
+            if(!usuario.getPerfil().name().equals("ADM")){
+                logger.error("Tentativa de login com perfil incorreto: email={}",usuario.getEmail());
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Perfil de usuário inválido para esta rota");
+            }
+            String accessToken = jwtService.gerarToken(usuario);
+            String refreshToken = jwtService.gerarRefreshToken(usuario);
+
+            Map<String, String> resposta = new HashMap<>();
+            resposta.put("mensagem", "Login realizado com sucesso");
+            resposta.put("token", accessToken);
+            resposta.put("refreshToken", refreshToken);
+            resposta.put("perfil", usuario.getPerfil().name());
+
+            return ResponseEntity.ok(resposta);
+
+        } catch (BadCredentialsException e) {
+            logger.warn("Falha na autenticação: email={}", loginDto.email());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Email ou senha incorretos.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Houve um erro inesperado.");

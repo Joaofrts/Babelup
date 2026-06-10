@@ -1,0 +1,290 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+.login-admin-page {
+  position: relative;
+  width: 100%;
+  min-height: 100dvh;
+
+  background-color: #FFF7EE;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-family: Arial, Helvetica, sans-serif;
+
+  overflow: hidden;
+}
+
+.login-admin-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background-image: url('../../assets/LoginProfessor.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  opacity: 0.40;
+
+  z-index: 0;
+}
+
+.login-admin-overlay {
+  position: relative;
+  z-index: 1;
+
+  width: 100%;
+  min-height: 100dvh;
+
+  background: rgba(255, 247, 238, 0.25);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+}
+
+.login-admin-card {
+  width: 100%;
+  max-width: 430px;
+
+  background: rgba(255, 255, 255, 0.88);
+  border-radius: 18px;
+
+  padding: 32px 48px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.login-admin-logo-area {
+  margin-bottom: 20px;
+}
+
+.login-admin-logo {
+  width: 160px;
+  height: auto;
+  display: block;
+}
+
+.login-admin-card h1 {
+  margin: 0;
+
+  color: #214A85;
+
+  font-size: 32px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.login-admin-card p {
+  margin: 8px 0 30px;
+
+  color: #214A85;
+
+  font-size: 18px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.login-admin-form {
+  width: 100%;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+}
+
+.login-admin-form input {
+  width: 100%;
+  max-width: 280px;
+  height: 54px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #FFF7EE;
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.22);
+
+  text-align: center;
+  font-size: 18px;
+  font-weight: 700;
+  color: #214A85;
+
+  outline: none;
+}
+
+.login-admin-form input::placeholder {
+  color: #8ca0bd;
+}
+
+.login-admin-form input:focus {
+  box-shadow:
+    0 0 0 3px rgba(33, 74, 133, 0.18),
+    0 4px 8px rgba(0, 0, 0, 0.22);
+}
+
+.login-admin-error {
+  color: #d93025;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: center;
+
+  margin-bottom: 12px;
+}
+
+.login-admin-form button {
+  width: 100%;
+  max-width: 250px;
+  height: 54px;
+
+  border: none;
+  border-radius: 12px;
+
+  background: #214A85;
+  color: #FFF7EE;
+
+  font-size: 20px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.22);
+  transition: 0.2s ease;
+}
+
+.login-admin-form button:hover {
+  background: #183A69;
+  transform: translateY(-1px);
+}
+
+.login-admin-form button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.login-admin-forgot-password {
+  margin-top: 28px;
+
+  color: #214A85;
+  font-size: 14px;
+  font-weight: 700;
+
+  text-decoration: none;
+}
+
+.login-admin-forgot-password:hover {
+  text-decoration: underline;
+}
+
+.login-admin-back-button {
+  position: fixed;
+  right: 32px;
+  bottom: 28px;
+
+  width: 160px;
+  height: 54px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: #214A85;
+  color: #FFF7EE;
+
+  border-radius: 12px;
+
+  font-size: 20px;
+  font-weight: 700;
+
+  text-decoration: none;
+
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.22);
+  transition: 0.2s ease;
+}
+
+.login-admin-back-button:hover {
+  background: #183A69;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+  .login-admin-overlay {
+    padding: 20px;
+  }
+
+  .login-admin-card {
+    max-width: 100%;
+    padding: 32px 28px;
+  }
+
+  .login-admin-card h1 {
+    font-size: 28px;
+  }
+
+  .login-admin-card p {
+    font-size: 16px;
+  }
+
+  .login-admin-back-button {
+    right: 20px;
+    bottom: 20px;
+
+    width: 140px;
+    height: 50px;
+
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-admin-page {
+    align-items: flex-start;
+  }
+
+  .login-admin-overlay {
+    align-items: flex-start;
+    padding: 20px 16px 90px;
+  }
+
+  .login-admin-card {
+    padding: 28px 22px;
+  }
+
+  .login-admin-form input,
+  .login-admin-form button {
+    max-width: 100%;
+  }
+
+  .login-admin-back-button {
+    right: 16px;
+    bottom: 16px;
+
+    width: 120px;
+    height: 46px;
+
+    font-size: 16px;
+  }
+}

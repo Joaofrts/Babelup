@@ -15,7 +15,7 @@ export default function Inicio() {
             <img src={logoBranca} alt="BabelUp" className="inicio-logo" />
           </Link>
 
-          <Link to="/login" className="inicio-nav-button">
+          <Link to="/login-professor" className="inicio-nav-button">
             Professor
           </Link>
 
@@ -25,7 +25,7 @@ export default function Inicio() {
             <Link to="/cursos">Cursos</Link>
           </nav>
 
-          <Link to="/login" className="inicio-nav-button">
+          <Link to="/login-aluno" className="inicio-nav-button">
             Aluno
           </Link>
         </div>

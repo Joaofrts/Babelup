@@ -1,102 +1,48 @@
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logoBranca from '../../assets/LogoBranca.png';
+import { API } from '../../services/api';
 import './style.css';
 
-interface Curso {
-  etiqueta: string;
+interface CursoCatalogo {
+  id: string;
   titulo: string;
   descricao: string;
-  duracao: string;
-  alunos: string;
-  conteudo: string;
-  preco: string;
-  nota: string;
+  precoMensal: number;
 }
 
-const cursos: Curso[] = [
-  {
-    etiqueta: 'Iniciante',
-    titulo: 'Inglês - Iniciante',
-    descricao: 'Comece sua jornada no inglês com vocabulário e gramática básicos.',
-    duracao: '3 meses',
-    alunos: '1250 alunos',
-    conteudo: 'Vídeo aulas + exercícios',
-    preco: 'R$ 299/mês',
-    nota: '4.8',
-  },
-  {
-    etiqueta: 'Básico',
-    titulo: 'Inglês - Básico',
-    descricao: 'Desenvolva a confiança em conversas do dia a dia e na escrita básica.',
-    duracao: '4 meses',
-    alunos: '980 alunos',
-    conteudo: 'Vídeo aulas + exercícios',
-    preco: 'R$ 349/mês',
-    nota: '4.7',
-  },
-  {
-    etiqueta: 'Intermediário',
-    titulo: 'Inglês - Intermediário',
-    descricao: 'Desenvolver fluência em tópicos complexos e contextos profissionais.',
-    duracao: '6 meses',
-    alunos: '1500 alunos',
-    conteudo: 'Vídeo aulas + exercícios',
-    preco: 'R$ 399/mês',
-    nota: '4.9',
-  },
-  {
-    etiqueta: 'Avançado',
-    titulo: 'Inglês - Avançado',
-    descricao: 'Domine gramática avançada, expressões idiomáticas e inglês para negócios.',
-    duracao: '6 meses',
-    alunos: '750 alunos',
-    conteudo: 'Vídeo aulas + exercícios',
-    preco: 'R$ 449/mês',
-    nota: '4.9',
-  },
-  {
-    etiqueta: 'Iniciante',
-    titulo: 'Espanhol - Iniciante',
-    descricao: 'Aprenda o básico de espanhol com falantes nativos e vivencie uma imersão cultural.',
-    duracao: '3 meses',
-    alunos: '890 alunos',
-    conteudo: 'Vídeo aulas + exercícios',
-    preco: 'R$ 299/mês',
-    nota: '4.8',
-  },
-  {
-    etiqueta: 'Intermediário',
-    titulo: 'Espanhol - Intermediário',
-    descricao: 'Aprimore seu espanhol com situações e conversas do dia a dia.',
-    duracao: '5 meses',
-    alunos: '650 alunos',
-    conteudo: 'Vídeo aulas + exercícios',
-    preco: 'R$ 379/mês',
-    nota: '4.7',
-  },
-  {
-    etiqueta: 'Iniciante',
-    titulo: 'Francês - Iniciante',
-    descricao: 'Descubra a língua e a cultura francesa do zero.',
-    duracao: '4 meses',
-    alunos: '520 alunos',
-    conteudo: 'Vídeo aulas + exercícios',
-    preco: 'R$ 329/mês',
-    nota: '4.6',
-  },
-  {
-    etiqueta: 'Iniciante',
-    titulo: 'Alemão - Iniciante',
-    descricao: 'Comece a aprender alemão com aulas estruturadas e prática.',
-    duracao: '4 meses',
-    alunos: '430 alunos',
-    conteudo: 'Vídeo aulas + exercícios',
-    preco: 'R$ 329/mês',
-    nota: '4.7',
-  },
-];
-
 export default function Cursos() {
+  const [cursos, setCursos] = useState<CursoCatalogo[]>([]);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState('');
+
+  useEffect(() => {
+    async function buscarCursos() {
+      try {
+        setCarregando(true);
+        setErro('');
+
+        const response = await API.get('/catalogo/cursos');
+
+        setCursos(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar cursos:', error);
+        setErro('Não foi possível carregar os cursos cadastrados.');
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    buscarCursos();
+  }, []);
+
+  function formatarPreco(valor: number) {
+    return valor.toLocaleString('pt-BR', {
+      style: 'currency',
+      currency: 'BRL',
+    });
+  }
+
   return (
     <main className="catalog-page">
       <header className="catalog-navbar">
@@ -123,38 +69,43 @@ export default function Cursos() {
       </section>
 
       <section className="catalog-content">
-        <div className="courses-grid">
-          {cursos.map((curso) => (
-            <article className="course-card" key={curso.titulo}>
-              <div className="course-card-header">
-                <div className="course-card-top">
-                  <span>{curso.etiqueta}</span>
+        {carregando && (
+          <p className="catalog-status">Carregando cursos...</p>
+        )}
 
-                  <div className="course-rating">
-                    <span>⭐</span>
-                    <strong>{curso.nota}</strong>
+        {erro && !carregando && (
+          <p className="catalog-status catalog-error">{erro}</p>
+        )}
+
+        {!carregando && !erro && cursos.length === 0 && (
+          <p className="catalog-status">Nenhum curso cadastrado no momento.</p>
+        )}
+
+        {!carregando && !erro && cursos.length > 0 && (
+          <div className="courses-grid">
+            {cursos.map((curso) => (
+              <article className="course-card" key={curso.id}>
+                <div className="course-card-header">
+                  <div className="course-card-top">
+                    <span>Curso</span>
                   </div>
+
+                  <h2>{curso.titulo}</h2>
                 </div>
 
-                <h2>{curso.titulo}</h2>
-              </div>
+                <div className="course-card-body">
+                  <p>{curso.descricao}</p>
 
-              <div className="course-card-body">
-                <p>{curso.descricao}</p>
+                  <strong className="course-price">
+                    {formatarPreco(Number(curso.precoMensal))}
+                  </strong>
 
-                <ul>
-                  <li>🕒 {curso.duracao}</li>
-                  <li>👥 {curso.alunos}</li>
-                  <li>📖 {curso.conteudo}</li>
-                </ul>
-
-                <strong className="course-price">{curso.preco}</strong>
-
-                <button type="button">Inscreva-se agora</button>
-              </div>
-            </article>
-          ))}
-        </div>
+                  <button type="button">Inscreva-se agora</button>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
 
         <section className="level-test-box">
           <h2>Não tem certeza de qual nível é o ideal para você?</h2>

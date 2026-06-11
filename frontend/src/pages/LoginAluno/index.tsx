@@ -1,6 +1,6 @@
 import { Form, useNavigation, useActionData, redirect, Link } from 'react-router-dom';
-import { API } from '../../services/api';
 import axios from 'axios';
+import { loginAluno, salvarSessao } from '../../services/babelup';
 import logoAzul from '../../assets/LogoAzul.png';
 import './style.css';
 
@@ -12,15 +12,12 @@ export async function loginAction({ request }: { request: Request }) {
 
   try {
     // Envia os dados para o backend
-    const response = await API.post('/autenticacao/login/aluno', dadosLogin, {
-      signal: request.signal,
-    });
+    const auth = await loginAluno(dadosLogin as { email: FormDataEntryValue; senha: FormDataEntryValue }, request.signal);
 
     // Sucesso: salva os tokens e redireciona
-    localStorage.setItem('token', response.data.token);
-    localStorage.setItem('refreshToken', response.data.refreshToken);
+    salvarSessao(auth);
 
-    return redirect('/dashboard');
+    return redirect('/dashboard-aluno');
   } catch (error: unknown) {
     // Verifica se o erro foi gerado pelo Axios
     if (axios.isAxiosError(error)) {
@@ -93,6 +90,10 @@ export default function Login() {
           <a href="#" className="forgot-password">
             Esqueceu sua senha?
           </a>
+
+          <Link to="/cadastro-aluno" className="forgot-password">
+            Criar conta de aluno
+          </Link>
         </section>
         <Link to="/" className="login-back-button">
           Voltar

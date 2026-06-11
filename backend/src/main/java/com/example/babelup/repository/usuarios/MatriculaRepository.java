@@ -11,4 +11,5 @@ import java.util.UUID;
 public interface MatriculaRepository extends JpaRepository<Matricula, UUID> {
     List<Matricula> findByAlunoId(UUID alunoId);
 
+    boolean existsByAlunoIdAndNivelId(UUID alunoId, UUID nivelId);
 }

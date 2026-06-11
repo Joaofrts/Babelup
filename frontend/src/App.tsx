@@ -1,4 +1,4 @@
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import Login, { loginAction } from './pages/LoginAluno';
 import LoginProfessor, { loginProfessorAction } from './pages/LoginProfessor';
 import LoginAdmin, { loginAdminAction } from './pages/LoginAdmin';
@@ -8,9 +8,13 @@ import DashboardAluno, { dashboardAlunoLoader } from './pages/DashboardAluno';
 import Cursos from './pages/Cursos';
 import LayoutGeral from './components/LayoutGeral';
 import Inicio from './pages/Inicio';
-import AddProfessores from './pages/AddProfessores';
-import AddAluno from './pages/AddAlunos';
-import AddCursos from './pages/AddCurso';
+import DashboardAdmin, { adminProfessoresLoader } from './pages/DashboardAdmin';
+import AddProfessores, { adminProfessoresListaLoader } from './pages/AddProfessores';
+import AddAluno, { adminAlunosLoader } from './pages/AddAlunos';
+import AddCursos, { adminCursosLoader } from './pages/AddCurso';
+import CadastroUsuario from './pages/CadastroUsuario';
+import AdminCursoDetalhe, { adminCursoDetalheLoader } from './pages/AdminCursoDetalhe';
+import AdminAgendamentos, { adminAgendamentosLoader } from './pages/AdminAgendamentos';
 const router = createBrowserRouter([
   {
     element: <LayoutGeral />,
@@ -23,16 +27,35 @@ const router = createBrowserRouter([
         errorElement: <ErroGlobal />,
       },
       {
+        path: '/cadastro-aluno',
+        element: <CadastroUsuario perfil="ALUNO" />,
+        errorElement: <ErroGlobal />,
+      },
+      {
         path: '/login-professor',
         element: <LoginProfessor />,
         action: loginProfessorAction,
         errorElement: <ErroGlobal />
       },
       {
+        path: '/cadastro-professor',
+        element: <CadastroUsuario perfil="PROFESSOR" />,
+        errorElement: <ErroGlobal />,
+      },
+      {
         path: '/login-admin',
         element: <LoginAdmin />,
         action: loginAdminAction,
         errorElement: <ErroGlobal />,
+      },
+      {
+        path: '/cadastro-admin',
+        element: <CadastroUsuario perfil="ADMIN" />,
+        errorElement: <ErroGlobal />,
+      },
+      {
+        path: '/dashboard',
+        element: <Navigate to="/dashboard-aluno" replace />,
       },
       {
         path: '/dashboard-aluno',
@@ -47,18 +70,57 @@ const router = createBrowserRouter([
         errorElement: <ErroGlobal />,
       },
       {
+        path: '/dashboard-admin',
+        element: <DashboardAdmin />,
+        loader: adminProfessoresLoader,
+        errorElement: <ErroGlobal />,
+      },
+      {
         path:'/add/professores',
         element: <AddProfessores />,
+        loader: adminProfessoresListaLoader,
         errorElement: <ErroGlobal />
       },
       {
         path: '/add/aluno',
         element: <AddAluno />,
+        loader: adminAlunosLoader,
         errorElement: <ErroGlobal />
       },
       {
         path: '/add/curso',
         element: <AddCursos />,
+        loader: adminCursosLoader,
+        errorElement: <ErroGlobal />
+      },
+      {
+        path: '/admin/professores',
+        element: <AddProfessores />,
+        loader: adminProfessoresListaLoader,
+        errorElement: <ErroGlobal />
+      },
+      {
+        path: '/admin/alunos',
+        element: <AddAluno />,
+        loader: adminAlunosLoader,
+        errorElement: <ErroGlobal />
+      },
+      {
+        path: '/admin/cursos',
+        element: <AddCursos />,
+        loader: adminCursosLoader,
+        errorElement: <ErroGlobal />
+      },
+      {
+        path: '/admin/cursos/:nivelId',
+        element: <AdminCursoDetalhe />,
+        loader: adminCursoDetalheLoader,
+        errorElement: <ErroGlobal />
+      },
+      {
+        path: '/admin/agendamentos',
+        element: <AdminAgendamentos />,
+        loader: adminAgendamentosLoader,
         errorElement: <ErroGlobal />
       },
       {

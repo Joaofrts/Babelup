@@ -36,7 +36,12 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         logger.warn("Verificando se a rota '{}' deve ser filtrada", path.startsWith("/api/autenticacao/login"));
         // Ignora o filtro se for a rota de login ou cadastro
-        return path.startsWith("/api/autenticacao/login") || path.startsWith("/api/alunos/cadastro") || path.startsWith("/api/autenticacao/refresh");
+        return path.startsWith("/api/autenticacao/login")
+                || path.startsWith("/api/alunos/cadastro")
+                || path.startsWith("/api/admin/cadastroProfessor")
+                || path.startsWith("/api/admin/cadastro")
+                || path.startsWith("/api/catalogo")
+                || path.startsWith("/api/autenticacao/refresh");
     }
 
     @Override

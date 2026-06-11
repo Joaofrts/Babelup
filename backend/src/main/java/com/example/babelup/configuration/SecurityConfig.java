@@ -48,11 +48,14 @@ public class SecurityConfig {
 
                         // Rotas públicas (Qualquer um pode acessar sem Token)
                         .requestMatchers(HttpMethod.POST, "/api/alunos/cadastro").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/admin/cadastroProfessor").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/admin/cadastro").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/autenticacao/login/aluno").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/autenticacao/login/adm").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/autenticacao/login/professor").permitAll()
                         .requestMatchers(HttpMethod.GET,"/swagger-ui/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/v3/api-docs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/api/catalogo").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/catalogo/cursos").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/autenticacao/refresh").permitAll()
 

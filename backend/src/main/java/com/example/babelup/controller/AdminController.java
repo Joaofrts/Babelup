@@ -6,6 +6,7 @@ import com.example.babelup.entities.usuarios.Usuario;
 import com.example.babelup.service.ModuloService;
 import com.example.babelup.service.NivelService;
 import com.example.babelup.service.UsuarioService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,12 +31,25 @@ public class AdminController {
     }
 
     @PostMapping("/cadastroProfessor")
-    public ResponseEntity<Object> addProfessor(@RequestBody NovoUsuarioDto dto){
+    public ResponseEntity<Object> addProfessor(@Valid @RequestBody ProfessorCadastroDto dto){
         try{
-            Usuario resposta = usuarioService.cadastrarUsuario(dto);
-            return ResponseEntity.ok().body(resposta);
+            usuarioService.cadastrarUsuario(dto.toNovoUsuarioDto());
+            return ResponseEntity.status(HttpStatus.CREATED).body("Professor cadastrado com sucesso!");
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Erro ao cadastrar novo usuario.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/cadastro")
+    public ResponseEntity<Object> addAdmin(@Valid @RequestBody AdminCadastroDto dto){
+        try{
+            usuarioService.cadastrarUsuario(dto.toNovoUsuarioDto());
+            return ResponseEntity.status(HttpStatus.CREATED).body("Administrador cadastrado com sucesso!");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());

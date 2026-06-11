@@ -1,6 +1,7 @@
 package com.example.babelup.entities.financeiro;
 
 import com.example.babelup.entities.enumEntities.EnumStatusMatricula;
+import com.example.babelup.entities.estruturaAcademica.Nivel;
 import com.example.babelup.entities.usuarios.Aluno;
 import jakarta.persistence.*;
 
@@ -31,6 +32,10 @@ public class Matricula {
     @ManyToOne
     @JoinColumn(name = "aluno_id", nullable = false)
     private Aluno aluno;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "nivel_id")
+    private Nivel nivel;
 
     @PrePersist
     protected void onCreate(){
@@ -88,5 +93,13 @@ public class Matricula {
 
     public void setAluno(Aluno aluno) {
         this.aluno = aluno;
+    }
+
+    public Nivel getNivel() {
+        return nivel;
+    }
+
+    public void setNivel(Nivel nivel) {
+        this.nivel = nivel;
     }
 }

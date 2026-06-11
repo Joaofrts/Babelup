@@ -1,6 +1,11 @@
 import { Link, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { API } from '../../services/api';
+import {
+  listarAgendamentos,
+  limparSessao,
+  pegarTokenPayload,
+  type SessaoDTO,
+} from '../../services/babelup';
 import logoAzul from '../../assets/LogoAzul.png';
 import './style.css';
 
@@ -18,6 +23,24 @@ interface DashboardProfessorDTO {
   aulasHoje: AulaHojeDTO[];
 }
 
+function formatarHorario(dataHora?: string) {
+  if (!dataHora) return '--:--';
+
+  return new Intl.DateTimeFormat('pt-BR', {
+    hour: '2-digit',
+    minute: '2-digit',
+  }).format(new Date(dataHora));
+}
+
+function formatarSessao(sessao: SessaoDTO): AulaHojeDTO {
+  return {
+    id: sessao.id,
+    horario: formatarHorario(sessao.data_hora),
+    titulo: sessao.tipo_sessao || 'Sessao de conversa',
+    subtitulo: `${sessao.modalidade || 'Modalidade nao informada'} - ${sessao.qtd_alunos ?? 0}/${sessao.max_alunos ?? 0} alunos`,
+  };
+}
+
 export async function dashboardProfessorLoader({ request }: { request: Request }) {
   const token = localStorage.getItem('token');
 
@@ -26,19 +49,30 @@ export async function dashboardProfessorLoader({ request }: { request: Request }
   }
 
   try {
-    const response = await API.get('/professor/dashboard', {
-      signal: request.signal,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const payload = pegarTokenPayload();
+    const agendamentos = await listarAgendamentos(request.signal);
 
-    return response.data as DashboardProfessorDTO;
+    const hoje = new Date().toISOString().slice(0, 10);
+    const aulasHoje = agendamentos
+      .filter((sessao) => sessao.data_hora?.slice(0, 10) === hoje)
+      .map(formatarSessao);
+    const alunoIds = new Set(
+      agendamentos.flatMap((sessao) => sessao.aluno_ids || [])
+    );
+    const modulos = new Set(
+      agendamentos.map((sessao) => sessao.modulo_id).filter(Boolean)
+    );
+
+    return {
+      nomeProfessor: payload?.nome || 'Professor',
+      totalTurmas: modulos.size,
+      totalAlunos: alunoIds.size,
+      aulasHoje,
+    } as DashboardProfessorDTO;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       if (error.response?.status === 401 || error.response?.status === 403) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
+        limparSessao();
 
         return redirect('/login-professor');
       }
@@ -60,8 +94,7 @@ export default function DashboardProfessor() {
   const dados = useLoaderData() as DashboardProfessorDTO;
 
   function sair() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
+    limparSessao();
     navigate('/login-professor');
   }
 

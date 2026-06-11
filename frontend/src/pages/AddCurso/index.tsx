@@ -1,108 +1,150 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
+import axios from 'axios';
+import {
+  criarNivel,
+  listarCursosCatalogo,
+  listarNiveis,
+  limparSessao,
+  type CursoCatalogoDTO,
+  type NivelDTO,
+} from '../../services/babelup';
 import logoAzul from '../../assets/LogoAzul.png';
 import './style.css';
 
-interface Cursos {
-  id: number;
-  nome: string;
-  nivel: string;
-  duracao: string;
-  preco: string;
-  descricao: string;
-  alunos: number;
+interface AdminCursosLoaderData {
+  niveis: NivelDTO[];
+  catalogo: CursoCatalogoDTO[];
 }
 
-const cursosIniciais: Cursos[] = [
-  {
-    id: 1,
-    nome: 'Inglês',
-    nivel: 'Nível básico',
-    duracao: '3 meses',
-    preco: 'R$ 199,00',
-    descricao: 'Curso introdutório para alunos iniciantes.',
-    alunos: 32,
-  },
-  {
-    id: 2,
-    nome: 'Inglês',
-    nivel: 'Nível intermediário',
-    duracao: '4 meses',
-    preco: 'R$ 249,00',
-    descricao: 'Curso para desenvolvimento de conversação e gramática.',
-    alunos: 21,
-  },
-  {
-    id: 3,
-    nome: 'Português',
-    nivel: 'Nível avançado',
-    duracao: '5 meses',
-    preco: 'R$ 299,00',
-    descricao: 'Curso focado em fluência, escrita e comunicação.',
-    alunos: 15,
-  },
-];
+export async function adminCursosLoader({ request }: { request: Request }) {
+  if (!localStorage.getItem('token')) {
+    return redirect('/login-admin');
+  }
+
+  try {
+    const [niveis, catalogo] = await Promise.all([
+      listarNiveis(request.signal),
+      listarCursosCatalogo(request.signal),
+    ]);
+
+    return { niveis, catalogo } as AdminCursosLoaderData;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
+      limparSessao();
+      return redirect('/login-admin');
+    }
+
+    throw new Response('Erro ao carregar cursos.', { status: 500 });
+  }
+}
+
+function formatarPreco(valor?: number) {
+  if (valor == null) return 'Nao informado';
+
+  return Number(valor).toLocaleString('pt-BR', {
+    style: 'currency',
+    currency: 'BRL',
+  });
+}
+
+function parsePreco(valor: string) {
+  const normalizado = valor.replace(/\./g, '').replace(',', '.');
+  return Number(normalizado);
+}
 
 export default function AdminCursos() {
   const navigate = useNavigate();
+  const dados = useLoaderData() as AdminCursosLoaderData;
 
-  const [cursos, setCursos] = useState<Cursos[]>(cursosIniciais);
+  const [niveis, setNiveis] = useState<NivelDTO[]>(dados.niveis);
+  const [catalogo, setCatalogo] = useState<CursoCatalogoDTO[]>(dados.catalogo);
   const [nomeCurso, setNomeCurso] = useState('');
   const [nivel, setNivel] = useState('');
   const [duracao, setDuracao] = useState('');
   const [preco, setPreco] = useState('');
   const [descricao, setDescricao] = useState('');
   const [busca, setBusca] = useState('');
+  const [mensagemErro, setMensagemErro] = useState('');
+  const [mensagemSucesso, setMensagemSucesso] = useState('');
+  const [salvando, setSalvando] = useState(false);
+
+  const catalogoPorId = useMemo(() => new Map(catalogo.map((curso) => [curso.id, curso])), [catalogo]);
 
   const cursosFiltrados = useMemo(() => {
     const textoBusca = busca.toLowerCase().trim();
 
     if (!textoBusca) {
-      return cursos;
+      return niveis;
     }
 
-    return cursos.filter((curso) => {
-      return (
-        curso.nome.toLowerCase().includes(textoBusca) ||
-        curso.nivel.toLowerCase().includes(textoBusca) ||
-        curso.descricao.toLowerCase().includes(textoBusca)
-      );
-    });
-  }, [busca, cursos]);
+    return niveis.filter((curso) => (
+      (curso.idioma || '').toLowerCase().includes(textoBusca) ||
+      (curso.nome || '').toLowerCase().includes(textoBusca) ||
+      (curso.descricao || '').toLowerCase().includes(textoBusca)
+    ));
+  }, [busca, niveis]);
 
-  function criarCurso(event: FormEvent<HTMLFormElement>) {
+  async function recarregarCursos() {
+    const [niveisAtualizados, catalogoAtualizado] = await Promise.all([
+      listarNiveis(),
+      listarCursosCatalogo(),
+    ]);
+
+    setNiveis(niveisAtualizados);
+    setCatalogo(catalogoAtualizado);
+  }
+
+  async function criarCurso(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setMensagemErro('');
+    setMensagemSucesso('');
 
-    if (!nomeCurso.trim() || !nivel.trim() || !duracao.trim() || !preco.trim()) {
+    const cargaHoraria = Number(duracao);
+    const precoMensal = parsePreco(preco);
+
+    if (!nomeCurso.trim() || !nivel.trim() || Number.isNaN(cargaHoraria) || Number.isNaN(precoMensal)) {
+      setMensagemErro('Informe idioma, nivel, carga horaria e preco validos.');
       return;
     }
 
-    const novoCurso: Cursos = {
-      id: Date.now(),
-      nome: nomeCurso,
-      nivel,
-      duracao: `${duracao} meses`,
-      preco: `R$ ${preco}`,
-      descricao: descricao || 'Descrição não informada.',
-      alunos: 0,
-    };
+    const proximaOrdem = Math.max(0, ...niveis.map((item) => item.ordem || 0)) + 1;
 
-    setCursos((cursosAtuais) => [novoCurso, ...cursosAtuais]);
+    try {
+      setSalvando(true);
+      await criarNivel({
+        idioma: nomeCurso.trim(),
+        nome: nivel.trim(),
+        ordem: proximaOrdem,
+        carga_horaria: cargaHoraria,
+        descricao: descricao.trim() || 'Descricao nao informada.',
+        preco_mensal: precoMensal,
+      });
 
-    setNomeCurso('');
-    setNivel('');
-    setDuracao('');
-    setPreco('');
-    setDescricao('');
+      setMensagemSucesso('Curso cadastrado com sucesso.');
+      setNomeCurso('');
+      setNivel('');
+      setDuracao('');
+      setPreco('');
+      setDescricao('');
+
+      await recarregarCursos();
+    } catch (error: unknown) {
+      if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
+        limparSessao();
+        navigate('/login-admin');
+        return;
+      }
+
+      setMensagemErro('Nao foi possivel cadastrar o curso.');
+    } finally {
+      setSalvando(false);
+    }
   }
 
   function sair() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('perfil');
-    localStorage.removeItem('usuarioLogado');
-
+    limparSessao();
     navigate('/login-admin');
   }
 
@@ -115,38 +157,28 @@ export default function AdminCursos() {
 
         <nav className="admin-cursos-menu">
           <Link to="/dashboard-admin" className="admin-cursos-menu-item">
-            <span>♧</span>
+            <span>AD</span>
             Avisos
           </Link>
 
           <Link to="/admin/cursos" className="admin-cursos-menu-item active">
-            <span>▱</span>
+            <span>CU</span>
             Cursos
           </Link>
 
+          <Link to="/admin/agendamentos" className="admin-cursos-menu-item">
+            <span>AG</span>
+            Agendamentos
+          </Link>
+
           <Link to="/admin/alunos" className="admin-cursos-menu-item">
-            <span>🎓</span>
+            <span>AL</span>
             Alunos
           </Link>
 
           <Link to="/admin/professores" className="admin-cursos-menu-item">
-            <span>▦</span>
+            <span>PR</span>
             Professores
-          </Link>
-
-          <Link to="/admin/estatisticas" className="admin-cursos-menu-item">
-            <span>▤</span>
-            Estatísticas
-          </Link>
-
-          <Link to="/admin/chat" className="admin-cursos-menu-item">
-            <span>♡</span>
-            Chat
-          </Link>
-
-          <Link to="/admin/forum" className="admin-cursos-menu-item">
-            <span>♢</span>
-            Fórum
           </Link>
         </nav>
 
@@ -158,70 +190,71 @@ export default function AdminCursos() {
       <section className="admin-cursos-main">
         <header className="admin-cursos-header">
           <div>
-            <h1>Olá, Joao Marcelo!</h1>
-            <p>Bem-vindo de volta!</p>
+            <h1>Cursos</h1>
+            <p>Niveis cadastrados no backend.</p>
           </div>
 
           <div className="admin-cursos-header-actions">
             <button type="button" className="admin-cursos-bell">
-              ♧
+              AD
               <span />
             </button>
 
-            <div className="admin-cursos-avatar">LS</div>
+            <div className="admin-cursos-avatar">AD</div>
           </div>
         </header>
 
         <section className="admin-cursos-content">
           <form className="admin-cursos-card" onSubmit={criarCurso}>
             <h2>
-              <span>▱</span>
+              <span>CU</span>
               Criar novo curso
             </h2>
 
+            {mensagemErro && <p className="admin-cursos-empty">{mensagemErro}</p>}
+            {mensagemSucesso && <p className="admin-cursos-empty">{mensagemSucesso}</p>}
+
             <div className="admin-cursos-form-grid">
               <div className="admin-cursos-field">
-                <label htmlFor="nomeCurso">Nome do curso</label>
+                <label htmlFor="nomeCurso">Idioma</label>
                 <input
                   id="nomeCurso"
                   type="text"
-                  placeholder="Exemplo: Inglês - Avançado"
+                  placeholder="Exemplo: Ingles"
                   value={nomeCurso}
                   onChange={(event) => setNomeCurso(event.target.value)}
                 />
               </div>
 
               <div className="admin-cursos-field">
-                <label htmlFor="nivel">Nível</label>
-                <select
+                <label htmlFor="nivel">Nivel</label>
+                <input
                   id="nivel"
+                  type="text"
+                  placeholder="Exemplo: A1"
                   value={nivel}
                   onChange={(event) => setNivel(event.target.value)}
-                >
-                  <option value="">Selecione o nível</option>
-                  <option value="Nível básico">Nível básico</option>
-                  <option value="Nível intermediário">Nível intermediário</option>
-                  <option value="Nível avançado">Nível avançado</option>
-                </select>
+                />
               </div>
 
               <div className="admin-cursos-field">
-                <label htmlFor="duracao">Duração (meses)</label>
+                <label htmlFor="duracao">Carga horaria</label>
                 <input
                   id="duracao"
-                  type="text"
-                  placeholder="2, 3..."
+                  type="number"
+                  min="1"
+                  placeholder="40"
                   value={duracao}
                   onChange={(event) => setDuracao(event.target.value)}
                 />
               </div>
 
               <div className="admin-cursos-field">
-                <label htmlFor="preco">Preço (R$/mês)</label>
+                <label htmlFor="preco">Preco mensal</label>
                 <input
                   id="preco"
                   type="text"
-                  placeholder="299"
+                  placeholder="99,90"
                   value={preco}
                   onChange={(event) => setPreco(event.target.value)}
                 />
@@ -229,24 +262,24 @@ export default function AdminCursos() {
             </div>
 
             <div className="admin-cursos-field">
-              <label htmlFor="descricao">Descrição</label>
+              <label htmlFor="descricao">Descricao</label>
               <textarea
                 id="descricao"
-                placeholder="Insira a descrição do curso..."
+                placeholder="Insira a descricao do curso..."
                 value={descricao}
                 onChange={(event) => setDescricao(event.target.value)}
               />
             </div>
 
-            <button type="submit" className="admin-cursos-submit">
-              Criar curso
+            <button type="submit" className="admin-cursos-submit" disabled={salvando}>
+              {salvando ? 'Criando...' : 'Criar curso'}
             </button>
           </form>
 
           <section className="admin-cursos-card admin-cursos-list-card">
             <div className="admin-cursos-list-header">
               <h2>
-                <span>▱</span>
+                <span>CU</span>
                 Cursos existentes
               </h2>
 
@@ -263,32 +296,40 @@ export default function AdminCursos() {
                 <thead>
                   <tr>
                     <th>Curso</th>
-                    <th>Nível</th>
-                    <th>Duração</th>
-                    <th>Preço</th>
-                    <th>Alunos</th>
-                    <th>Ações</th>
+                    <th>Nivel</th>
+                    <th>Carga horaria</th>
+                    <th>Preco</th>
+                    <th>Modulos</th>
+                    <th>Acoes</th>
                   </tr>
                 </thead>
 
                 <tbody>
-                  {cursosFiltrados.map((curso) => (
-                    <tr key={curso.id}>
-                      <td>
-                        <strong>{curso.nome}</strong>
-                        <p>{curso.descricao}</p>
-                      </td>
-                      <td>{curso.nivel}</td>
-                      <td>{curso.duracao}</td>
-                      <td>{curso.preco}</td>
-                      <td>{curso.alunos}</td>
-                      <td>
-                        <button type="button" className="admin-cursos-edit">
-                          Editar
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                  {cursosFiltrados.map((curso) => {
+                    const cursoCatalogo = catalogoPorId.get(curso.id);
+
+                    return (
+                      <tr key={curso.id}>
+                        <td>
+                          <strong>{curso.idioma || cursoCatalogo?.titulo || 'Curso sem idioma'}</strong>
+                          <p>{curso.descricao || cursoCatalogo?.descricao || 'Descricao nao informada.'}</p>
+                        </td>
+                        <td>{curso.nome || 'Nao informado'}</td>
+                        <td>{curso.cargaHorariaEstimada ? `${curso.cargaHorariaEstimada}h` : 'Nao informado'}</td>
+                        <td>{formatarPreco(cursoCatalogo?.precoMensal)}</td>
+                        <td>{curso.modulos?.length ?? 0}</td>
+                        <td>
+                          <button
+                            type="button"
+                            className="admin-cursos-edit"
+                            onClick={() => navigate(`/admin/cursos/${curso.id}`)}
+                          >
+                            Editar
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
 
                   {cursosFiltrados.length === 0 && (
                     <tr>
@@ -304,7 +345,7 @@ export default function AdminCursos() {
 
           <div className="admin-cursos-illustration" aria-hidden="true">
             <div className="bubble bubble-one">A</div>
-            <div className="bubble bubble-two">文</div>
+            <div className="bubble bubble-two">B</div>
             <div className="card-line card-line-one" />
             <div className="card-line card-line-two" />
           </div>

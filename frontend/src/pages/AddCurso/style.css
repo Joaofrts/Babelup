@@ -334,6 +334,181 @@
   padding: 20px !important;
 }
 
+.admin-cursos-back-link {
+  color: #214f8f;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.admin-cursos-back-link:hover {
+  text-decoration: underline;
+}
+
+.admin-curso-detalhe-content {
+  padding-top: 36px;
+}
+
+.admin-curso-alert {
+  width: 100%;
+  max-width: 880px;
+  margin: 0 auto 18px;
+  border-radius: 7px;
+  background: #d9f7e8;
+  color: #14532d;
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.admin-curso-alert.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.admin-curso-actions-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.admin-curso-danger-button {
+  min-width: 132px;
+  height: 34px;
+  border: none;
+  border-radius: 7px;
+  background: #b91c1c;
+  color: #fff7ee;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-curso-danger-button:hover {
+  background: #7f1d1d;
+}
+
+.admin-curso-module-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.admin-curso-module-button {
+  border: 1px solid rgba(33, 79, 143, 0.25);
+  border-radius: 7px;
+  background: #eaf4ff;
+  color: #152033;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 9px 12px;
+}
+
+.admin-curso-module-button.active {
+  background: #214f8f;
+  color: #fff7ee;
+}
+
+.admin-curso-subform {
+  margin-top: 22px;
+  border-top: 1px solid rgba(148, 163, 184, 0.35);
+  padding-top: 20px;
+}
+
+.admin-curso-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  margin-top: 18px;
+}
+
+.admin-curso-content-grid h3,
+.admin-curso-subform h3 {
+  margin: 0 0 14px;
+  color: #111827;
+  font-size: 15px;
+}
+
+.admin-curso-content-item {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+  padding: 10px 0;
+  font-size: 12px;
+  color: #111827;
+}
+
+.admin-curso-content-item a {
+  color: #214f8f;
+  overflow-wrap: anywhere;
+}
+
+.admin-agendamento-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.admin-agendamento-item {
+  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+  display: grid;
+  grid-template-columns: minmax(220px, 1fr) minmax(320px, 1.4fr);
+  gap: 18px;
+  padding: 0 0 16px;
+}
+
+.admin-agendamento-main {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  font-size: 12px;
+  color: #111827;
+}
+
+.admin-agendamento-main strong {
+  font-size: 14px;
+}
+
+.admin-agendamento-actions {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-agendamento-actions input,
+.admin-cursos-list-header select {
+  min-height: 30px;
+  border: none;
+  border-radius: 7px;
+  background: #eaf4ff;
+  color: #111827;
+  font-size: 12px;
+  padding: 0 10px;
+}
+
+.admin-agendamento-alunos {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.admin-agendamento-alunos button {
+  border: none;
+  border-radius: 7px;
+  background: #eaf4ff;
+  color: #214f8f;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 8px 10px;
+}
+
 .admin-cursos-illustration {
   position: absolute;
   right: 86px;

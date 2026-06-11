@@ -4,7 +4,7 @@ import com.example.babelup.entities.enumEntities.EnumPerfil;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
-public record ProfessorCadastroDto(
+public record AdminCadastroDto(
         @NotBlank
         String nome,
         @NotBlank
@@ -15,6 +15,6 @@ public record ProfessorCadastroDto(
         String telefone
 ) {
     public NovoUsuarioDto toNovoUsuarioDto() {
-        return new NovoUsuarioDto(nome, email, senha, EnumPerfil.PROFESSOR, telefone, true, false, null);
+        return new NovoUsuarioDto(nome, email, senha, EnumPerfil.ADMIN, telefone, true, false, null);
     }
 }

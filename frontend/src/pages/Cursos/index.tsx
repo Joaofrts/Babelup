@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import logoBranca from '../../assets/LogoBranca.png';
-import { API } from '../../services/api';
+import { listarCursosCatalogo } from '../../services/babelup';
 import './style.css';
 
 interface CursoCatalogo {
@@ -22,9 +22,8 @@ export default function Cursos() {
         setCarregando(true);
         setErro('');
 
-        const response = await API.get('/catalogo/cursos');
-
-        setCursos(response.data);
+        const cursosBackend = await listarCursosCatalogo();
+        setCursos(cursosBackend);
       } catch (error) {
         console.error('Erro ao buscar cursos:', error);
         setErro('Não foi possível carregar os cursos cadastrados.');

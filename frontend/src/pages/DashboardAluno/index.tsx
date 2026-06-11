@@ -1,13 +1,10 @@
 import { useLoaderData, useNavigate, redirect } from 'react-router-dom';
-import { API } from '../../services/api';
+import { buscarPerfilAluno, limparSessao, type PerfilAlunoDTO } from '../../services/babelup';
 import logoAzul from '../../assets/LogoAzul.png';
 import './style.css';
 
-interface PerfilAluno {
-  nome?: string;
-  email?: string;
-  nivelAtual?: string;
-  progressoGeral?: number;
+interface DashboardAlunoData {
+  perfil: PerfilAlunoDTO;
   posicaoRanking?: number;
   proximaAula?: string;
 }
@@ -16,39 +13,37 @@ export async function dashboardAlunoLoader({ request }: { request: Request }) {
   const token = localStorage.getItem('token');
 
   if (!token) {
-    return redirect('/login');
+    return redirect('/login-aluno');
   }
 
   try {
-    const response = await API.get('/alunos/meu-perfil', {
-      signal: request.signal,
-    });
+    const perfil = await buscarPerfilAluno(request.signal);
 
-    return response.data;
+    return {
+      perfil,
+    } as DashboardAlunoData;
   } catch (error) {
     console.error('Erro ao carregar dashboard:', error);
 
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
+    limparSessao();
 
-    return redirect('/login');
+    return redirect('/login-aluno');
   }
 }
 
 export default function DashboardAluno() {
-  const dados = useLoaderData() as PerfilAluno;
+  const dados = useLoaderData() as DashboardAlunoData;
   const navigate = useNavigate();
 
-  const nomeAluno = dados?.nome || 'Aluno';
-  const nivelAtual = dados?.nivelAtual || 'Iniciante';
-  const progressoGeral = dados?.progressoGeral ?? 0;
+  const nomeAluno = dados.perfil?.nome || 'Aluno';
+  const nivelAtual = dados.perfil?.nivelAtual || 'Nao informado';
+  const progressoGeral = dados.perfil?.progressoGeral ?? 0;
   const posicaoRanking = dados?.posicaoRanking;
   const proximaAula = dados?.proximaAula || 'Nenhuma aula agendada';
 
   const lidarComLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    navigate('/login');
+    limparSessao();
+    navigate('/login-aluno');
   };
 
   return (

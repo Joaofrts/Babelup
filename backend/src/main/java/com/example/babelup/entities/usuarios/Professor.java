@@ -2,8 +2,12 @@ package com.example.babelup.entities.usuarios;
 
 import com.example.babelup.dto.NovoUsuarioDto;
 import com.example.babelup.entities.enumEntities.EnumPerfil;
+import com.example.babelup.entities.estruturaAcademica.Nivel;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrimaryKeyJoinColumn;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Size;
@@ -20,6 +24,10 @@ public class Professor extends Usuario{
     @Column( columnDefinition = "TEXT")
     @Size(max = 1000, message = "Disponibilidade deve conter no máximo 1000 caracteres.")
     private String disponibilidade;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "nivel_atuacao_id")
+    private Nivel nivelAtuacao;
 
     public Professor() {
         super();
@@ -60,6 +68,14 @@ public class Professor extends Usuario{
         this.disponibilidade = disponibilidade;
     }
 
+    public Nivel getNivelAtuacao() {
+        return nivelAtuacao;
+    }
+
+    public void setNivelAtuacao(Nivel nivelAtuacao) {
+        this.nivelAtuacao = nivelAtuacao;
+    }
+
     @Override
     public String toString() {
         return "Professor{" +
@@ -67,6 +83,7 @@ public class Professor extends Usuario{
                 ", nome='" + nome + '\'' +
                 ", email='" + email + '\'' +
                 ", idiomas='" + idiomasLecionados + '\'' +
+                ", nivelAtuacao=" + (nivelAtuacao != null ? nivelAtuacao.getNome() : null) +
                 '}';
     }
 }

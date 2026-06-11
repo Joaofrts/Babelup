@@ -1,6 +1,6 @@
 import { Form, useNavigation, useActionData, redirect, Link } from 'react-router-dom';
-import { API } from '../../services/api';
 import axios from 'axios';
+import { loginAdmin, salvarSessao } from '../../services/babelup';
 import logoAzul from '../../assets/LogoAzul.png';
 import './style.css';
 
@@ -9,12 +9,9 @@ export async function loginAdminAction({ request }: { request: Request }) {
   const dadosLogin = Object.fromEntries(formData);
 
   try {
-    const response = await API.post('/autenticacao/login/adm', dadosLogin, {
-      signal: request.signal,
-    });
+    const auth = await loginAdmin(dadosLogin as { email: FormDataEntryValue; senha: FormDataEntryValue }, request.signal);
 
-    localStorage.setItem('token', response.data.token);
-    localStorage.setItem('refreshToken', response.data.refreshToken);
+    salvarSessao(auth);
 
     return redirect('/dashboard-admin');
   } catch (error: unknown) {
@@ -82,6 +79,10 @@ export default function LoginAdmin() {
           <a href="#" className="login-admin-forgot-password">
             Esqueceu sua senha?
           </a>
+
+          <Link to="/cadastro-admin" className="login-admin-forgot-password">
+            Criar administrador
+          </Link>
         </section>
 
         <Link to="/" className="login-admin-back-button">

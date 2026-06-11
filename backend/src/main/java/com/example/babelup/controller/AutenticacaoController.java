@@ -130,7 +130,7 @@ public class AutenticacaoController {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario não encontrado");
             }
             Usuario usuario = usuarioLogado.get();
-            if(!usuario.getPerfil().name().equals("ADM")){
+            if(!usuario.getPerfil().name().equals("ADMIN")){
                 logger.error("Tentativa de login com perfil incorreto: email={}",usuario.getEmail());
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Perfil de usuário inválido para esta rota");
             }

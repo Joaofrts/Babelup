@@ -1,42 +1,31 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import { useMemo, useState } from 'react';
+import axios from 'axios';
+import { listarUsuarios, limparSessao, type UsuarioDTO } from '../../services/babelup';
 import logoAzul from '../../assets/LogoAzul.png';
 import './style.css';
 
-interface Aluno {
-  id: number;
-  nome: string;
-  email: string;
-  curso: string;
-  status: 'Ativo' | 'Inativo';
-}
+export async function adminAlunosLoader({ request }: { request: Request }) {
+  if (!localStorage.getItem('token')) {
+    return redirect('/login-admin');
+  }
 
-const alunos: Aluno[] = [
-  {
-    id: 1,
-    nome: 'João Leonardo',
-    email: 'jojoel@gmail.com',
-    curso: 'Inglês - Nível Intermediário',
-    status: 'Ativo',
-  },
-  {
-    id: 2,
-    nome: 'Rodrigo Santos',
-    email: 'rodrigo@gmail.com',
-    curso: 'Português - Nível Básico',
-    status: 'Ativo',
-  },
-  {
-    id: 3,
-    nome: 'Lucas Lima',
-    email: 'lucas@gmail.com',
-    curso: 'Espanhol - Nível Inicial',
-    status: 'Inativo',
-  },
-];
+  try {
+    const usuarios = await listarUsuarios(request.signal);
+    return usuarios.filter((usuario) => usuario.perfil === 'ALUNO');
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
+      limparSessao();
+      return redirect('/login-admin');
+    }
+
+    throw new Response('Erro ao carregar alunos.', { status: 500 });
+  }
+}
 
 export default function AdminAlunos() {
   const navigate = useNavigate();
+  const alunos = useLoaderData() as UsuarioDTO[];
   const [busca, setBusca] = useState('');
 
   const alunosFiltrados = useMemo(() => {
@@ -46,22 +35,14 @@ export default function AdminAlunos() {
       return alunos;
     }
 
-    return alunos.filter((aluno) => {
-      return (
-        aluno.nome.toLowerCase().includes(textoBusca) ||
-        aluno.email.toLowerCase().includes(textoBusca) ||
-        aluno.curso.toLowerCase().includes(textoBusca) ||
-        aluno.status.toLowerCase().includes(textoBusca)
-      );
-    });
-  }, [busca]);
+    return alunos.filter((aluno) => (
+      (aluno.nome || '').toLowerCase().includes(textoBusca) ||
+      (aluno.email || '').toLowerCase().includes(textoBusca)
+    ));
+  }, [busca, alunos]);
 
   function sair() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    localStorage.removeItem('perfil');
-    localStorage.removeItem('usuarioLogado');
-
+    limparSessao();
     navigate('/login-admin');
   }
 
@@ -74,38 +55,38 @@ export default function AdminAlunos() {
 
         <nav className="admin-alunos-menu">
           <Link to="/dashboard-admin" className="admin-alunos-menu-item">
-            <span>♧</span>
+            <span>AD</span>
             Avisos
           </Link>
 
           <Link to="/admin/cursos" className="admin-alunos-menu-item">
-            <span>▱</span>
+            <span>CU</span>
             Cursos
           </Link>
 
           <Link to="/admin/alunos" className="admin-alunos-menu-item active">
-            <span>🎓</span>
+            <span>A</span>
             Alunos
           </Link>
 
           <Link to="/admin/professores" className="admin-alunos-menu-item">
-            <span>▦</span>
+            <span>PR</span>
             Professores
           </Link>
 
           <Link to="/admin/estatisticas" className="admin-alunos-menu-item">
-            <span>▤</span>
-            Estatísticas
+            <span>ES</span>
+            Estatisticas
           </Link>
 
           <Link to="/admin/chat" className="admin-alunos-menu-item">
-            <span>♡</span>
+            <span>CH</span>
             Chat
           </Link>
 
           <Link to="/admin/forum" className="admin-alunos-menu-item">
-            <span>♢</span>
-            Fórum
+            <span>FO</span>
+            Forum
           </Link>
         </nav>
 
@@ -117,17 +98,17 @@ export default function AdminAlunos() {
       <section className="admin-alunos-main">
         <header className="admin-alunos-header">
           <div>
-            <h1>Olá, Luciana Silva!</h1>
-            <p>Bem-vindo de volta!</p>
+            <h1>Alunos</h1>
+            <p>Usuarios cadastrados como alunos.</p>
           </div>
 
           <div className="admin-alunos-header-actions">
             <button type="button" className="admin-alunos-bell">
-              ♧
+              AD
               <span />
             </button>
 
-            <div className="admin-alunos-avatar">LS</div>
+            <div className="admin-alunos-avatar">AD</div>
           </div>
         </header>
 
@@ -135,19 +116,9 @@ export default function AdminAlunos() {
           <div className="admin-alunos-card">
             <div className="admin-alunos-card-header">
               <h2>
-                <span>⚭</span>
+                <span>AL</span>
                 Gerenciar alunos
               </h2>
-
-              <div className="admin-alunos-actions">
-                <button type="button" className="admin-alunos-filter">
-                  ♢
-                </button>
-
-                <button type="button" className="admin-alunos-add">
-                  Adicionar aluno
-                </button>
-              </div>
             </div>
 
             <input
@@ -162,33 +133,25 @@ export default function AdminAlunos() {
               <table className="admin-alunos-table">
                 <thead>
                   <tr>
-                    <th>Nome:</th>
+                    <th>Nome</th>
                     <th>E-mail</th>
-                    <th>Curso</th>
+                    <th>Perfil</th>
                     <th>Status</th>
-                    <th>Ações</th>
+                    <th>Acoes</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {alunosFiltrados.map((aluno) => (
-                    <tr key={aluno.id}>
-                      <td>{aluno.nome}</td>
-                      <td>{aluno.email}</td>
-                      <td>{aluno.curso}</td>
+                    <tr key={aluno.id || aluno.email}>
+                      <td>{aluno.nome || 'Aluno sem nome'}</td>
+                      <td>{aluno.email || 'E-mail nao informado'}</td>
+                      <td>{aluno.perfil || 'ALUNO'}</td>
                       <td>
-                        <span
-                          className={
-                            aluno.status === 'Ativo'
-                              ? 'admin-alunos-status ativo'
-                              : 'admin-alunos-status inativo'
-                          }
-                        >
-                          {aluno.status}
-                        </span>
+                        <span className="admin-alunos-status ativo">Cadastrado</span>
                       </td>
                       <td>
-                        <button type="button" className="admin-alunos-edit">
+                        <button type="button" className="admin-alunos-edit" disabled>
                           Editar
                         </button>
                       </td>
@@ -209,7 +172,7 @@ export default function AdminAlunos() {
 
           <div className="admin-alunos-illustration" aria-hidden="true">
             <div className="bubble bubble-one">A</div>
-            <div className="bubble bubble-two">文</div>
+            <div className="bubble bubble-two">B</div>
             <div className="card-line card-line-one" />
             <div className="card-line card-line-two" />
           </div>

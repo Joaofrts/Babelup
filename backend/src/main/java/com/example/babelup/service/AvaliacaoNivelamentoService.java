@@ -22,15 +22,18 @@ public class AvaliacaoNivelamentoService {
     private final SessaoConversacaoRepository sessaoRepository;
     private final AlunoRepository alunoRepository;
     private final NivelRepository nivelRepository;
+    private final ProgressoService progressoService;
 
     public AvaliacaoNivelamentoService(TesteDiagnosticoRepository avaliacaoRepository,
                                        SessaoConversacaoRepository sessaoRepository,
                                        AlunoRepository alunoRepository,
-                                       NivelRepository nivelRepository) {
+                                       NivelRepository nivelRepository,
+                                       ProgressoService progressoService) {
         this.avaliacaoRepository = avaliacaoRepository;
         this.sessaoRepository = sessaoRepository;
         this.alunoRepository = alunoRepository;
         this.nivelRepository = nivelRepository;
+        this.progressoService = progressoService;
     }
 
     @Transactional
@@ -69,6 +72,9 @@ public class AvaliacaoNivelamentoService {
 
         // Se for um nivelamento de entrada, aqui no futuro você pode injetar o AlunoService
         // para atualizar o "nivelAtual" do aluno no cadastro dele.
+
+        aluno.setNivelAtual(nivel);
+        progressoService.atualizarProgressoGeralDoNivel(aluno);
 
         return avaliacaoRepository.save(avaliacao);
     }

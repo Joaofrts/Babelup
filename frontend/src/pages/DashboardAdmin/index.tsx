@@ -2,66 +2,19 @@ import { Link, redirect, useLoaderData, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import type { FormEvent } from 'react';
 import axios from 'axios';
-import { API } from '../../services/api';
+import {
+  cadastrarProfessor as cadastrarProfessorBackend,
+  listarUsuarios,
+  limparSessao,
+  pegarTokenPayload,
+  type UsuarioDTO,
+} from '../../services/babelup';
 import logoAzul from '../../assets/LogoAzul.png';
 import './style.css';
-
-interface UsuarioDTO {
-  id?: string;
-  nome?: string;
-  email?: string;
-  perfil?: string;
-}
 
 interface AdminProfessoresLoaderData {
   admin: UsuarioDTO | null;
   professores: UsuarioDTO[];
-}
-
-function normalizarLista<T>(data: unknown): T[] {
-  if (Array.isArray(data)) return data as T[];
-
-  if (
-    data &&
-    typeof data === 'object' &&
-    'content' in data &&
-    Array.isArray((data as { content: unknown }).content)
-  ) {
-    return (data as { content: T[] }).content;
-  }
-
-  if (
-    data &&
-    typeof data === 'object' &&
-    'data' in data &&
-    Array.isArray((data as { data: unknown }).data)
-  ) {
-    return (data as { data: T[] }).data;
-  }
-
-  return [];
-}
-
-function pegarTokenPayload(token: string) {
-  try {
-    const payloadBase64 = token.split('.')[1];
-    const payloadJson = atob(payloadBase64.replace(/-/g, '+').replace(/_/g, '/'));
-    return JSON.parse(payloadJson);
-  } catch {
-    return null;
-  }
-}
-
-function pegarEmailDoToken(token: string) {
-  const payload = pegarTokenPayload(token);
-
-  return (
-    payload?.sub ||
-    payload?.email ||
-    payload?.username ||
-    payload?.usuario ||
-    ''
-  );
 }
 
 function pegarIniciais(nome?: string) {
@@ -81,30 +34,16 @@ function filtrarProfessores(usuarios: UsuarioDTO[]) {
 }
 
 export async function adminProfessoresLoader({ request }: { request: Request }) {
-  const token = localStorage.getItem('token');
-
-  if (!token) {
+  if (!localStorage.getItem('token')) {
     return redirect('/login-admin');
   }
 
   try {
-    const headers = {
-      Authorization: `Bearer ${token}`,
-    };
-
-    const emailLogado = pegarEmailDoToken(token);
-
-    const usuariosResponse = await API.get('/admin/listarUsuarios', {
-      signal: request.signal,
-      headers,
-    });
-
-    const usuarios = normalizarLista<UsuarioDTO>(usuariosResponse.data);
-
+    const payload = pegarTokenPayload();
+    const usuarios = await listarUsuarios(request.signal);
     const adminEncontrado =
-      usuarios.find((usuario) => usuario.email === emailLogado) ||
+      usuarios.find((usuario) => usuario.email === payload?.sub) ||
       usuarios.find((usuario) => usuario.perfil === 'ADMIN') ||
-      usuarios.find((usuario) => usuario.perfil === 'ADMINISTRADOR') ||
       null;
 
     return {
@@ -112,23 +51,12 @@ export async function adminProfessoresLoader({ request }: { request: Request }) 
       professores: filtrarProfessores(usuarios),
     } as AdminProfessoresLoaderData;
   } catch (error: unknown) {
-    if (axios.isAxiosError(error)) {
-      if (error.response?.status === 401 || error.response?.status === 403) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-
-        return redirect('/login-admin');
-      }
-
-      throw new Response(
-        error.response?.data?.message || 'Erro ao carregar professores.',
-        { status: error.response?.status || 500 }
-      );
+    if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
+      limparSessao();
+      return redirect('/login-admin');
     }
 
-    throw new Response('Erro interno ao carregar professores.', {
-      status: 500,
-    });
+    throw new Response('Erro ao carregar professores.', { status: 500 });
   }
 }
 
@@ -142,119 +70,61 @@ export default function AdminProfessores() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [confirmarSenha, setConfirmarSenha] = useState('');
-  const [idiomasLecionados, setIdiomasLecionados] = useState('');
-  const [disponibilidade, setDisponibilidade] = useState('');
   const [mensagemErro, setMensagemErro] = useState('');
   const [mensagemSucesso, setMensagemSucesso] = useState('');
   const [salvando, setSalvando] = useState(false);
 
-  const nomeAdmin = admin?.nome || 'Administrador';
+  const nomeAdmin = admin?.nome || pegarTokenPayload()?.nome || 'Administrador';
   const iniciais = pegarIniciais(nomeAdmin);
 
   function sair() {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
+    limparSessao();
     navigate('/login-admin');
   }
 
   async function recarregarProfessores() {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      navigate('/login-admin');
-      return;
-    }
-
-    const response = await API.get('/admin/listarUsuarios', {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const usuarios = normalizarLista<UsuarioDTO>(response.data);
+    const usuarios = await listarUsuarios();
     setProfessores(filtrarProfessores(usuarios));
   }
 
   async function cadastrarProfessor(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
     setMensagemErro('');
     setMensagemSucesso('');
 
-    if (!nome.trim()) {
-      setMensagemErro('Informe o nome do professor.');
-      return;
-    }
-
-    if (!email.trim()) {
-      setMensagemErro('Informe o e-mail do professor.');
-      return;
-    }
-
-    if (!senha.trim()) {
-      setMensagemErro('Informe a senha do professor.');
+    if (!nome.trim() || !email.trim() || !senha.trim()) {
+      setMensagemErro('Informe nome, e-mail e senha.');
       return;
     }
 
     if (senha !== confirmarSenha) {
-      setMensagemErro('As senhas não conferem.');
-      return;
-    }
-
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      navigate('/login-admin');
+      setMensagemErro('As senhas nao conferem.');
       return;
     }
 
     try {
       setSalvando(true);
-
-      await API.post(
-        '/admin/cadastroProfessor',
-        {
-          nome,
-          email,
-          senha,
-          idiomasLecionados: idiomasLecionados || null,
-          disponibilidade: disponibilidade || null,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      await cadastrarProfessorBackend({
+        nome: nome.trim(),
+        email: email.trim(),
+        senha,
+      });
 
       setMensagemSucesso('Professor cadastrado com sucesso.');
-
       setNome('');
       setEmail('');
       setSenha('');
       setConfirmarSenha('');
-      setIdiomasLecionados('');
-      setDisponibilidade('');
 
       await recarregarProfessores();
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        if (error.response?.status === 401 || error.response?.status === 403) {
-          localStorage.removeItem('token');
-          localStorage.removeItem('refreshToken');
-          navigate('/login-admin');
-          return;
-        }
-
-        setMensagemErro(
-          error.response?.data?.message ||
-            error.response?.data?.erro ||
-            'Não foi possível cadastrar o professor.'
-        );
+      if (axios.isAxiosError(error) && (error.response?.status === 401 || error.response?.status === 403)) {
+        limparSessao();
+        navigate('/login-admin');
         return;
       }
 
-      setMensagemErro('Erro interno ao cadastrar professor.');
+      setMensagemErro('Nao foi possivel cadastrar o professor.');
     } finally {
       setSalvando(false);
     }
@@ -272,42 +142,24 @@ export default function AdminProfessores() {
         </div>
 
         <nav className="admin-professores-sidebar-menu">
-          <Link to="/dashboard-admin" className="admin-professores-menu-item">
-            <span>♧</span>
+          <Link to="/dashboard-admin" className="admin-professores-menu-item active">
+            <span>AD</span>
             Avisos
           </Link>
 
           <Link to="/admin/cursos" className="admin-professores-menu-item">
-            <span>▱</span>
+            <span>CU</span>
             Cursos
           </Link>
 
           <Link to="/admin/alunos" className="admin-professores-menu-item">
-            <span>🎓</span>
+            <span>AL</span>
             Alunos
           </Link>
 
-          <Link
-            to="/admin/professores"
-            className="admin-professores-menu-item active"
-          >
-            <span>▦</span>
+          <Link to="/admin/professores" className="admin-professores-menu-item">
+            <span>PR</span>
             Professores
-          </Link>
-
-          <Link to="/admin/estatisticas" className="admin-professores-menu-item">
-            <span>▤</span>
-            Estatísticas
-          </Link>
-
-          <Link to="/admin/chat" className="admin-professores-menu-item">
-            <span>♡</span>
-            Chat
-          </Link>
-
-          <Link to="/admin/forum" className="admin-professores-menu-item">
-            <span>♢</span>
-            Fórum
           </Link>
         </nav>
 
@@ -323,13 +175,13 @@ export default function AdminProfessores() {
       <section className="admin-professores-main">
         <header className="admin-professores-topbar">
           <div>
-            <h1>Olá, {nomeAdmin}!</h1>
+            <h1>Ola, {nomeAdmin}!</h1>
             <p>Bem-vindo de volta!</p>
           </div>
 
           <div className="admin-professores-topbar-actions">
             <button type="button" className="admin-professores-notification-button">
-              ♧
+              AD
               <span />
             </button>
 
@@ -343,7 +195,7 @@ export default function AdminProfessores() {
             onSubmit={cadastrarProfessor}
           >
             <h2>
-              <span>▦</span>
+              <span>PR</span>
               Adicionar professor
             </h2>
 
@@ -407,30 +259,6 @@ export default function AdminProfessores() {
               </div>
             </div>
 
-            <div className="admin-professores-form-row">
-              <div className="admin-professores-field">
-                <label htmlFor="idiomas">Idiomas lecionados</label>
-                <input
-                  id="idiomas"
-                  type="text"
-                  placeholder="Exemplo: Inglês, Espanhol..."
-                  value={idiomasLecionados}
-                  onChange={(event) => setIdiomasLecionados(event.target.value)}
-                />
-              </div>
-
-              <div className="admin-professores-field">
-                <label htmlFor="disponibilidade">Disponibilidade</label>
-                <input
-                  id="disponibilidade"
-                  type="text"
-                  placeholder="Exemplo: Segunda a sexta..."
-                  value={disponibilidade}
-                  onChange={(event) => setDisponibilidade(event.target.value)}
-                />
-              </div>
-            </div>
-
             <button
               type="submit"
               className="admin-professores-submit-button"
@@ -456,7 +284,7 @@ export default function AdminProfessores() {
                   >
                     <div>
                       <strong>{professor.nome || 'Professor sem nome'}</strong>
-                      <p>{professor.email || 'E-mail não informado'}</p>
+                      <p>{professor.email || 'E-mail nao informado'}</p>
                     </div>
 
                     <span>{professor.perfil}</span>

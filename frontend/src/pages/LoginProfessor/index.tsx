@@ -1,6 +1,6 @@
 import { Form, useNavigation, useActionData, redirect, Link } from 'react-router-dom';
-import { API } from '../../services/api';
 import axios from 'axios';
+import { loginProfessor, salvarSessao } from '../../services/babelup';
 import logoAzul from '../../assets/LogoAzul.png';
 import './style.css';
 
@@ -9,12 +9,9 @@ export async function loginProfessorAction({ request }: { request: Request }) {
   const dadosLogin = Object.fromEntries(formData);
 
   try {
-    const response = await API.post('/autenticacao/login/professor', dadosLogin, {
-      signal: request.signal,
-    });
+    const auth = await loginProfessor(dadosLogin as { email: FormDataEntryValue; senha: FormDataEntryValue }, request.signal);
 
-    localStorage.setItem('token', response.data.token);
-    localStorage.setItem('refreshToken', response.data.refreshToken);
+    salvarSessao(auth);
 
     return redirect('/dashboard-professor');
   } catch (error: unknown) {
@@ -82,6 +79,10 @@ export default function LoginProfessor() {
           <a href="#" className="forgot-password">
             Esqueceu sua senha?
           </a>
+
+          <Link to="/cadastro-professor" className="forgot-password">
+            Criar conta de professor
+          </Link>
         </section>
 
         <Link to="/login-admin" className="login-admin-button">

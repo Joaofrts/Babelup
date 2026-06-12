@@ -80,9 +80,7 @@ export default function LoginProfessor() {
             Esqueceu sua senha?
           </a>
 
-          <Link to="/cadastro-professor" className="forgot-password">
-            Criar conta de professor
-          </Link>
+          
         </section>
 
         <Link to="/login-admin" className="login-admin-button">

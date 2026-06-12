@@ -49,7 +49,7 @@ export default function LoginAdmin() {
             <img src={logoAzul} alt="Logo BabelUp" className="login-admin-logo" />
           </div>
 
-          <h1>Administrativo</h1>
+          <h1>Portal do Administrativo</h1>
           <p> </p>
 
           {actionData?.error && (
@@ -80,9 +80,7 @@ export default function LoginAdmin() {
             Esqueceu sua senha?
           </a>
 
-          <Link to="/cadastro-admin" className="login-admin-forgot-password">
-            Criar administrador
-          </Link>
+          
         </section>
 
         <Link to="/" className="login-admin-back-button">

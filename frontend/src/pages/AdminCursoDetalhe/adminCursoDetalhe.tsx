@@ -24,7 +24,7 @@ import {
   type VideoAulaDTO,
 } from '../../services/babelup';
 import logoAzul from '../../assets/LogoAzul.png';
-import '../AddCurso/style.css';
+
 
 interface ConteudoModuloData {
   videoaulas: VideoAulaDTO[];

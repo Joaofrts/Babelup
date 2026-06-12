@@ -17,7 +17,7 @@ public class BabelupApplication {
 	@Bean
     CommandLineRunner start(UsuarioService service) {
 		return args -> {
-			// Aqui o Spring já injetou o service corretamente
+
 			service.startDb();
 			System.out.println("Banco de dados inicializado com sucesso!");
 		};

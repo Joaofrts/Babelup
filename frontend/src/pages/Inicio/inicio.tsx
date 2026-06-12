@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
 import babelLogo from '../../assets/Babel.png';
 import caixaDialog from '../../assets/caixaDialog.png';
 import telaInicio from '../../assets/TelaInicio.png';
@@ -6,6 +7,15 @@ import logoBranca from '../../assets/LogoBranca.png';
 import './style.css';
 
 export default function Inicio() {
+  const [estaLogado, setEstaLogado] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setEstaLogado(true);
+    }
+  }, []);
+
   return (
     <main className="inicio-page">
       {/* NAVBAR */}
@@ -15,9 +25,13 @@ export default function Inicio() {
             <img src={logoBranca} alt="BabelUp" className="inicio-logo" />
           </Link>
 
-          <Link to="/login-professor" className="inicio-nav-button">
-            Professor
-          </Link>
+          {!estaLogado ? (
+            <Link to="/login-professor" className="inicio-nav-button">
+              Colaborador
+            </Link>
+          ) : (
+            <div style={{ width: '110px' }} aria-hidden="true" />
+          )}
 
           <nav className="inicio-menu">
             <Link to="/">Home</Link>
@@ -25,9 +39,19 @@ export default function Inicio() {
             <Link to="/cursos">Cursos</Link>
           </nav>
 
-          <Link to="/login-aluno" className="inicio-nav-button">
-            Aluno
-          </Link>
+          {!estaLogado ? (
+            <Link to="/login-aluno" className="inicio-nav-button">
+              Aluno
+            </Link>
+          ) : (
+            <Link
+              to="/dashboard"
+              className="inicio-nav-button"
+              style={{ backgroundColor: '#214f8f', color: '#fff' }}
+            >
+              Acessar Painel
+            </Link>
+          )}
         </div>
       </header>
 
@@ -67,8 +91,8 @@ export default function Inicio() {
               conversas ao vivo e conteúdo personalizado.
             </p>
 
-            <Link to="/cursos" className="inicio-main-button">
-              Inscreva-se
+            <Link to={estaLogado ? "/dashboard" : "/cursos"} className="inicio-main-button">
+              {estaLogado ? "Ir para o meu painel" : "Inscreva-se"}
             </Link>
           </div>
 
@@ -90,8 +114,8 @@ export default function Inicio() {
             Junte-se a milhares de estudantes aprendendo idiomas com o BabelUp.
           </p>
 
-          <Link to="/cursos" className="inicio-cta-button">
-            Ver cursos
+          <Link to={estaLogado ? "/dashboard" : "/cursos"} className="inicio-cta-button">
+            {estaLogado ? "Continuar aprendendo" : "Ver cursos"}
           </Link>
         </div>
       </section>

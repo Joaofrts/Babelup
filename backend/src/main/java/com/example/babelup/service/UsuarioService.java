@@ -57,7 +57,7 @@ public class UsuarioService {
         Usuario usuarioSalvo = usuarioRepository.save(usuario);
         vincularUsuarioAoPrimeiroNivelDisponivel(usuarioSalvo);
 
-        return usuarioRepository.save(usuarioSalvo);
+        return usuarioSalvo;
     }
 
     public Optional<Usuario> buscarUsuarioPorEmail(String email) {

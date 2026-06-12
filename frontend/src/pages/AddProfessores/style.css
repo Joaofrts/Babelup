@@ -1,185 +1,22 @@
-* {
-  box-sizing: border-box;
-}
-
-.admin-professores-page {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  background: #eaf4ff;
-  color: #0f172a;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.admin-professores-sidebar {
-  width: 230px;
-  min-height: 100vh;
-  background: #fff7ee;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 18px 14px 36px;
-  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.08);
-  z-index: 2;
-}
-
-.admin-professores-logo-area {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 34px;
-}
-
-.admin-professores-logo {
-  width: 82px;
-  height: auto;
-  display: block;
-}
-
-.admin-professores-menu {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-}
-
-.admin-professores-menu-item {
-  width: 100%;
-  height: 40px;
-  padding: 0 15px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-radius: 7px;
-  color: #152033;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.admin-professores-menu-item span {
-  width: 18px;
-  display: inline-flex;
-  justify-content: center;
-  font-size: 15px;
-}
-
-.admin-professores-menu-item:hover {
-  background: rgba(33, 74, 133, 0.08);
-}
-
-.admin-professores-menu-item.active {
-  background: #214f8f;
-  color: #fff7ee;
-}
-
-.admin-professores-sair {
-  width: 118px;
-  height: 36px;
-  border: none;
-  border-radius: 7px;
-  background: #214f8f;
-  color: #fff7ee;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: auto;
-}
-
-.admin-professores-sair:hover {
-  background: #183d70;
-}
-
-.admin-professores-main {
-  flex: 1;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.admin-professores-header {
-  height: 73px;
-  background: #fff7ee;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 30px;
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.08);
-}
-
-.admin-professores-header h1 {
-  margin: 0;
-  font-size: 23px;
-  color: #111827;
-  font-weight: 700;
-}
-
-.admin-professores-header p {
-  margin: 4px 0 0;
-  font-size: 11px;
-  color: #5f6470;
-}
-
-.admin-professores-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 17px;
-}
-
-.admin-professores-bell {
-  position: relative;
-  border: none;
-  background: transparent;
-  font-size: 19px;
-  color: #1e293b;
-  cursor: pointer;
-}
-
-.admin-professores-bell span {
-  position: absolute;
-  top: 2px;
-  right: 1px;
-  width: 6px;
-  height: 6px;
-  background: #ef4444;
-  border-radius: 50%;
-}
-
-.admin-professores-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #214f8f;
-  color: #fff7ee;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.admin-professores-content {
-  position: relative;
-  flex: 1;
-  padding: 92px 105px 70px;
-}
-
+/* ============================
+   CARD E TABELA BASE
+   ============================ */
 .admin-professores-card {
   width: 100%;
   max-width: 880px;
-  margin: 0 auto;
+  margin: 0 auto 28px;
   background: #fff7ee;
   border-radius: 10px;
-  padding: 24px 24px 14px;
+  padding: 24px;
   box-shadow: 0 4px 9px rgba(0, 0, 0, 0.13);
 }
 
 .admin-professores-card-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  align-items: center;
   margin-bottom: 18px;
+  gap: 18px;
 }
 
 .admin-professores-card-header h2 {
@@ -197,51 +34,38 @@
   font-size: 18px;
 }
 
-.admin-professores-actions {
-  display: flex;
+.admin-professores-add-button {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
-}
-
-.admin-professores-filter {
+  justify-content: center;
+  height: 34px;
+  padding: 0 16px;
   border: none;
-  background: transparent;
-  font-size: 19px;
-  color: #111827;
-  cursor: pointer;
-}
-
-.admin-professores-add {
-  height: 30px;
-  border: none;
-  border-radius: 6px;
+  border-radius: 7px;
   background: #214f8f;
   color: #fff7ee;
-  padding: 0 12px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+  transition: background 0.2s;
 }
 
-.admin-professores-add:hover {
+.admin-professores-add-button:hover {
   background: #183d70;
 }
 
 .admin-professores-search {
   width: 100%;
-  height: 29px;
+  max-width: 280px;
+  height: 30px;
+  padding: 0 12px;
   border: none;
   outline: none;
-  border-radius: 6px;
-  background: #eef3fb;
-  padding: 0 12px;
+  border-radius: 7px;
+  background: #eaf4ff;
   color: #111827;
   font-size: 12px;
   margin-bottom: 18px;
-}
-
-.admin-professores-search::placeholder {
-  color: #8b95a5;
 }
 
 .admin-professores-table-wrapper {
@@ -252,7 +76,7 @@
 .admin-professores-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 720px;
+  min-width: 600px;
 }
 
 .admin-professores-table th {
@@ -268,19 +92,27 @@
   font-size: 12px;
   color: #111827;
   border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+  vertical-align: middle;
 }
 
-.admin-professores-edit {
-  border: none;
+/* ============================
+   ÍCONE KEBAB (3 PONTOS)
+   ============================ */
+.admin-professores-kebab-button {
   background: transparent;
+  border: none;
   color: #214f8f;
-  font-size: 12px;
-  font-weight: 700;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 50%;
+  transition: background 0.2s;
 }
 
-.admin-professores-edit:hover {
-  text-decoration: underline;
+.admin-professores-kebab-button:hover {
+  background: rgba(33, 79, 143, 0.1);
 }
 
 .admin-professores-empty {
@@ -289,12 +121,16 @@
   padding: 20px !important;
 }
 
+/* ============================
+   ILUSTRAÇÕES
+   ============================ */
 .admin-professores-illustration {
   position: absolute;
   right: 86px;
   bottom: 56px;
   width: 190px;
   height: 150px;
+  pointer-events: none;
 }
 
 .bubble {
@@ -308,145 +144,153 @@
   justify-content: center;
 }
 
-.bubble-one {
-  width: 62px;
-  height: 52px;
-  right: 96px;
-  bottom: 68px;
-  border-radius: 10px 10px 0 10px;
-  font-size: 35px;
+.bubble-one { width: 62px; height: 52px; right: 96px; bottom: 68px; border-radius: 10px 10px 0 10px; font-size: 35px; }
+.bubble-two { width: 58px; height: 48px; right: 7px; bottom: 5px; border-radius: 9px 9px 9px 0; font-size: 25px; }
+.card-line { position: absolute; background: #2f5f9f; border-radius: 10px; }
+.card-line-one { width: 108px; height: 48px; right: 47px; bottom: 45px; }
+.card-line-one::before, .card-line-one::after, .card-line-two::before, .card-line-two::after { content: ""; position: absolute; height: 3px; background: #eaf4ff; border-radius: 10px; }
+.card-line-one::before { width: 45px; top: 15px; left: 18px; }
+.card-line-one::after { width: 72px; top: 27px; left: 18px; }
+.card-line-two { width: 92px; height: 56px; right: 0; bottom: 0; background: transparent; border: 4px solid #2f5f9f; border-radius: 10px; }
+.card-line-two::before { width: 48px; top: 15px; left: 17px; background: #2f5f9f; }
+.card-line-two::after { width: 60px; top: 28px; left: 17px; background: #2f5f9f; }
+
+
+/* ============================
+   ESTRUTURA DO MODAL (POPUPS)
+   ============================ */
+.admin-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro translúcido */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
 
-.bubble-two {
-  width: 58px;
-  height: 48px;
-  right: 7px;
-  bottom: 5px;
-  border-radius: 9px 9px 9px 0;
-  font-size: 25px;
-}
-
-.card-line {
-  position: absolute;
-  background: #2f5f9f;
+.admin-modal-content {
+  background-color: #fff7ee; /* Mesma cor dos cards principais */
+  width: 100%;
+  max-width: 450px;
   border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
 }
 
-.card-line-one {
-  width: 108px;
-  height: 48px;
-  right: 47px;
-  bottom: 45px;
+.admin-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
 }
 
-.card-line-one::before,
-.card-line-one::after,
-.card-line-two::before,
-.card-line-two::after {
-  content: "";
-  position: absolute;
-  height: 3px;
-  background: #eaf4ff;
-  border-radius: 10px;
+.admin-modal-header h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #111827;
 }
 
-.card-line-one::before {
-  width: 45px;
-  top: 15px;
-  left: 18px;
-}
-
-.card-line-one::after {
-  width: 72px;
-  top: 27px;
-  left: 18px;
-}
-
-.card-line-two {
-  width: 92px;
-  height: 56px;
-  right: 0;
-  bottom: 0;
+.admin-modal-close {
   background: transparent;
-  border: 4px solid #2f5f9f;
-  border-radius: 10px;
+  border: none;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  line-height: 1;
 }
 
-.card-line-two::before {
-  width: 48px;
-  top: 15px;
-  left: 17px;
-  background: #2f5f9f;
+.admin-modal-close:hover {
+  color: #111827;
 }
 
-.card-line-two::after {
-  width: 60px;
-  top: 28px;
-  left: 17px;
-  background: #2f5f9f;
+.admin-modal-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
+.admin-modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.admin-modal-field label {
+  font-size: 12px;
+  color: #111827;
+  font-weight: 700;
+}
+
+.admin-modal-field input {
+  height: 36px;
+  padding: 0 12px;
+  border: none;
+  outline: none;
+  border-radius: 7px;
+  background: #eaf4ff;
+  color: #111827;
+  font-size: 13px;
+}
+
+.admin-modal-submit {
+  margin-top: 10px;
+  height: 38px;
+  border: none;
+  border-radius: 7px;
+  background: #214f8f;
+  color: #fff7ee;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.admin-modal-submit:hover:not(:disabled) {
+  background: #183d70;
+}
+
+.admin-modal-alert {
+  padding: 10px 14px;
+  border-radius: 7px;
+  font-size: 12px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.admin-modal-alert.error {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.admin-modal-alert.success {
+  background: #d9f7e8;
+  color: #14532d;
+}
+
+/* ============================
+   RESPONSIVIDADE
+   ============================ */
 @media (max-width: 1000px) {
-  .admin-professores-content {
-    padding: 60px 35px 90px;
-  }
-
   .admin-professores-illustration {
     display: none;
   }
 }
 
 @media (max-width: 760px) {
-  .admin-professores-page {
-    flex-direction: column;
-  }
-
-  .admin-professores-sidebar {
-    width: 100%;
-    min-height: auto;
-    flex-direction: row;
-    align-items: center;
-    overflow-x: auto;
-    padding: 14px;
-  }
-
-  .admin-professores-logo-area {
-    width: auto;
-    margin: 0 20px 0 0;
-  }
-
-  .admin-professores-logo {
-    width: 60px;
-  }
-
-  .admin-professores-menu {
-    flex-direction: row;
-    width: auto;
-  }
-
-  .admin-professores-menu-item {
-    white-space: nowrap;
-  }
-
-  .admin-professores-sair {
-    margin: 0 0 0 16px;
-    min-width: 90px;
-  }
-
-  .admin-professores-header {
-    padding: 0 18px;
-  }
-
-  .admin-professores-header h1 {
-    font-size: 18px;
-  }
-
-  .admin-professores-content {
-    padding: 35px 16px;
-  }
-
   .admin-professores-card-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+  .admin-professores-search {
+    max-width: 100%;
+  }
+  .admin-modal-content {
+    margin: 0 16px;
   }
 }

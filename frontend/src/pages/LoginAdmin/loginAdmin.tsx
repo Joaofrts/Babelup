@@ -13,7 +13,7 @@ export async function loginAdminAction({ request }: { request: Request }) {
 
     salvarSessao(auth);
 
-    return redirect('/dashboard-admin');
+    return redirect('/admin/agendamentos');
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       if (error.response) {
@@ -83,7 +83,7 @@ export default function LoginAdmin() {
           
         </section>
 
-        <Link to="/" className="login-admin-back-button">
+        <Link to="/login-professor" className="login-admin-back-button">
           Voltar
         </Link>
       </div>

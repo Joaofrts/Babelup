@@ -2,7 +2,7 @@ import { redirect, useLoaderData } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 import axios from 'axios';
 import { listarUsuarios, limparSessao, type UsuarioDTO } from '../../services/babelup';
-import './style.css'; // Mantenha aqui apenas o CSS específico da tabela de alunos
+import './style.css';
 
 export async function adminAlunosLoader({ request }: { request: Request }) {
   if (!localStorage.getItem('token')) {
@@ -36,11 +36,10 @@ export default function AdminAlunos() {
   }, [busca, alunos]);
 
   return (
-    <section className="admin-alunos-content">
-      {/* Você pode colocar o h1 e p específicos da página aqui dentro, logo acima do card */}
-      <div className="admin-page-titles">
-        <h1>Alunos</h1>
-        <p>Usuários cadastrados como alunos.</p>
+    <>
+      <div className="admin-page-titles" style={{ marginBottom: '24px' }}>
+        <h1 style={{ margin: 0, fontSize: '23px', color: '#111827', fontWeight: 700 }}>Alunos</h1>
+        <p style={{ margin: '4px 0 0', fontSize: '11px', color: '#5f6470' }}>Usuários cadastrados como alunos.</p>
       </div>
 
       <div className="admin-alunos-card">
@@ -98,12 +97,7 @@ export default function AdminAlunos() {
         </div>
       </div>
 
-      <div className="admin-alunos-illustration" aria-hidden="true">
-        <div className="bubble bubble-one">A</div>
-        <div className="bubble bubble-two">B</div>
-        <div className="card-line card-line-one" />
-        <div className="card-line card-line-two" />
-      </div>
-    </section>
+      
+    </>
   );
 }

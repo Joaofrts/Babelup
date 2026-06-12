@@ -66,15 +66,6 @@ public class NivelController {
         }
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> atualizarNivel(@PathVariable UUID id, @RequestBody AdicionarNivelDto dto) {
-        try {
-            return ResponseEntity.ok(nivelService.atualizarNivel(id, dto.descricao(), dto.cargaHoraria()));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
-        }
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deletarNivel(@PathVariable UUID id) {
         nivelService.deletarNivel(id);

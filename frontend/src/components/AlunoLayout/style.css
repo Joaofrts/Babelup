@@ -1,0 +1,126 @@
+* {
+  box-sizing: border-box;
+}
+
+.aluno-page-container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #eaf4ff;
+  color: #0f172a;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* ============================
+   HEADER DO ALUNO (TOP BAR)
+   ============================ */
+.aluno-header {
+  width: 100%;
+  background: #fff7ee;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.aluno-header-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.aluno-logo {
+  height: 40px;
+  width: auto;
+  display: block;
+}
+
+.aluno-title-area {
+  flex: 1;
+  padding: 0 30px;
+}
+
+.aluno-title-area h1 {
+  margin: 0;
+  font-size: 20px;
+  color: #111827;
+  font-weight: 700;
+}
+
+.aluno-title-area p {
+  margin: 4px 0 0;
+  font-size: 12px;
+  color: #5f6470;
+}
+
+.aluno-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.aluno-nav {
+  display: flex;
+  gap: 16px;
+}
+
+.aluno-nav a {
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 700;
+  color: #214f8f;
+  transition: color 0.2s;
+}
+
+.aluno-nav a:hover {
+  color: #183d70;
+  text-decoration: underline;
+}
+
+.aluno-logout {
+  width: 118px;
+  height: 36px;
+  border: none;
+  border-radius: 7px;
+  background: #214f8f;
+  color: #fff7ee;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: auto;
+}
+
+.aluno-logout:hover {
+   background: #183d70;
+}
+
+/* ============================
+   ÁREA DE CONTEÚDO (OUTLET)
+   ============================ */
+.aluno-content-wrapper {
+  flex: 1;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 30px 24px;
+}
+
+/* Responsividade */
+@media (max-width: 760px) {
+  .aluno-header-content {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  .aluno-title-area {
+    padding: 0;
+  }
+  .aluno-header-actions {
+    flex-direction: column;
+    gap: 12px;
+  }
+}

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
+import { pegarTokenPayload } from '../../services/babelup'; // Importação adicionada
 import babelLogo from '../../assets/Babel.png';
 import caixaDialog from '../../assets/caixaDialog.png';
 import telaInicio from '../../assets/TelaInicio.png';
@@ -8,11 +9,30 @@ import './style.css';
 
 export default function Inicio() {
   const [estaLogado, setEstaLogado] = useState(false);
+  const [rotaPainel, setRotaPainel] = useState('/dashboard-aluno'); // Rota padrão de fallback
 
   useEffect(() => {
     const token = localStorage.getItem('token');
+    
     if (token) {
       setEstaLogado(true);
+      
+      try {
+        // Extrai as informações do token
+        const payload = pegarTokenPayload();
+        const perfil = payload?.perfil;
+
+        // Define a rota com base no perfil do usuário
+        if (perfil === 'ADMIN') {
+          setRotaPainel('/admin/agendamentos');
+        } else if (perfil === 'PROFESSOR') {
+          setRotaPainel('/dashboard-professor');
+        } else {
+          setRotaPainel('/dashboard-aluno');
+        }
+      } catch (error) {
+        console.error('Erro ao processar payload do token:', error);
+      }
     }
   }, []);
 
@@ -45,11 +65,10 @@ export default function Inicio() {
             </Link>
           ) : (
             <Link
-              to="/dashboard"
+              to={rotaPainel} /* Rota dinâmica aplicada aqui */
               className="inicio-nav-button"
-              style={{ backgroundColor: '#214f8f', color: '#fff' }}
-            >
-              Acessar Painel
+               >
+              Painel
             </Link>
           )}
         </div>
@@ -91,7 +110,8 @@ export default function Inicio() {
               conversas ao vivo e conteúdo personalizado.
             </p>
 
-            <Link to={estaLogado ? "/dashboard" : "/cursos"} className="inicio-main-button">
+            {/* Rota dinâmica aplicada aqui */}
+            <Link to={estaLogado ? rotaPainel : "/cursos"} className="inicio-main-button">
               {estaLogado ? "Ir para o meu painel" : "Inscreva-se"}
             </Link>
           </div>
@@ -114,7 +134,8 @@ export default function Inicio() {
             Junte-se a milhares de estudantes aprendendo idiomas com o BabelUp.
           </p>
 
-          <Link to={estaLogado ? "/dashboard" : "/cursos"} className="inicio-cta-button">
+          {/* Rota dinâmica aplicada aqui */}
+          <Link to={estaLogado ? rotaPainel : "/cursos"} className="inicio-cta-button">
             {estaLogado ? "Continuar aprendendo" : "Ver cursos"}
           </Link>
         </div>

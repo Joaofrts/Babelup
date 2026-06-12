@@ -3,6 +3,7 @@ package com.example.babelup.service;
 import com.example.babelup.controller.GamificacaoController;
 import com.example.babelup.dto.AdicionarNivelDto;
 import com.example.babelup.dto.NovoUsuarioDto;
+import com.example.babelup.dto.UpdateUsuarioDto;
 import com.example.babelup.dto.UsuarioRespostaDTO;
 import com.example.babelup.entities.enumEntities.EnumPerfil;
 import com.example.babelup.entities.enumEntities.EnumStatusMatricula;
@@ -19,10 +20,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UsuarioService {
@@ -100,7 +98,7 @@ public class UsuarioService {
     private void inicializarConteudoMinimo() {
         AdicionarNivelDto nivelDto = new AdicionarNivelDto(
                 "Ingles",
-                "Ingles Basico A1",
+                "A1",
                 1,
                 40,
                 "Nivel basico de introducao ao ingles.",
@@ -266,5 +264,31 @@ public class UsuarioService {
 
     private String descreverNivel(Nivel nivel) {
         return nivel.getIdioma() + " - " + nivel.getNome();
+    }
+
+    public UsuarioRespostaDTO atualizarUsuario(UUID id, UpdateUsuarioDto dto) {
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Usuario nao encontrado com id: " + id));
+
+        if (dto.nome() != null && !dto.nome().isBlank()) {
+            usuario.setNome(dto.nome());
+        }
+
+        if (dto.email() != null && !dto.email().isBlank()) {
+            if (usuarioRepository.existsByEmail(dto.email()) && !usuario.getEmail().equals(dto.email())) {
+                throw new IllegalArgumentException("Email ja esta em uso por outro usuario.");
+            }
+            usuario.setEmail(dto.email());
+        }
+
+
+        Usuario usuarioAtualizado = usuarioRepository.save(usuario);
+        String curso = obterCursoDoUsuario(usuarioAtualizado);
+        return new UsuarioRespostaDTO(
+                usuarioAtualizado.getId(),
+                usuarioAtualizado.getNome(),
+                usuarioAtualizado.getEmail(),
+                curso
+        );
     }
 }

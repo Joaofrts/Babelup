@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import logoBranca from '../../assets/LogoBranca.png';
-import { listarCursosCatalogo } from '../../services/babelup';
+import { listarCursosCatalogo, pegarTokenPayload } from '../../services/babelup';
 import './style.css';
 
 interface CursoCatalogo {
@@ -12,16 +12,39 @@ interface CursoCatalogo {
 }
 
 export default function Cursos() {
+  const navigate = useNavigate();
   const [cursos, setCursos] = useState<CursoCatalogo[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
 
+  // Estados de Autenticação
+  const [estaLogado, setEstaLogado] = useState(false);
+  const [rotaPainel, setRotaPainel] = useState('/dashboard-aluno');
+
   useEffect(() => {
+    // 1. Verifica se o usuário está logado e define a rota do painel dele
+    const token = localStorage.getItem('token');
+    if (token) {
+      setEstaLogado(true);
+      try {
+        const payload = pegarTokenPayload();
+        if (payload?.perfil === 'ADMIN') {
+          setRotaPainel('/dashboard-admin');
+        } else if (payload?.perfil === 'PROFESSOR') {
+          setRotaPainel('/dashboard-professor');
+        } else {
+          setRotaPainel('/dashboard-aluno');
+        }
+      } catch (error) {
+        console.error('Erro ao processar payload do token:', error);
+      }
+    }
+
+    // 2. Busca os cursos no backend
     async function buscarCursos() {
       try {
         setCarregando(true);
         setErro('');
-
         const cursosBackend = await listarCursosCatalogo();
         setCursos(cursosBackend);
       } catch (error) {
@@ -42,6 +65,15 @@ export default function Cursos() {
     });
   }
 
+  // Função para redirecionar o usuário na hora de se inscrever
+  function lidarComInscricao() {
+    if (estaLogado) {
+      navigate(rotaPainel);
+    } else {
+      navigate('/login-aluno');
+    }
+  }
+
   return (
     <main className="catalog-page">
       <header className="catalog-navbar">
@@ -56,9 +88,19 @@ export default function Cursos() {
             <a href="#cursos">Cursos</a>
           </nav>
 
-          <Link to="/" className="catalog-login-button">
-            Login
-          </Link>
+          {/* Troca dinâmica do botão de login */}
+          {!estaLogado ? (
+            <Link to="/login-aluno" className="catalog-login-button">
+              Login
+            </Link>
+          ) : (
+            <Link 
+              to={rotaPainel} 
+              className="catalog-login-button"
+                >
+              Painel
+            </Link>
+          )}
         </div>
       </header>
 
@@ -88,7 +130,6 @@ export default function Cursos() {
                   <div className="course-card-top">
                     <span>Curso</span>
                   </div>
-
                   <h2>{curso.titulo}</h2>
                 </div>
 
@@ -99,7 +140,10 @@ export default function Cursos() {
                     {formatarPreco(Number(curso.precoMensal))}
                   </strong>
 
-                  <button type="button">Inscreva-se agora</button>
+                  {/* Redirecionamento dinâmico no botão do curso */}
+                  <button type="button" onClick={lidarComInscricao}>
+                    {estaLogado ? 'Ver no painel' : 'Inscreva-se agora'}
+                  </button>
                 </div>
               </article>
             ))}
@@ -111,8 +155,9 @@ export default function Cursos() {
           <p>
             Faça nosso teste de nível gratuito e encontre o curso perfeito para suas habilidades atuais.
           </p>
-
-          <button type="button">Agende seu teste</button>
+          <button type="button" onClick={lidarComInscricao}>
+            {estaLogado ? 'Acessar painel' : 'Agende seu teste'}
+          </button>
         </section>
       </section>
 
@@ -141,7 +186,6 @@ export default function Cursos() {
 
           <div className="footer-social">
             <h3>Follow us</h3>
-
             <div>
               <a href="#">f</a>
               <a href="#">◎</a>

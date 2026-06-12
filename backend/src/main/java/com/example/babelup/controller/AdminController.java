@@ -92,7 +92,7 @@ public class AdminController {
     @PutMapping("/niveis/{id}")
     public ResponseEntity<Object> atualizarNivel(@PathVariable UUID id, @RequestBody AdicionarNivelDto dto) {
         try {
-            RespostaNivelDto resposta = nivelService.atualizarNivel(id, dto.descricao(), dto.cargaHoraria());
+            RespostaNivelDto resposta = nivelService.atualizarNivel(id,dto);
             return ResponseEntity.ok(resposta);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -157,6 +157,18 @@ public class AdminController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Erro ao atualizar módulo: " + e.getMessage());
+        }
+    }
+    @PutMapping("/usuario/{id}")
+    public ResponseEntity<Object> atualizarUsuario(@PathVariable UUID id, @RequestBody UpdateUsuarioDto dto) {
+        try {
+            UsuarioRespostaDTO resposta = usuarioService.atualizarUsuario(id, dto);
+            return ResponseEntity.ok(resposta);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao atualizar usuário: " + e.getMessage());
         }
     }
 

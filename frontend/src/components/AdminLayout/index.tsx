@@ -1,8 +1,26 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { limparSessao, type UsuarioDTO } from '../../services/babelup';
+import { NavLink, Outlet, useNavigate, useLoaderData, redirect } from 'react-router-dom';
+import { limparSessao, pegarTokenPayload } from '../../services/babelup';
 import logoAzul from '../../assets/LogoAzul.png';
 import GlobalSpinner from '../GlobalSpinner';
-import './style.css'; // Sugiro renomear as classes no CSS tirando o "-alunos" para ficar genérico
+import './style.css';
+
+interface AdminLayoutData {
+  nome: string;
+}
+
+export function adminLayoutLoader() {
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    return redirect('/login-admin');
+  }
+
+  const payload = pegarTokenPayload();
+  
+  return { 
+    nome: payload?.nome || 'Administrador' 
+  } as AdminLayoutData;
+}
 
 // Função auxiliar para extrair as iniciais (ex: "João Freitas" -> "JF")
 function obterIniciais(nome: string | undefined) {
@@ -17,18 +35,16 @@ function obterIniciais(nome: string | undefined) {
 export default function AdminLayout() {
   const navigate = useNavigate();
 
-  // ATENÇÃO: Aqui você deve buscar os dados do usuário logado do seu contexto, 
-  // estado global (Redux/Zustand) ou do loader da rota pai. 
-  // Estou simulando um objeto para o exemplo.
-  const usuarioLogado: Partial<UsuarioDTO> = { nome: 'Administrador BabelUp' }; 
-  const iniciais = obterIniciais(usuarioLogado.nome);
+  // CORREÇÃO 1: Evita o erro de "Cannot destructure property 'nome' of 'useLoaderData(...)'"
+  const data = useLoaderData() as AdminLayoutData;
+  const nome = data?.nome || 'Administrador';
+  const iniciais = obterIniciais(nome);
 
   function sair() {
     limparSessao();
     navigate('/login-admin');
   }
 
-  // Função para padronizar a classe do NavLink
   const navLinkClass = ({ isActive }: { isActive: boolean }) => 
     isActive ? "admin-menu-item active" : "admin-menu-item";
 
@@ -41,37 +57,33 @@ export default function AdminLayout() {
         </div>
 
         <nav className="admin-menu">
-          <NavLink to="/dashboard-admin" className={navLinkClass}>
-            <span>AD</span> Avisos
-          </NavLink>
 
-          <NavLink to="/admin/cursos" className={navLinkClass}>
-            <span>CU</span> Cursos
-          </NavLink>
-
-          <NavLink to="/admin/alunos" className={navLinkClass}>
-            <span>A</span> Alunos
-          </NavLink>
-
-          <NavLink to="/admin/professores" className={navLinkClass}>
-            <span>PR</span> Professores
-          </NavLink>
-
-          {/* Link de Agendamentos adicionado conforme solicitado */}
           <NavLink to="/admin/agendamentos" className={navLinkClass}>
-            <span>AG</span> Agendamentos
+            <span></span> Agendamentos
           </NavLink>
-
-          <NavLink to="/admin/estatisticas" className={navLinkClass}>
-            <span>ES</span> Estatísticas
+          
+          <NavLink to="/admin/alunos" className={navLinkClass}>
+            <span></span> Alunos
           </NavLink>
 
           <NavLink to="/admin/chat" className={navLinkClass}>
-            <span>CH</span> Chat
+            <span></span> Chat
           </NavLink>
+          
+          <NavLink to="/admin/cursos" className={navLinkClass}>
+            <span></span> Cursos
+          </NavLink>          
+
+          <NavLink to="/admin/estatisticas" className={navLinkClass}>
+            <span></span> Estatísticas
+          </NavLink>    
 
           <NavLink to="/admin/forum" className={navLinkClass}>
-            <span>FO</span> Fórum
+            <span></span> Fórum
+          </NavLink>
+
+          <NavLink to="/admin/professores" className={navLinkClass}>
+            <span></span> Professores
           </NavLink>
         </nav>
 
@@ -83,26 +95,22 @@ export default function AdminLayout() {
       <section className="admin-main">
         <header className="admin-header">
           <div>
-            {/* O título pode virar um componente dinâmico depois, ou ficar na página filha */}
             <h1>Painel Administrativo</h1> 
           </div>
 
           <div className="admin-header-actions">
             <button type="button" className="admin-bell">
-              AD
+              ADM
               <span />
             </button>
 
-            {/* Iniciais dinâmicas do usuário logado */}
-            <div className="admin-avatar" title={usuarioLogado.nome}>{iniciais}</div>
+            <div className="admin-avatar" title={nome}>{iniciais}</div>
           </div>
         </header>
 
-        {/* O <Outlet /> É A MÁGICA: É aqui que o conteúdo de Alunos, Cursos, etc. vai aparecer */}
         <div className="admin-content-wrapper">
           <Outlet />
         </div>
-
       </section>
     </main>
   );

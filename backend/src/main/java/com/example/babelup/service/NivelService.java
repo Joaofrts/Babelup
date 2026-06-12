@@ -40,14 +40,27 @@ public class NivelService {
 
     // Atualizar nível
     @Transactional
-    public RespostaNivelDto atualizarNivel(UUID id, String descricao, Integer cargaHorariaEstimada) {
-        Optional<Nivel> nivel = nivelRepository.findById(id);
-        if (nivel.isEmpty()) {
-            throw new IllegalArgumentException("Nível não encontrado");
+    public RespostaNivelDto atualizarNivel(UUID id, AdicionarNivelDto dto) {
+        Nivel n = nivelRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Nível não encontrado"));
+
+        if (dto.idioma() != null && !dto.idioma().isBlank()) {
+            n.setIdioma(dto.idioma());
         }
-        Nivel n = nivel.get();
-        n.setDescricao(descricao);
-        n.setCargaHoraria(cargaHorariaEstimada);
+
+        if (dto.nome() != null && !dto.nome().isBlank()) {
+            n.setNome(dto.nome());
+        }
+
+        if (dto.descricao() != null) {
+            n.setDescricao(dto.descricao());
+        }
+
+        if (dto.cargaHoraria() != null) {
+            n.setCargaHoraria(dto.cargaHoraria());
+        }
+
+
         Nivel nivelAlterado = nivelRepository.save(n);
         return new RespostaNivelDto(nivelAlterado);
     }

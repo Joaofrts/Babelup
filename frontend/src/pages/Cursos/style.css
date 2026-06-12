@@ -27,7 +27,7 @@ body {
 .catalog-navbar {
   width: 100%;
   height: 85px;
-  background: #214f88;
+  background: #214f8f;
 
   display: flex;
   align-items: center;
@@ -80,7 +80,7 @@ body {
   justify-content: center;
 
   background: #fff7ee;
-  color: #214f88;
+  color: #214f8f;
 
   border-radius: 10px;
 
@@ -105,7 +105,7 @@ body {
 .catalog-hero h1 {
   margin: 0;
 
-  color: #214f88;
+  color: #214f8f;
 
   font-size: 50px;
   font-weight: 800;
@@ -163,7 +163,7 @@ body {
 
   padding: 24px 31px 20px;
 
-  background: linear-gradient(120deg, #214f88 0%, #0057ff 100%);
+  background: linear-gradient(120deg, #214f8f 0%, #0057ff 100%);
 
   display: flex;
   flex-direction: column;
@@ -265,7 +265,7 @@ body {
 
   border-top: 1px solid rgba(31, 41, 55, 0.12);
 
-  color: #214f88;
+  color: #214f8f;
 
   font-size: 28px;
   font-weight: 400;
@@ -281,7 +281,7 @@ body {
   border: none;
   border-radius: 8px;
 
-  background: #214f88;
+  background: #214f8f;
   color: #ffffff;
 
   font-size: 14px;
@@ -335,7 +335,7 @@ body {
   border: none;
   border-radius: 8px;
 
-  background: #214f88;
+  background: #214f8f;
   color: #ffffff;
 
   font-size: 14px;
@@ -352,7 +352,7 @@ body {
 
   margin-top: 55px;
 
-  background: #214f88;
+  background: #214f8f;
   color: #ffffff;
 
   padding: 30px 0 20px;
@@ -424,7 +424,7 @@ body {
 
   border-radius: 50%;
   background: #fff7ee;
-  color: #214f88;
+  color: #214f8f;
 
   display: flex;
   align-items: center;

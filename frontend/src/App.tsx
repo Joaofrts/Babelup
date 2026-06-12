@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 
-// Importações de Páginas e Componentes (Mantidas do seu código)
+// Importações de Páginas e Componentes
 import Login, { loginAction } from './pages/LoginAluno/loginAluno';
 import LoginProfessor, { loginProfessorAction } from './pages/LoginProfessor/loginProfessor';
 import LoginAdmin, { loginAdminAction } from './pages/LoginAdmin/loginAdmin';
@@ -18,12 +18,33 @@ import CadastroUsuario from './pages/CadastroUsuario/cadastroUsuario';
 import AdminCursoDetalhe, { adminCursoDetalheLoader } from './pages/AdminCursoDetalhe/adminCursoDetalhe';
 import AdminAgendamentos, { adminAgendamentosLoader } from './pages/AdminAgendamentos/adminAgendamentos';
 
-// NOVO IMPORT: O componente de Layout do Admin
-import AdminLayout from './components/AdminLayout'; 
+import AlunoLayout, { alunoLayoutLoader } from './components/AlunoLayout/alunoLayout';
+import ProfessorLayout, { professorLayoutLoader } from './components/ProfessorLayout/professorLayout';
+import AdminLayout, { adminLayoutLoader } from './components/AdminLayout'; 
+import EmDesenvolvimento from './pages/EmConstrucaoError/emDesenvolvimento'; 
 
 const router = createBrowserRouter([
   // ==========================================
-  // BLOCO 1: Rotas Gerais, Alunos e Professores
+  // BLOCO 1: Rotas de Professores (Layout Exclusivo)
+  // ==========================================
+  {
+    element: <ProfessorLayout />, // <--- A casca visual foi adicionada aqui
+    loader: professorLayoutLoader,
+    errorElement: <ErroGlobal />,
+    children: [
+      { path: '/dashboard-professor', element: <DashboardProfessor />, loader: dashboardProfessorLoader },
+      { path: '/professor/turmas', element: <EmDesenvolvimento /> },
+      { path: '/professor/alunos', element: <EmDesenvolvimento /> },
+      { path: '/professor/atividades', element: <EmDesenvolvimento /> },
+      { path: '/professor/conteudos', element: <EmDesenvolvimento /> },
+      { path: '/professor/notas', element: <EmDesenvolvimento /> },
+      { path: '/professor/chat', element: <EmDesenvolvimento /> },
+      { path: '/professor/forum', element: <EmDesenvolvimento /> },
+    ],
+  },
+
+  // ==========================================
+  // BLOCO 2: Rotas Gerais (Layout Geral)
   // ==========================================
   {
     element: <LayoutGeral />,
@@ -33,36 +54,40 @@ const router = createBrowserRouter([
       { path: '/login-aluno', element: <Login />, action: loginAction, errorElement: <ErroGlobal /> },
       { path: '/cadastro-aluno', element: <CadastroUsuario perfil="ALUNO" />, errorElement: <ErroGlobal /> },
       { path: '/login-professor', element: <LoginProfessor />, action: loginProfessorAction, errorElement: <ErroGlobal /> },
-      { path: '/cadastro-professor', element: <CadastroUsuario perfil="PROFESSOR" />, errorElement: <ErroGlobal /> },
       { path: '/login-admin', element: <LoginAdmin />, action: loginAdminAction, errorElement: <ErroGlobal /> },
-      { path: '/cadastro-admin', element: <CadastroUsuario perfil="ADMIN" />, errorElement: <ErroGlobal /> },
-      
-      { path: '/dashboard', element: <Navigate to="/dashboard-aluno" replace /> },
-      { path: '/dashboard-aluno', element: <DashboardAluno />, loader: dashboardAlunoLoader, errorElement: <ErroGlobal /> },
-      { path: '/dashboard-professor', element: <DashboardProfessor />, loader: dashboardProfessorLoader, errorElement: <ErroGlobal /> },
       { path: '/cursos', element: <Cursos />, errorElement: <ErroGlobal /> },
     ],
   },
 
   // ==========================================
-  // BLOCO 2: Rotas de Administração
+  // BLOCO 3: Rotas de Administração (Layout Admin)
   // ==========================================
   {
-    element: <AdminLayout />, // O Outlet dentro do AdminLayout vai renderizar as rotas filhas abaixo
+    element: <AdminLayout />,
+    loader: adminLayoutLoader,
     errorElement: <ErroGlobal />,
     children: [
       { path: '/dashboard-admin', element: <DashboardAdmin />, loader: adminProfessoresLoader, errorElement: <ErroGlobal /> },
-      
-      // Rotas do prefixo /admin
       { path: '/admin/professores', element: <AddProfessores />, loader: adminProfessoresListaLoader, errorElement: <ErroGlobal /> },
       { path: '/admin/alunos', element: <AddAluno />, loader: adminAlunosLoader, errorElement: <ErroGlobal /> },
       { path: '/admin/cursos', element: <AddCursos />, loader: adminCursosLoader, errorElement: <ErroGlobal /> },
       { path: '/admin/cursos/:nivelId', element: <AdminCursoDetalhe />, loader: adminCursoDetalheLoader, errorElement: <ErroGlobal /> },
       { path: '/admin/agendamentos', element: <AdminAgendamentos />, loader: adminAgendamentosLoader, errorElement: <ErroGlobal /> },
-
-    
+      
+      // Rotas em Desenvolvimento (Aproveitando a tela nova)
+      { path: '/admin/estatisticas', element: <EmDesenvolvimento /> },
+      { path: '/admin/chat', element: <EmDesenvolvimento /> },
+      { path: '/admin/forum', element: <EmDesenvolvimento /> },
     ],
   },
+  {element: <AlunoLayout />,
+  loader: alunoLayoutLoader,
+  errorElement: <ErroGlobal />,
+  children: [
+    { path: '/dashboard-aluno', element: <DashboardAluno />, loader: dashboardAlunoLoader,errorElement:<ErroGlobal/> },
+    
+  ]
+  }
 ]);
 
 export default function App() {

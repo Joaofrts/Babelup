@@ -139,8 +139,14 @@ export interface CriarModuloPayload {
 }
 
 export interface AtualizarNivelPayload {
+  nome:string;
   descricao: string;
   carga_horaria: number;
+}
+
+export interface AtualizarUsuarioPayload{
+  nome: string;
+  email: string;
 }
 
 export interface AtualizarModuloPayload {
@@ -204,6 +210,7 @@ export function normalizarLista<T>(data: unknown): T[] {
 
   return [];
 }
+
 
 export function salvarSessao(auth: AuthResponse) {
   localStorage.setItem('token', auth.token);
@@ -296,6 +303,11 @@ export async function criarNivel(payload: CriarNivelPayload) {
 
 export async function atualizarNivel(id: string, payload: AtualizarNivelPayload) {
   const response = await API.put<NivelDTO>(`/admin/niveis/${id}`, payload);
+  return response.data;
+}
+
+export async function atualizarUsuario(id: string, payload: AtualizarUsuarioPayload){
+  const response = await API.put<UsuarioDTO>(`/admin/usuario/${id}`,payload);
   return response.data;
 }
 
@@ -401,3 +413,4 @@ export async function listarRanking(mes: number, ano: number, signal?: AbortSign
   });
   return normalizarLista<RankingDTO>(response.data);
 }
+

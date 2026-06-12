@@ -1,0 +1,47 @@
+/* variables.css */
+:root {
+  /* ================= CORES ================= */
+  --cor-primaria: #214f8f;
+  --cor-primaria-hover: #183d70;
+  
+  --cor-fundo-principal: #fff7ee; 
+  --cor-fundo-secundario: #eaf4ff; 
+  --cor-fundo-hero: #f8fbff; 
+
+  --cor-texto-escuro: #111827; 
+  --cor-texto-cinza: #4b5563; 
+  --cor-texto-claro: #ffffff; 
+
+  /* ================= TIPOGRAFIA ================= */
+  /* Definimos a família da fonte */
+  --fonte-principal: Arial, Helvetica, sans-serif;
+  
+  /* Se no futuro quiser uma fonte diferente só para títulos, é só mudar aqui */
+  --fonte-titulos: var(--fonte-principal);
+
+  /* Definimos os pesos para não precisar decorar os números */
+  --peso-regular: 400;
+  --peso-medio: 500;
+  --peso-bold: 700;
+}
+
+
+body {
+  font-family: var(--fonte-principal);
+  background-color: var(--cor-fundo-principal);
+  color: var(--cor-texto-cinza);
+  margin: 0;
+  padding: 0;
+}
+
+input, button, textarea, select {
+  font-family: inherit;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--fonte-titulos);
+  color: var(--cor-texto-escuro);
+  font-weight: var(--peso-bold);
+  margin: 0; 
+}

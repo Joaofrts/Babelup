@@ -1,36 +1,42 @@
 import { useRouteError, isRouteErrorResponse, Link } from 'react-router-dom';
+import './style.css';
 
 export default function ErroGlobal() {
-  // O hook useRouteError captura automaticamente o erro que fez a tela falhar [8, 9]
   const erro = useRouteError();
   let mensagemErro = "Ocorreu um erro inesperado.";
+  let codigoErro = "Oops!";
 
-  // Verifica se é um erro HTTP conhecido (ex: 404 Not Found ou 500 Server Error) [10]
   if (isRouteErrorResponse(erro)) {
+    codigoErro = String(erro.status);
     if (erro.status === 404) {
-      mensagemErro = "A página que você está procurando não existe.";
+      mensagemErro = "A página que você está procurando não existe ou foi movida.";
     } else if (erro.status === 500) {
       mensagemErro = "Nosso servidor está passando por instabilidades. Tente novamente mais tarde.";
     } else if (erro.status === 503) {
       mensagemErro = "Serviço indisponível no momento.";
     }
   } else if (erro instanceof Error) {
-    // Captura erros de código (falhas do próprio React) [8]
     mensagemErro = erro.message;
+    codigoErro = "Erro interno";
   }
 
   return (
-    <div style={{ padding: '50px', textAlign: 'center', fontFamily: 'sans-serif' }}>
-      <h1 style={{ fontSize: '3rem', color: '#ff4d4f' }}>Oops!</h1>
-      <h2>Algo deu errado no BabelUp.</h2>
-      <p style={{ color: '#666', margin: '20px 0' }}>{mensagemErro}</p>
+    <div className="error-page-container">
+      <div className="error-card">
+        <div className="error-icon">⚠️</div>
+        <h1 className="error-title">{codigoErro}</h1>
+        <h2>Algo deu errado no BabelUp.</h2>
+        
+        <div className="error-message-box">
+          <p>{mensagemErro}</p>
+        </div>
+        
+        <Link to="/" className="error-back-button">
+          Voltar para o Início
+        </Link>
+      </div>
+
       
-      <Link 
-        to="/" 
-        style={{ padding: '10px 20px', background: '#214A85', color: 'white', textDecoration: 'none', borderRadius: '5px' }}
-      >
-        Voltar para o Início
-      </Link>
     </div>
   );
 }

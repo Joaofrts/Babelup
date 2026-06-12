@@ -2,164 +2,9 @@
   box-sizing: border-box;
 }
 
-.admin-cursos-page {
-  width: 100%;
-  min-height: 100vh;
-  display: flex;
-  background: #eaf4ff;
-  color: #0f172a;
-  font-family: Arial, Helvetica, sans-serif;
-}
-
-.admin-cursos-sidebar {
-  width: 230px;
-  min-height: 100vh;
-  background: #fff7ee;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 18px 14px 36px;
-  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.08);
-  z-index: 2;
-}
-
-.admin-cursos-logo-area {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 34px;
-}
-
-.admin-cursos-logo {
-  width: 82px;
-  height: auto;
-  display: block;
-}
-
-.admin-cursos-menu {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 13px;
-}
-
-.admin-cursos-menu-item {
-  width: 100%;
-  height: 40px;
-  padding: 0 15px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  border-radius: 7px;
-  color: #152033;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.admin-cursos-menu-item span {
-  width: 18px;
-  display: inline-flex;
-  justify-content: center;
-  font-size: 15px;
-}
-
-.admin-cursos-menu-item:hover {
-  background: rgba(33, 74, 133, 0.08);
-}
-
-.admin-cursos-menu-item.active {
-  background: #214f8f;
-  color: #fff7ee;
-}
-
-.admin-cursos-sair {
-  width: 118px;
-  height: 36px;
-  border: none;
-  border-radius: 7px;
-  background: #214f8f;
-  color: #fff7ee;
-  font-size: 15px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: auto;
-}
-
-.admin-cursos-main {
-  flex: 1;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.admin-cursos-header {
-  height: 73px;
-  background: #fff7ee;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 30px;
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.08);
-}
-
-.admin-cursos-header h1 {
-  margin: 0;
-  font-size: 23px;
-  color: #111827;
-  font-weight: 700;
-}
-
-.admin-cursos-header p {
-  margin: 4px 0 0;
-  font-size: 11px;
-  color: #5f6470;
-}
-
-.admin-cursos-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 17px;
-}
-
-.admin-cursos-bell {
-  position: relative;
-  border: none;
-  background: transparent;
-  font-size: 19px;
-  color: #1e293b;
-  cursor: pointer;
-}
-
-.admin-cursos-bell span {
-  position: absolute;
-  top: 2px;
-  right: 1px;
-  width: 6px;
-  height: 6px;
-  background: #ef4444;
-  border-radius: 50%;
-}
-
-.admin-cursos-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #214f8f;
-  color: #fff7ee;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
-}
-
-.admin-cursos-content {
-  position: relative;
-  flex: 1;
-  padding: 78px 105px 70px;
-}
-
+/* ============================
+   ESTILOS COMPARTILHADOS (CARDS E FORMULÁRIOS)
+   ============================ */
 .admin-cursos-card {
   width: 100%;
   max-width: 880px;
@@ -209,7 +54,8 @@
 .admin-cursos-field input,
 .admin-cursos-field select,
 .admin-cursos-field textarea,
-.admin-cursos-list-header input {
+.admin-cursos-list-header input,
+.admin-agendamento-actions input {
   width: 100%;
   border: none;
   outline: none;
@@ -220,7 +66,8 @@
 }
 
 .admin-cursos-field input,
-.admin-cursos-field select {
+.admin-cursos-field select,
+.admin-agendamento-actions input {
   height: 32px;
   padding: 0 12px;
 }
@@ -253,6 +100,9 @@
   background: #183d70;
 }
 
+/* ============================
+   TABELAS E LISTAGENS
+   ============================ */
 .admin-cursos-list-card {
   padding-bottom: 14px;
 }
@@ -345,8 +195,11 @@
   text-decoration: underline;
 }
 
+/* ============================
+   DETALHES DO CURSO
+   ============================ */
 .admin-curso-detalhe-content {
-  padding-top: 36px;
+  padding-top: 10px;
 }
 
 .admin-curso-alert {
@@ -447,6 +300,9 @@
   overflow-wrap: anywhere;
 }
 
+/* ============================
+   AGENDAMENTOS
+   ============================ */
 .admin-agendamento-list {
   display: flex;
   flex-direction: column;
@@ -480,17 +336,6 @@
   align-items: center;
 }
 
-.admin-agendamento-actions input,
-.admin-cursos-list-header select {
-  min-height: 30px;
-  border: none;
-  border-radius: 7px;
-  background: #eaf4ff;
-  color: #111827;
-  font-size: 12px;
-  padding: 0 10px;
-}
-
 .admin-agendamento-alunos {
   grid-column: 1 / -1;
   display: flex;
@@ -509,6 +354,9 @@
   padding: 8px 10px;
 }
 
+/* ============================
+   ILUSTRAÇÕES
+   ============================ */
 .admin-cursos-illustration {
   position: absolute;
   right: 86px;
@@ -607,65 +455,16 @@
   background: #2f5f9f;
 }
 
+/* ============================
+   RESPONSIVIDADE INTERNA
+   ============================ */
 @media (max-width: 1000px) {
-  .admin-cursos-content {
-    padding: 60px 35px 90px;
-  }
-
   .admin-cursos-illustration {
     display: none;
   }
 }
 
 @media (max-width: 760px) {
-  .admin-cursos-page {
-    flex-direction: column;
-  }
-
-  .admin-cursos-sidebar {
-    width: 100%;
-    min-height: auto;
-    flex-direction: row;
-    align-items: center;
-    overflow-x: auto;
-    padding: 14px;
-  }
-
-  .admin-cursos-logo-area {
-    width: auto;
-    margin: 0 20px 0 0;
-  }
-
-  .admin-cursos-logo {
-    width: 60px;
-  }
-
-  .admin-cursos-menu {
-    flex-direction: row;
-    width: auto;
-  }
-
-  .admin-cursos-menu-item {
-    white-space: nowrap;
-  }
-
-  .admin-cursos-sair {
-    margin: 0 0 0 16px;
-    min-width: 90px;
-  }
-
-  .admin-cursos-header {
-    padding: 0 18px;
-  }
-
-  .admin-cursos-header h1 {
-    font-size: 18px;
-  }
-
-  .admin-cursos-content {
-    padding: 35px 16px;
-  }
-
   .admin-cursos-form-grid {
     grid-template-columns: 1fr;
   }

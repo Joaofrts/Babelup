@@ -1,4 +1,4 @@
-import { Link, redirect, useLoaderData, useNavigate } from 'react-router-dom';
+import { redirect, useLoaderData } from 'react-router-dom';
 import { useMemo, useState } from 'react';
 import type { FormEvent } from 'react';
 import axios from 'axios';
@@ -17,8 +17,7 @@ import {
   type SessaoDTO,
   type UsuarioDTO,
 } from '../../services/babelup';
-import logoAzul from '../../assets/LogoAzul.png';
-import '../AddCurso/style.css';
+import './style.css'; // Ajustado o caminho do CSS
 
 interface AdminAgendamentosLoaderData {
   agendamentos: SessaoDTO[];
@@ -56,7 +55,7 @@ export async function adminAgendamentosLoader({ request }: { request: Request })
 }
 
 function formatarData(data?: string) {
-  if (!data) return 'Nao informado';
+  if (!data) return 'Não informado';
 
   return new Intl.DateTimeFormat('pt-BR', {
     dateStyle: 'short',
@@ -65,7 +64,7 @@ function formatarData(data?: string) {
 }
 
 function nomePorId(lista: Array<UsuarioDTO | ModuloDTO>, id?: string | null) {
-  if (!id) return 'Nao vinculado';
+  if (!id) return 'Não vinculado';
   const item = lista.find((registro) => registro.id === id);
 
   if (!item) return id;
@@ -74,7 +73,6 @@ function nomePorId(lista: Array<UsuarioDTO | ModuloDTO>, id?: string | null) {
 }
 
 export default function AdminAgendamentos() {
-  const navigate = useNavigate();
   const dados = useLoaderData() as AdminAgendamentosLoaderData;
 
   const [agendamentos, setAgendamentos] = useState<SessaoDTO[]>(dados.agendamentos);
@@ -100,11 +98,6 @@ export default function AdminAgendamentos() {
     setAgendamentos(await listarAgendamentos());
   }
 
-  function sair() {
-    limparSessao();
-    navigate('/login-admin');
-  }
-
   async function agendarSessao(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMensagem('');
@@ -116,7 +109,7 @@ export default function AdminAgendamentos() {
     }
 
     if (tipoSessao !== 'NIVELAMENTO_INICIAL' && !moduloId) {
-      setErro('Informe o modulo para este tipo de sessao.');
+      setErro('Informe o módulo para este tipo de sessão.');
       return;
     }
 
@@ -133,9 +126,9 @@ export default function AdminAgendamentos() {
 
       setDataHora('');
       await recarregarAgendamentos();
-      setMensagem('Sessao agendada com sucesso.');
+      setMensagem('Sessão agendada com sucesso.');
     } catch {
-      setErro('Nao foi possivel agendar a sessao.');
+      setErro('Não foi possível agendar a sessão.');
     } finally {
       setSalvando(false);
     }
@@ -149,9 +142,9 @@ export default function AdminAgendamentos() {
       setSalvando(true);
       await atualizarAgendamentoData(sessaoId, novaDataHora);
       await recarregarAgendamentos();
-      setMensagem('Sessao reagendada com sucesso.');
+      setMensagem('Sessão reagendada com sucesso.');
     } catch {
-      setErro('Nao foi possivel reagendar a sessao.');
+      setErro('Não foi possível reagendar a sessão.');
     } finally {
       setSalvando(false);
     }
@@ -162,9 +155,9 @@ export default function AdminAgendamentos() {
       setSalvando(true);
       await finalizarAgendamento(sessaoId, gravacoes[sessaoId] || '');
       await recarregarAgendamentos();
-      setMensagem('Sessao finalizada com sucesso.');
+      setMensagem('Sessão finalizada com sucesso.');
     } catch {
-      setErro('Nao foi possivel finalizar a sessao.');
+      setErro('Não foi possível finalizar a sessão.');
     } finally {
       setSalvando(false);
     }
@@ -177,9 +170,9 @@ export default function AdminAgendamentos() {
       setSalvando(true);
       await deletarAgendamento(sessaoId);
       await recarregarAgendamentos();
-      setMensagem('Agendamento excluido.');
+      setMensagem('Agendamento excluído.');
     } catch {
-      setErro('Nao foi possivel excluir o agendamento.');
+      setErro('Não foi possível excluir o agendamento.');
     } finally {
       setSalvando(false);
     }
@@ -192,9 +185,9 @@ export default function AdminAgendamentos() {
       setSalvando(true);
       await inscreverAlunoAgendamento(sessaoId, alunoSelecionado);
       await recarregarAgendamentos();
-      setMensagem('Aluno inscrito na sessao.');
+      setMensagem('Aluno inscrito na sessão.');
     } catch {
-      setErro('Nao foi possivel inscrever o aluno.');
+      setErro('Não foi possível inscrever o aluno.');
     } finally {
       setSalvando(false);
     }
@@ -205,196 +198,155 @@ export default function AdminAgendamentos() {
       setSalvando(true);
       await removerAlunoAgendamento(sessaoId, alunoId);
       await recarregarAgendamentos();
-      setMensagem('Aluno removido da sessao.');
+      setMensagem('Aluno removido da sessão.');
     } catch {
-      setErro('Nao foi possivel remover o aluno.');
+      setErro('Não foi possível remover o aluno.');
     } finally {
       setSalvando(false);
     }
   }
 
   return (
-    <main className="admin-cursos-page">
-      <aside className="admin-cursos-sidebar">
-        <div className="admin-cursos-logo-area">
-          <img src={logoAzul} alt="Logo BabelUp" className="admin-cursos-logo" />
-        </div>
+    <>
+      <div className="admin-page-titles" style={{ marginBottom: '24px' }}>
+        <h1 style={{ margin: 0, fontSize: '23px', color: '#111827', fontWeight: 700 }}>Agendamentos</h1>
+        <p style={{ margin: '4px 0 0', fontSize: '11px', color: '#5f6470' }}>Sessões de conversa, prática e nivelamento.</p>
+      </div>
 
-        <nav className="admin-cursos-menu">
-          <Link to="/dashboard-admin" className="admin-cursos-menu-item">
-            <span>AD</span>
-            Avisos
-          </Link>
-          <Link to="/admin/cursos" className="admin-cursos-menu-item">
-            <span>CU</span>
-            Cursos
-          </Link>
-          <Link to="/admin/agendamentos" className="admin-cursos-menu-item active">
-            <span>AG</span>
-            Agendamentos
-          </Link>
-          <Link to="/admin/alunos" className="admin-cursos-menu-item">
-            <span>AL</span>
-            Alunos
-          </Link>
-          <Link to="/admin/professores" className="admin-cursos-menu-item">
-            <span>PR</span>
-            Professores
-          </Link>
-        </nav>
-
-        <button type="button" className="admin-cursos-sair" onClick={sair}>
-          Sair
-        </button>
-      </aside>
-
-      <section className="admin-cursos-main">
-        <header className="admin-cursos-header">
-          <div>
-            <h1>Agendamentos</h1>
-            <p>Sessoes de conversa, pratica e nivelamento.</p>
+      <div className="admin-curso-detalhe-content">
+        {(mensagem || erro) && (
+          <div className={erro ? 'admin-curso-alert error' : 'admin-curso-alert'}>
+            {erro || mensagem}
           </div>
+        )}
 
-          <div className="admin-cursos-header-actions">
-            <div className="admin-cursos-avatar">AD</div>
-          </div>
-        </header>
+        <form className="admin-cursos-card" onSubmit={agendarSessao}>
+          <h2><span>AG</span> Agendar sessão</h2>
 
-        <section className="admin-cursos-content admin-curso-detalhe-content">
-          {(mensagem || erro) && (
-            <div className={erro ? 'admin-curso-alert error' : 'admin-curso-alert'}>
-              {erro || mensagem}
-            </div>
-          )}
-
-          <form className="admin-cursos-card" onSubmit={agendarSessao}>
-            <h2><span>AG</span> Agendar sessao</h2>
-
-            <div className="admin-cursos-form-grid">
-              <div className="admin-cursos-field">
-                <label>Professor</label>
-                <select value={professorId} onChange={(event) => setProfessorId(event.target.value)}>
-                  <option value="">Selecione</option>
-                  {dados.professores.map((professor) => (
-                    <option key={professor.id} value={professor.id}>{professor.nome}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="admin-cursos-field">
-                <label>Tipo</label>
-                <select value={tipoSessao} onChange={(event) => setTipoSessao(event.target.value as typeof tipoSessao)}>
-                  <option value="PRATICA_MODULO">Pratica de modulo</option>
-                  <option value="NIVELAMENTO_INICIAL">Nivelamento inicial</option>
-                  <option value="AVALIACAO_FINAL_NIVEL">Avaliacao final de nivel</option>
-                </select>
-              </div>
-
-              <div className="admin-cursos-field">
-                <label>Modulo</label>
-                <select
-                  value={moduloId}
-                  onChange={(event) => setModuloId(event.target.value)}
-                  disabled={tipoSessao === 'NIVELAMENTO_INICIAL'}
-                >
-                  <option value="">Sem modulo</option>
-                  {dados.modulos.map((modulo) => (
-                    <option key={modulo.id} value={modulo.id}>{modulo.titulo}</option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="admin-cursos-field">
-                <label>Modalidade</label>
-                <select value={modalidade} onChange={(event) => setModalidade(event.target.value as typeof modalidade)}>
-                  <option value="INDIVIDUAL">Individual</option>
-                  <option value="GRUPO">Grupo</option>
-                </select>
-              </div>
-
-              <div className="admin-cursos-field">
-                <label>Data e hora</label>
-                <input type="datetime-local" value={dataHora} onChange={(event) => setDataHora(event.target.value)} />
-              </div>
-
-              <div className="admin-cursos-field">
-                <label>Maximo de alunos</label>
-                <input type="number" min="1" value={maxAlunos} onChange={(event) => setMaxAlunos(event.target.value)} />
-              </div>
-            </div>
-
-            <button type="submit" className="admin-cursos-submit" disabled={salvando}>
-              {salvando ? 'Salvando...' : 'Agendar sessao'}
-            </button>
-          </form>
-
-          <section className="admin-cursos-card admin-cursos-list-card">
-            <div className="admin-cursos-list-header">
-              <h2><span>SE</span> Sessoes agendadas</h2>
-              <select value={alunoSelecionado} onChange={(event) => setAlunoSelecionado(event.target.value)}>
-                <option value="">Aluno para inscricao</option>
-                {dados.alunos.map((aluno) => (
-                  <option key={aluno.id} value={aluno.id}>{aluno.nome}</option>
+          <div className="admin-cursos-form-grid">
+            <div className="admin-cursos-field">
+              <label>Professor</label>
+              <select value={professorId} onChange={(event) => setProfessorId(event.target.value)}>
+                <option value="">Selecione</option>
+                {dados.professores.map((professor) => (
+                  <option key={professor.id} value={professor.id}>{professor.nome}</option>
                 ))}
               </select>
             </div>
 
-            {agendamentosOrdenados.length === 0 ? (
-              <p className="admin-cursos-empty">Nenhuma sessao agendada.</p>
-            ) : (
-              <div className="admin-agendamento-list">
-                {agendamentosOrdenados.map((sessao) => (
-                  <article className="admin-agendamento-item" key={sessao.id}>
-                    <div className="admin-agendamento-main">
-                      <strong>{formatarData(sessao.data_hora)}</strong>
-                      <span>{sessao.tipo_sessao} - {sessao.modalidade}</span>
-                      <span>Professor: {nomePorId(dados.professores, sessao.professor_id)}</span>
-                      <span>Modulo: {nomePorId(dados.modulos, sessao.modulo_id)}</span>
-                      <span>Status: {sessao.status || 'Nao informado'} | Vagas: {sessao.qtd_alunos ?? 0}/{sessao.max_alunos ?? 0}</span>
-                    </div>
+            <div className="admin-cursos-field">
+              <label>Tipo</label>
+              <select value={tipoSessao} onChange={(event) => setTipoSessao(event.target.value as typeof tipoSessao)}>
+                <option value="PRATICA_MODULO">Prática de módulo</option>
+                <option value="NIVELAMENTO_INICIAL">Nivelamento inicial</option>
+                <option value="AVALIACAO_FINAL_NIVEL">Avaliação final de nível</option>
+              </select>
+            </div>
 
-                    <div className="admin-agendamento-actions">
-                      <input
-                        type="datetime-local"
-                        value={reagendamento[sessao.id] || ''}
-                        onChange={(event) => setReagendamento((atual) => ({ ...atual, [sessao.id]: event.target.value }))}
-                      />
-                      <button type="button" className="admin-cursos-edit" onClick={() => reagendar(sessao.id)} disabled={salvando}>
-                        Reagendar
-                      </button>
-                      <button type="button" className="admin-cursos-edit" onClick={() => inscreverAluno(sessao.id)} disabled={salvando || !alunoSelecionado}>
-                        Inscrever aluno
-                      </button>
-                      <input
-                        type="text"
-                        placeholder="URL da gravacao"
-                        value={gravacoes[sessao.id] || ''}
-                        onChange={(event) => setGravacoes((atual) => ({ ...atual, [sessao.id]: event.target.value }))}
-                      />
-                      <button type="button" className="admin-cursos-edit" onClick={() => finalizar(sessao.id)} disabled={salvando}>
-                        Finalizar
-                      </button>
-                      <button type="button" className="admin-curso-danger-button" onClick={() => excluir(sessao.id)} disabled={salvando}>
-                        Excluir
-                      </button>
-                    </div>
-
-                    {(sessao.aluno_ids || []).length > 0 && (
-                      <div className="admin-agendamento-alunos">
-                        {(sessao.aluno_ids || []).map((alunoId) => (
-                          <button key={alunoId} type="button" onClick={() => removerAluno(sessao.id, alunoId)} disabled={salvando}>
-                            Remover {nomePorId(dados.alunos, alunoId)}
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                  </article>
+            <div className="admin-cursos-field">
+              <label>Módulo</label>
+              <select
+                value={moduloId}
+                onChange={(event) => setModuloId(event.target.value)}
+                disabled={tipoSessao === 'NIVELAMENTO_INICIAL'}
+              >
+                <option value="">Sem módulo</option>
+                {dados.modulos.map((modulo) => (
+                  <option key={modulo.id} value={modulo.id}>{modulo.titulo}</option>
                 ))}
-              </div>
-            )}
-          </section>
+              </select>
+            </div>
+
+            <div className="admin-cursos-field">
+              <label>Modalidade</label>
+              <select value={modalidade} onChange={(event) => setModalidade(event.target.value as typeof modalidade)}>
+                <option value="INDIVIDUAL">Individual</option>
+                <option value="GRUPO">Grupo</option>
+              </select>
+            </div>
+
+            <div className="admin-cursos-field">
+              <label>Data e hora</label>
+              <input type="datetime-local" value={dataHora} onChange={(event) => setDataHora(event.target.value)} />
+            </div>
+
+            <div className="admin-cursos-field">
+              <label>Máximo de alunos</label>
+              <input type="number" min="1" value={maxAlunos} onChange={(event) => setMaxAlunos(event.target.value)} />
+            </div>
+          </div>
+
+          <button type="submit" className="admin-cursos-submit" disabled={salvando}>
+            {salvando ? 'Salvando...' : 'Agendar sessão'}
+          </button>
+        </form>
+
+        <section className="admin-cursos-card admin-cursos-list-card">
+          <div className="admin-cursos-list-header">
+            <h2><span>SE</span> Sessões agendadas</h2>
+            <select value={alunoSelecionado} onChange={(event) => setAlunoSelecionado(event.target.value)}>
+              <option value="">Aluno para inscrição</option>
+              {dados.alunos.map((aluno) => (
+                <option key={aluno.id} value={aluno.id}>{aluno.nome}</option>
+              ))}
+            </select>
+          </div>
+
+          {agendamentosOrdenados.length === 0 ? (
+            <p className="admin-cursos-empty">Nenhuma sessão agendada.</p>
+          ) : (
+            <div className="admin-agendamento-list">
+              {agendamentosOrdenados.map((sessao) => (
+                <article className="admin-agendamento-item" key={sessao.id}>
+                  <div className="admin-agendamento-main">
+                    <strong>{formatarData(sessao.data_hora)}</strong>
+                    <span>{sessao.tipo_sessao} - {sessao.modalidade}</span>
+                    <span>Professor: {nomePorId(dados.professores, sessao.professor_id)}</span>
+                    <span>Módulo: {nomePorId(dados.modulos, sessao.modulo_id)}</span>
+                    <span>Status: {sessao.status || 'Não informado'} | Vagas: {sessao.qtd_alunos ?? 0}/{sessao.max_alunos ?? 0}</span>
+                  </div>
+
+                  <div className="admin-agendamento-actions">
+                    <input
+                      type="datetime-local"
+                      value={reagendamento[sessao.id] || ''}
+                      onChange={(event) => setReagendamento((atual) => ({ ...atual, [sessao.id]: event.target.value }))}
+                    />
+                    <button type="button" className="admin-cursos-edit" onClick={() => reagendar(sessao.id)} disabled={salvando}>
+                      Reagendar
+                    </button>
+                    <button type="button" className="admin-cursos-edit" onClick={() => inscreverAluno(sessao.id)} disabled={salvando || !alunoSelecionado}>
+                      Inscrever aluno
+                    </button>
+                    <input
+                      type="text"
+                      placeholder="URL da gravação"
+                      value={gravacoes[sessao.id] || ''}
+                      onChange={(event) => setGravacoes((atual) => ({ ...atual, [sessao.id]: event.target.value }))}
+                    />
+                    <button type="button" className="admin-cursos-edit" onClick={() => finalizar(sessao.id)} disabled={salvando}>
+                      Finalizar
+                    </button>
+                    <button type="button" className="admin-curso-danger-button" onClick={() => excluir(sessao.id)} disabled={salvando}>
+                      Excluir
+                    </button>
+                  </div>
+
+                  {(sessao.aluno_ids || []).length > 0 && (
+                    <div className="admin-agendamento-alunos">
+                      {(sessao.aluno_ids || []).map((alunoId) => (
+                        <button key={alunoId} type="button" onClick={() => removerAluno(sessao.id, alunoId)} disabled={salvando}>
+                          Remover {nomePorId(dados.alunos, alunoId)}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </article>
+              ))}
+            </div>
+          )}
         </section>
-      </section>
-    </main>
+      </div>
+    </>
   );
 }

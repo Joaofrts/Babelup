@@ -18,7 +18,7 @@ public class BabelupApplication {
     CommandLineRunner start(UsuarioService service) {
 		return args -> {
 
-			service.startDb();
+			//service.startDb();
 			System.out.println("Banco de dados inicializado com sucesso!");
 		};
 	}
